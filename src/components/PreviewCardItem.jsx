@@ -1,0 +1,55 @@
+import React from 'react';
+
+function DaysBadge({ days }) {
+  if (days === null) return null;
+  if (days === 0) return <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full whitespace-nowrap">Today</span>;
+  if (days === 1) return <span className="text-[9px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full whitespace-nowrap">Tomorrow</span>;
+  if (days < 0) return <span className="text-[9px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full whitespace-nowrap">Passed</span>;
+  return <span className="text-[9px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{days}d</span>;
+}
+
+export default function PreviewCardItem({ item, type = 'default', getDaysUntil }) {
+  if (type === 'calendar') {
+    const rawDate = item.start || item.date || '';
+    const dateStr = rawDate.split('T')[0];
+    const d = new Date(dateStr + 'T00:00:00');
+    const hasTime = rawDate.includes('T');
+    const timeStr = hasTime
+      ? new Date(rawDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+      : null;
+    const daysUntil = getDaysUntil(dateStr);
+
+    let dateDisplay = null;
+    if (daysUntil === 0) {
+      dateDisplay = <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
+    } else if (daysUntil === 1) {
+      dateDisplay = <span className="text-[9px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
+    } else {
+      dateDisplay = <div className="w-9 text-center"><p className="text-[9px] font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p><p className="text-base font-bold text-violet-600 leading-tight">{d.getDate()}</p></div>;
+    }
+
+    return (
+      <div className="flex items-center gap-2.5 px-1 py-2">
+        <div className="w-0.5 h-7 rounded-full bg-violet-100 flex-shrink-0" />
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-semibold text-gray-800 truncate">{item.title || item.summary}</p>
+          {timeStr && <span className="text-[10px] text-gray-400 font-medium">{timeStr}</span>}
+        </div>
+        {dateDisplay}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2 px-1 py-2">
+      <p className="text-xs font-medium text-gray-800 flex-1 truncate">
+        {item.title || item.summary}
+      </p>
+      <div className="flex-shrink-0">
+        {type === 'reminder' || type === 'coming' ? (
+          <DaysBadge days={item.daysUntil ?? (item.date ? getDaysUntil(item.date) : null)} />
+        ) : null}
+      </div>
+    </div>
+  );
+}

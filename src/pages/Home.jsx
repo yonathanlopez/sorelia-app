@@ -6,6 +6,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 import BottomNav from '@/components/BottomNav';
 import SoreliaFAB from '@/components/SoreliaFAB';
+import PreviewCardItem from '@/components/PreviewCardItem';
 
 const typeColors = {
   important_date: 'bg-violet-100 text-violet-600',
@@ -291,8 +292,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Today's Summary */}
-      <div className="px-4 pt-4">
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-3">
+      <div className="px-4 pt-5 pb-2">
+        <div className="bg-white rounded-xl border border-gray-100 shadow-xs px-4 py-3">
           <div className="flex items-center gap-2 mb-2">
             <h2 className="text-sm font-bold text-gray-900">Today's Summary</h2>
             {todayItems.length > 0 && <span className="text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">{todayItems.length}</span>}
@@ -357,61 +358,9 @@ export default function Home() {
                   </div>
                 </div>
               ) : (
-                s.id === 'calendar'
-                  ? s.preview.map((item, i) => {
-                    const rawDate = item.start || item.date || '';
-                    const dateStr = rawDate.split('T')[0];
-                    const d = new Date(dateStr + 'T00:00:00');
-                    const hasTime = rawDate.includes('T');
-                    const timeStr = hasTime
-                      ? new Date(rawDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-                      : null;
-                    const daysUntil = getDaysUntil(dateStr);
-
-                    let dateDisplay = null;
-                    if (daysUntil === 0) {
-                      dateDisplay = <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
-                    } else if (daysUntil === 1) {
-                      dateDisplay = <span className="text-[9px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
-                    } else {
-                      dateDisplay = <div className="w-9 text-center"><p className="text-[9px] font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p><p className="text-base font-bold text-violet-600 leading-tight">{d.getDate()}</p></div>;
-                    }
-
-                    return (
-                      <div key={i} className="flex items-center gap-2.5 px-1 py-1.5">
-                        <div className="w-0.5 h-7 rounded-full bg-violet-100 flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold text-gray-800 truncate">{item.title || item.summary}</p>
-                          {timeStr && <span className="text-[10px] text-gray-400 font-medium">{timeStr}</span>}
-                        </div>
-                        {dateDisplay}
-                      </div>
-                    );
-                  })
-                : s.preview.map((item, i) => (
-                    <div key={i} className="flex items-center gap-2 px-1 py-1.5">
-                      <p className="text-xs font-medium text-gray-800 flex-1 truncate">
-                        {item.title || item.summary}
-                      </p>
-                      <DaysBadge days={item.daysUntil ?? (item.date ? getDaysUntil(item.date) : null)} />
-                    </div>
-                  ))
-              )}
-              {s.preview.length > 0 && (
-                <div className="grid grid-cols-2 gap-1.5 pt-2 border-t border-gray-50 mt-2">
-                  {s.quickChips.slice(0, 2).map(chip => (
-                    <button
-                      key={chip}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate('/', { state: { prefill: `Sorelia, ${chip}` } });
-                      }}
-                      className="text-[9px] bg-white/40 text-gray-700 font-medium px-2.5 py-1.5 rounded-xl border border-white/30 backdrop-blur-sm hover:bg-white/60 active:scale-95 transition-all"
-                    >
-                      {chip}
-                    </button>
-                  ))}
-                </div>
+                s.preview.map((item, i) => (
+                  <PreviewCardItem key={i} item={item} type={s.id === 'calendar' ? 'calendar' : s.id} getDaysUntil={getDaysUntil} />
+                ))
               )}
             </div>
           </button>
