@@ -148,11 +148,11 @@ export default function Home() {
     let dateDisplay = null;
     if (daysUntil !== null) {
       if (daysUntil === 0) {
-        dateDisplay = <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
+        dateDisplay = <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
       } else if (daysUntil === 1) {
-        dateDisplay = <span className="text-[10px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
+        dateDisplay = <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
       } else if (daysUntil > 1) {
-        dateDisplay = <span className="text-[10px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{daysUntil}d</span>;
+        dateDisplay = <span className="text-xs text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{daysUntil}d</span>;
       }
     }
     return (
@@ -161,8 +161,8 @@ export default function Home() {
           <Bell className="w-4 h-4 text-amber-500" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-gray-900 truncate">{m.title}</p>
-          {m.description && <p className="text-xs text-gray-400 truncate mt-0.5">{m.description}</p>}
+          <p className="text-base font-semibold text-gray-900 truncate">{m.title}</p>
+          {m.description && <p className="text-sm text-gray-400 truncate mt-0.5">{m.description}</p>}
         </div>
         {dateDisplay}
       </div>
@@ -181,23 +181,23 @@ export default function Home() {
     
     let dateDisplay = null;
     if (daysUntil === 0) {
-      dateDisplay = <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
+      dateDisplay = <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
     } else if (daysUntil === 1) {
-      dateDisplay = <span className="text-[10px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
+      dateDisplay = <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
     } else {
-      dateDisplay = <div className="w-10 flex flex-col items-center"><span className="text-[10px] font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</span><span className="text-lg font-bold text-violet-600 leading-tight">{d.getDate()}</span></div>;
+      dateDisplay = <div className="w-10 flex flex-col items-center"><span className="text-xs font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</span><span className="text-xl font-bold text-violet-600 leading-tight">{d.getDate()}</span></div>;
     }
     
     return (
       <div key={i} className="flex items-stretch gap-3 px-1 py-1.5">
         <div className="w-0.5 rounded-full bg-violet-200 flex-shrink-0 my-1" />
         <div className="flex-1 min-w-0 flex flex-col justify-center">
-          <p className="text-sm font-semibold text-gray-900 truncate">{ev.summary || ev.title}</p>
+          <p className="text-base font-semibold text-gray-900 truncate">{ev.summary || ev.title}</p>
           <div className="flex items-center gap-2 mt-0.5">
             {timeStr && (
-              <span className="text-[11px] font-medium text-violet-500 bg-violet-50 px-2 py-0.5 rounded-full">{timeStr}</span>
+              <span className="text-sm font-medium text-violet-500 bg-violet-50 px-2 py-0.5 rounded-full">{timeStr}</span>
             )}
-            {ev.location && <span className="text-[11px] text-gray-400 truncate">📍 {ev.location}</span>}
+            {ev.location && <span className="text-sm text-gray-400 truncate">📍 {ev.location}</span>}
           </div>
         </div>
         <div className="flex items-center flex-shrink-0 pt-0.5">
@@ -224,11 +224,11 @@ export default function Home() {
     }
     let dateDisplay = null;
     if (ev.daysUntil === 0) {
-      dateDisplay = <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
+      dateDisplay = <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
     } else if (ev.daysUntil === 1) {
-      dateDisplay = <span className="text-[10px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
+      dateDisplay = <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
     } else {
-      dateDisplay = <span className="text-[10px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{ev.daysUntil}d</span>;
+      dateDisplay = <span className="text-xs text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{ev.daysUntil}d</span>;
     }
     return (
       <div key={ev.id || i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
@@ -236,7 +236,7 @@ export default function Home() {
           <Icon className="w-4 h-4" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-gray-900 truncate">{ev.title}</p>
+          <p className="text-base font-semibold text-gray-900 truncate">{ev.title}</p>
         </div>
         {dateDisplay}
       </div>
