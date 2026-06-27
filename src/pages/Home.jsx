@@ -292,26 +292,26 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Today's Summary */}
-      <div className="px-4 pt-5 pb-3">
-        <div className="bg-white/40 backdrop-blur-md rounded-2xl border border-white/30 shadow-lg px-4 py-4">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-2 h-6 rounded-full bg-gradient-to-b from-emerald-400 to-emerald-600" />
-            <h2 className="text-base font-semibold text-gray-900">Today's Summary</h2>
-            {todayItems.length > 0 && <span className="text-xs text-emerald-600 font-bold ml-auto">{todayItems.length} items</span>}
-          </div>
-          {todayItems.length === 0 ? (
-            <p className="text-sm text-gray-400 italic">Nothing scheduled — great day ahead!</p>
-          ) : (
-            <div className="space-y-2.5">
-              {todayItems.map((item, i) => (
-                <div key={i} className="flex items-start gap-2.5 text-sm text-gray-700 font-medium">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0 mt-1" />
-                  <span className="leading-snug">{item}</span>
-                </div>
-              ))}
+      <div className="px-4 pt-3 pb-2">
+        <button className="w-full bg-white rounded-xl border border-gray-100 shadow-xs text-left hover:shadow-sm transition-all">
+          <div className="flex items-center gap-2 px-3 py-2 border-b border-gray-50">
+            <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 bg-emerald-100 text-emerald-600">
+              <Bell className="w-3 h-3" />
             </div>
-          )}
-        </div>
+            <span className="text-sm font-semibold text-gray-900 flex-1">Today's Summary</span>
+          </div>
+          <div className="px-3 py-2 space-y-0">
+            {todayItems.length === 0 ? (
+              <div className="text-center py-3">
+                <p className="text-xs text-gray-400">Nothing special today</p>
+              </div>
+            ) : (
+              todayItems.map((item, i) => (
+                <PreviewCardItem key={i} item={{ title: item }} type="today" getDaysUntil={getDaysUntil} />
+              ))
+            )}
+          </div>
+        </button>
       </div>
 
       {/* Sections */}
