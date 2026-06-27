@@ -1,26 +1,21 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, MessageCircle, Brain, User, Terminal, MapPin, Calendar } from 'lucide-react';
+import { Home, MessageCircle, Brain, User, Calendar } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 
-const baseTabs = [
+const tabs = [
   { path: '/', label: 'Home', icon: Home },
   { path: '/chat', label: 'Chat', icon: MessageCircle },
   { path: '/calendar', label: 'Calendar', icon: Calendar },
-  { path: '/timeline', label: 'Timeline', icon: MapPin },
   { path: '/memories', label: 'Memories', icon: Brain },
   { path: '/profile', label: 'Profile', icon: User },
 ];
 
-const devTab = { path: '/developer', label: 'Dev', icon: Terminal };
-
 export default function BottomNav() {
   const location = useLocation();
-  const { user } = useAuth();
-  const tabs = user?.role === 'admin' ? [...baseTabs, devTab] : baseTabs;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-50 pb-[env(safe-area-inset-bottom)]">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-100 z-50 pb-[env(safe-area-inset-bottom)]">
       <div className="flex items-center justify-around max-w-lg mx-auto h-16">
         {tabs.map(({ path, label, icon: Icon }) => {
           const active = location.pathname === path;
@@ -28,7 +23,7 @@ export default function BottomNav() {
             <Link
               key={path}
               to={path}
-              className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-colors ${
+              className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-colors min-w-[56px] ${
                 active ? 'text-violet-600' : 'text-gray-400 hover:text-gray-600'
               }`}
             >

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
-import { Calendar, Target, Brain, MessageCircle, ChevronRight, Sparkles, Bell, User, Heart, Star, Mail, RefreshCw } from 'lucide-react';
+import { Calendar, Target, Brain, MessageCircle, ChevronRight, Sparkles, Bell, User, Heart, Star, Mail } from 'lucide-react';
 import BottomNav from '@/components/BottomNav';
 import GmailScannerModal from '@/components/sorelia/GmailScannerModal';
 
@@ -23,6 +23,21 @@ const typeColors = {
   life_event: 'bg-amber-100 text-amber-600',
 };
 
+const categories = [
+  { type: 'person', label: 'People' },
+  { type: 'goal', label: 'Goals' },
+  { type: 'important_date', label: 'Dates' },
+  { type: 'preference', label: 'Preferences' },
+  { type: 'life_event', label: 'Life Events' },
+  { type: 'reminder', label: 'Reminders' },
+];
+
+const quickQuestions = [
+  "What do you remember about me?",
+  "What goals did I mention?",
+  "Who is important to me?",
+];
+
 function getGreeting() {
   const h = new Date().getHours();
   if (h < 12) return 'Good morning';
@@ -36,8 +51,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [showGmailModal, setShowGmailModal] = useState(false);
   const [gmailConnected, setGmailConnected] = useState(true);
-  const [calendarEvents, setCalendarEvents] = useState([]);
-  const [scanningCalendar, setScanningCalendar] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -50,18 +63,6 @@ export default function Home() {
       setLoading(false);
     }
     load();
-    // Check Gmail connection
-    base44.functions.invoke('gmailScanner', {})
-      .then(() => setGmailConnected(true))
-      .catch(() => setGmailConnected(false));
-
-    // Load calendar events
-    base44.functions.invoke('calendarScanner', {})
-      .then(res => {
-        const events = (res.data?.events || []).slice(0, 5);
-        setCalendarEvents(events);
-      })
-      .catch(() => {});
   }, []);
 
   if (loading) {
@@ -73,69 +74,33 @@ export default function Home() {
   }
 
   const firstName = user?.full_name?.split(' ')[0] || 'there';
-  const upcomingDates = memories.filter(m => m.type === 'important_date').slice(0, 3);
-  const recentMemories = memories.slice(0, 3);
-  const goals = memories.filter(m => m.type === 'goal').slice(0, 3);
-  const reminders = memories.filter(m => m.type === 'reminder').slice(0, 3);
-
-  const categoryCounts = {
-    person: memories.filter(m => m.type === 'person').length,
-    goal: memories.filter(m => m.type === 'goal').length,
-    important_date: memories.filter(m => m.type === 'important_date').length,
-    preference: memories.filter(m => m.type === 'preference').length,
-    life_event: memories.filter(m => m.type === 'life_event').length,
-    reminder: memories.filter(m => m.type === 'reminder').length,
-  };
-
-  const categories = [
-    { type: 'person', label: 'People' },
-    { type: 'goal', label: 'Goals' },
-    { type: 'important_date', label: 'Important Dates' },
-    { type: 'preference', label: 'Preferences' },
-    { type: 'life_event', label: 'Life Events' },
-    { type: 'reminder', label: 'Reminders' },
-  ];
-
-  const quickQuestions = [
-    "What do you remember about me?",
-    "What goals did I mention?",
-    "Who is important to me?",
-  ];
+  const recentMemories = memories.slice(0, 4);
+  const categoryCounts = Object.fromEntries(categories.map(c => [c.type, memories.filter(m => m.type === c.type).length]));
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       {/* Header */}
-      <div className="bg-gradient-to-br from-violet-600 via-violet-500 to-purple-600 px-6 pt-14 pb-8 rounded-b-3xl">
+      <div className="bg-gradient-to-br from-violet-600 via-violet-500 to-purple-600 px-6 pt-14 pb-10">
         <p className="text-violet-200 text-sm font-medium">{getGreeting()},</p>
-        <h1 className="text-white text-2xl font-bold mt-0.5">{firstName}</h1>
+        <h1 className="text-white text-3xl font-bold mt-0.5">{firstName}</h1>
+        <p className="text-violet-200 text-sm mt-1">Sorelia has {memories.length} memories about you</p>
 
-        {/* Quick stats */}
-        <div className="flex gap-3 mt-6">
-          {reminders.length > 0 && (
-            <div className="bg-white/15 backdrop-blur-sm rounded-2xl px-4 py-3 flex-1">
-              <p className="text-white/80 text-[10px] uppercase tracking-wider font-medium">Reminders</p>
-              <p className="text-white text-xl font-bold mt-0.5">{reminders.length}</p>
-            </div>
-          )}
-          {upcomingDates.length > 0 && (
-            <div className="bg-white/15 backdrop-blur-sm rounded-2xl px-4 py-3 flex-1">
-              <p className="text-white/80 text-[10px] uppercase tracking-wider font-medium">Dates</p>
-              <p className="text-white text-xl font-bold mt-0.5">{upcomingDates.length}</p>
-            </div>
-          )}
-          <div className="bg-white/15 backdrop-blur-sm rounded-2xl px-4 py-3 flex-1">
-            <p className="text-white/80 text-[10px] uppercase tracking-wider font-medium">Memories</p>
-            <p className="text-white text-xl font-bold mt-0.5">{memories.length}</p>
-          </div>
-        </div>
+        {/* CTA */}
+        <Link
+          to="/chat"
+          className="mt-5 inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white text-sm font-medium px-5 py-2.5 rounded-full border border-white/30 hover:bg-white/30 transition-colors"
+        >
+          <MessageCircle className="w-4 h-4" />
+          Talk to Sorelia
+        </Link>
       </div>
 
-      <div className="px-5 -mt-4 space-y-6">
+      <div className="px-4 -mt-5 space-y-4">
         {/* Gmail connect banner */}
         {!gmailConnected && (
           <button
             onClick={() => setShowGmailModal(true)}
-            className="w-full bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl p-4 flex items-center gap-3 shadow-sm text-left"
+            className="w-full bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-4 flex items-center gap-3 shadow-md text-left"
           >
             <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
               <Mail className="w-5 h-5 text-white" />
@@ -147,78 +112,37 @@ export default function Home() {
             <ChevronRight className="w-5 h-5 text-white/70 flex-shrink-0" />
           </button>
         )}
-        {/* Google Calendar upcoming events */}
-        {calendarEvents.length > 0 && (
-          <section className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-violet-600" />
-                <h2 className="text-sm font-semibold text-gray-900">Upcoming Events</h2>
-              </div>
-              <button
-                onClick={async () => {
-                  setScanningCalendar(true);
-                  try {
-                    const res = await base44.functions.invoke('calendarScanner', {});
-                    setCalendarEvents((res.data?.events || []).slice(0, 5));
-                  } catch {}
-                  setScanningCalendar(false);
-                }}
-                className="text-xs text-violet-600 font-medium flex items-center gap-1"
-              >
-                <RefreshCw className={`w-3 h-3 ${scanningCalendar ? 'animate-spin' : ''}`} />
-                Sync
-              </button>
-            </div>
-            <div className="space-y-2.5">
-              {calendarEvents.map(ev => {
-                const d = ev.start ? new Date(ev.start) : null;
-                const dateStr = d ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: ev.allDay ? undefined : 'numeric', minute: ev.allDay ? undefined : '2-digit' }) : '';
-                return (
-                  <div key={ev.id} className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-violet-50 flex items-center justify-center flex-shrink-0">
-                      <Calendar className="w-4 h-4 text-violet-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">{ev.title}</p>
-                      <p className="text-xs text-violet-500">{dateStr}</p>
-                      {ev.location && <p className="text-xs text-gray-400 truncate">📍 {ev.location}</p>}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        )}
 
-        {/* Upcoming dates */}
-        {upcomingDates.length > 0 && (
-          <section className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold text-gray-900">Upcoming</h2>
-              <Link to="/memories" className="text-xs text-violet-600 font-medium">See all</Link>
-            </div>
-            <div className="space-y-2.5">
-              {upcomingDates.map(m => (
-                <div key={m.id} className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-violet-50 flex items-center justify-center">
-                    <Calendar className="w-4 h-4 text-violet-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{m.title}</p>
-                    <p className="text-xs text-violet-600">{m.date}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+        {/* Memory categories */}
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+          <div className="flex items-center gap-2 mb-3">
+            <Sparkles className="w-4 h-4 text-violet-600" />
+            <h2 className="text-sm font-semibold text-gray-900">What Sorelia knows</h2>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {categories.map(c => {
+              const Icon = typeIcons[c.type];
+              const color = typeColors[c.type];
+              return (
+                <Link
+                  key={c.type}
+                  to={`/memories?type=${c.type}`}
+                  className={`flex flex-col items-center gap-1.5 p-3 rounded-xl ${color.split(' ')[0]} hover:opacity-80 transition-opacity`}
+                >
+                  <Icon className={`w-5 h-5 ${color.split(' ')[1]}`} />
+                  <p className="text-[10px] font-semibold text-gray-700 text-center leading-tight">{c.label}</p>
+                  <p className="text-[10px] text-gray-500">{categoryCounts[c.type]}</p>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
 
         {/* Recent memories */}
         {recentMemories.length > 0 && (
-          <section className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold text-gray-900">Recent Memories</h2>
+              <h2 className="text-sm font-semibold text-gray-900">Recently remembered</h2>
               <Link to="/memories" className="text-xs text-violet-600 font-medium">See all</Link>
             </div>
             <div className="space-y-2.5">
@@ -227,69 +151,22 @@ export default function Home() {
                 const color = typeColors[m.type] || 'bg-gray-100 text-gray-600';
                 return (
                   <div key={m.id} className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${color}`}>
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
                       <Icon className="w-4 h-4" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-900 truncate">{m.title}</p>
-                      {m.description && <p className="text-xs text-gray-500 truncate">{m.description}</p>}
+                      {m.description && <p className="text-xs text-gray-400 truncate">{m.description}</p>}
                     </div>
                   </div>
                 );
               })}
             </div>
-          </section>
-        )}
-
-        {/* Goals */}
-        {goals.length > 0 && (
-          <section className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold text-gray-900">Goals</h2>
-              <Link to="/memories" className="text-xs text-violet-600 font-medium">See all</Link>
-            </div>
-            <div className="space-y-2.5">
-              {goals.map(m => (
-                <div key={m.id} className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center">
-                    <Target className="w-4 h-4 text-emerald-600" />
-                  </div>
-                  <p className="text-sm font-medium text-gray-900 truncate flex-1">{m.title}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Sorelia remembers — categories */}
-        <section className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-2 mb-3">
-            <Sparkles className="w-4 h-4 text-violet-600" />
-            <h2 className="text-sm font-semibold text-gray-900">Sorelia remembers</h2>
           </div>
-          <div className="grid grid-cols-2 gap-2">
-            {categories.map(c => {
-              const Icon = typeIcons[c.type];
-              const color = typeColors[c.type];
-              return (
-                <Link
-                  key={c.type}
-                  to={`/memories?type=${c.type}`}
-                  className={`flex items-center gap-2.5 p-3 rounded-xl hover:shadow-sm transition-all ${color.split(' ')[0]}`}
-                >
-                  <Icon className={`w-4 h-4 ${color.split(' ')[1]}`} />
-                  <div>
-                    <p className="text-xs font-semibold text-gray-900">{c.label}</p>
-                    <p className="text-[10px] text-gray-500">{categoryCounts[c.type]} saved</p>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </section>
+        )}
 
         {/* Ask Sorelia */}
-        <section className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
           <div className="flex items-center gap-2 mb-3">
             <MessageCircle className="w-4 h-4 text-violet-600" />
             <h2 className="text-sm font-semibold text-gray-900">Ask Sorelia</h2>
@@ -301,31 +178,31 @@ export default function Home() {
                 to={`/chat?q=${encodeURIComponent(q)}`}
                 className="flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-violet-50 transition-colors group"
               >
-                <p className="text-sm text-gray-700 group-hover:text-violet-700">"{q}"</p>
-                <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-violet-600" />
+                <p className="text-sm text-gray-600 group-hover:text-violet-700">"{q}"</p>
+                <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-violet-500 flex-shrink-0" />
               </Link>
             ))}
           </div>
-        </section>
+        </div>
 
         {/* Empty state */}
         {memories.length === 0 && (
-          <section className="text-center py-8">
+          <div className="text-center py-8">
             <div className="w-16 h-16 rounded-full bg-violet-100 flex items-center justify-center mx-auto mb-4">
-              <Brain className="w-8 h-8 text-violet-600" />
+              <Brain className="w-8 h-8 text-violet-500" />
             </div>
-            <h2 className="text-lg font-semibold text-gray-900">Start talking to Sorelia</h2>
-            <p className="text-sm text-gray-500 mt-1 max-w-xs mx-auto">
-              Tell me about the people, dates, and goals that matter to you. I'll remember everything.
+            <h2 className="text-base font-semibold text-gray-900">Start talking to Sorelia</h2>
+            <p className="text-sm text-gray-400 mt-1 max-w-xs mx-auto">
+              Tell me about the people, dates, and goals that matter to you.
             </p>
             <Link
               to="/chat"
-              className="inline-flex items-center gap-2 mt-5 px-6 py-2.5 bg-violet-600 text-white rounded-full text-sm font-medium hover:bg-violet-700 transition-colors"
+              className="inline-flex items-center gap-2 mt-5 px-6 py-2.5 bg-violet-600 text-white rounded-full text-sm font-medium"
             >
               <MessageCircle className="w-4 h-4" />
               Start chatting
             </Link>
-          </section>
+          </div>
         )}
       </div>
 
