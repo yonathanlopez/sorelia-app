@@ -18,6 +18,7 @@ import Memories from '@/pages/Memories';
 import Profile from '@/pages/Profile';
 import Developer from '@/pages/Developer';
 import Timeline from '@/pages/Timeline';
+import CalendarPage from '@/pages/CalendarPage';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -56,6 +57,7 @@ const AuthenticatedApp = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/developer" element={<Developer />} />
         <Route path="/timeline" element={<Timeline />} />
+        <Route path="/calendar" element={<CalendarPage />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

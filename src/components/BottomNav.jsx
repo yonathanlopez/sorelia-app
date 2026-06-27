@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, MessageCircle, Brain, User, Terminal, MapPin } from 'lucide-react';
+import { Home, MessageCircle, Brain, User, Terminal, MapPin, Calendar } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 
 const baseTabs = [
   { path: '/', label: 'Home', icon: Home },
   { path: '/chat', label: 'Chat', icon: MessageCircle },
+  { path: '/calendar', label: 'Calendar', icon: Calendar },
   { path: '/timeline', label: 'Timeline', icon: MapPin },
   { path: '/memories', label: 'Memories', icon: Brain },
   { path: '/profile', label: 'Profile', icon: User },
