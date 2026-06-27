@@ -62,7 +62,7 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
         <div className="w-0.5 h-7 rounded-full bg-amber-100 flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-gray-800 truncate text-xs">{item.title}</p>
-          {timeStr && <span className="text-xs text-gray-400 font-medium text-left">{timeStr}</span>}
+          {timeStr && <span className="text-xs text-gray-400 font-medium text-left capitalize">{timeStr}</span>}
         </div>
         {dateDisplay}
       </div>);
