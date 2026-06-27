@@ -347,12 +347,13 @@ export default function Home() {
       {/* Sections */}
       <div className="flex flex-col gap-3 px-4 py-4 pb-28">
         {sections.map(s => (
-          <div key={s.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm">
+          <button
+            key={s.id}
+            onClick={() => setModal(s.id)}
+            className="w-full bg-white rounded-2xl border border-gray-100 shadow-sm text-left hover:shadow-md transition-shadow"
+          >
             {/* Section header */}
-            <button
-              onClick={() => setModal(s.id)}
-              className="w-full flex items-center justify-between px-4 py-3 border-b border-gray-50"
-            >
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
               <div className="flex items-center gap-2">
                 <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${s.iconColor}`}>
                   <s.icon className="w-3.5 h-3.5" />
@@ -360,11 +361,7 @@ export default function Home() {
                 <span className="text-sm font-bold text-gray-900">{s.title}</span>
                 <span className="text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">{s.items.length}</span>
               </div>
-              <div className="flex items-center gap-1 text-violet-500">
-                <span className="text-xs font-medium">See all</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </div>
-            </button>
+            </div>
 
             {/* Preview items */}
             <div className="px-3 py-2 space-y-0.5">
@@ -402,25 +399,41 @@ export default function Home() {
                         </div>
                       );
                     })
-                  : s.preview.map((item, i) => (
-                      <div key={i} className="flex items-center gap-2 px-1 py-1.5">
-                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${s.iconColor}`}>
-                          <s.icon className="w-3 h-3" />
+                  : s.preview.map((item, i) => {
+                      let Icon, color;
+                      if (item.date_type === 'bills') {
+                        Icon = CreditCard;
+                        color = 'bg-blue-100 text-blue-600';
+                      } else if (item.date_type === 'birthday' || item.type === 'person' && item.id?.endsWith('-bday')) {
+                        Icon = Cake;
+                        color = 'bg-rose-100 text-rose-500';
+                      } else if (item.date_type === 'anniversary' || item.type === 'person' && item.id?.endsWith('-anniv')) {
+                        Icon = Heart;
+                        color = 'bg-pink-100 text-pink-500';
+                      } else {
+                        Icon = s.icon;
+                        color = s.iconColor;
+                      }
+                      return (
+                        <div key={i} className="flex items-center gap-2 px-1 py-1.5">
+                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${color}`}>
+                            <Icon className="w-3 h-3" />
+                          </div>
+                          <p className="text-xs font-medium text-gray-800 flex-1 truncate">
+                            {item.title || item.summary}
+                          </p>
+                          <DaysBadge days={item.daysUntil ?? (item.date ? getDaysUntil(item.date) : null)} />
                         </div>
-                        <p className="text-xs font-medium text-gray-800 flex-1 truncate">
-                          {item.title || item.summary}
-                        </p>
-                        <DaysBadge days={item.daysUntil ?? (item.date ? getDaysUntil(item.date) : null)} />
-                      </div>
-                    ))
+                      );
+                    })
               )}
               {s.items.length > 4 && (
-                <button onClick={() => setModal(s.id)} className="w-full text-center text-[10px] text-violet-400 font-medium py-1">
+                <div className="w-full text-center text-[10px] text-violet-400 font-medium py-1">
                   +{s.items.length - 4} more
-                </button>
+                </div>
               )}
             </div>
-          </div>
+          </button>
         ))}
       </div>
 
