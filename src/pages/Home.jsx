@@ -290,16 +290,16 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <div className="bg-gradient-to-br from-violet-600 via-violet-500 to-purple-600 px-5 pt-14 pb-5 flex-shrink-0 backdrop-blur-lg bg-opacity-90">
+      <div className="bg-gradient-to-br from-violet-600/95 via-violet-500/95 to-purple-600/95 px-5 pt-14 pb-8 flex-shrink-0 backdrop-blur-3xl border-b border-white/10 shadow-2xl">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-white text-2xl font-bold">{getGreeting()}, {userName}! 👋</h1>
-            <p className="text-violet-100 text-sm mt-0.5">
+          <div className="flex-1">
+            <h1 className="text-white text-3xl font-bold tracking-tight">{getGreeting()}, {userName}! 👋</h1>
+            <p className="text-violet-50/70 text-sm mt-2 font-medium">
               {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </p>
           </div>
-          <button onClick={handleSync} disabled={syncing} className="w-10 h-10 rounded-xl bg-white/20 border border-white/30 flex items-center justify-center">
-            <RefreshCw className={`w-4 h-4 text-white ${syncing ? 'animate-spin' : ''}`} />
+          <button onClick={handleSync} disabled={syncing} className="w-11 h-11 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/25 flex items-center justify-center transition-all backdrop-blur-sm shadow-lg">
+            <RefreshCw className={`w-5 h-5 text-white ${syncing ? 'animate-spin' : ''}`} />
           </button>
         </div>
       </div>
