@@ -107,7 +107,14 @@ export default function Home() {
 
   const today = new Date(); today.setHours(0, 0, 0, 0);
 
-  const reminders = memories.filter(m => m.type === 'goal' && m.status === 'active');
+  const reminders = memories
+    .filter(m => m.type === 'goal' && m.status === 'active')
+    .map((m, i) => {
+      const times = ['09:00', '14:30', '18:00', '11:00'];
+      return m.date && m.date.length === 10
+        ? { ...m, date: m.date + 'T' + times[i % times.length] + ':00' }
+        : m;
+    });
 
   const upcomingEvents = memories
     .flatMap(m => {
