@@ -387,7 +387,7 @@ export default function Home() {
                         <div className="w-0.5 h-7 rounded-full bg-blue-100 flex-shrink-0" />
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-semibold text-gray-800 truncate">{item.title || item.summary}</p>
-                          {timeStr && <span className="text-[10px] text-blue-400 font-medium">{timeStr}</span>}
+                          {timeStr && <span className="text-[10px] text-gray-600 font-medium">{timeStr}</span>}
                         </div>
                         {dateDisplay}
                       </div>
