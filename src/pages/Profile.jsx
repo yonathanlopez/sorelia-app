@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Brain, LogOut, User, Mail, Calendar, Trash2 } from 'lucide-react';
+import { Brain, LogOut, User, Mail, Calendar, Trash2, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/components/ui/use-toast';
 import BottomNav from '@/components/BottomNav';
+import GmailScannerModal from '@/components/sorelia/GmailScannerModal';
 
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [memoryCount, setMemoryCount] = useState(0);
   const [showClearDialog, setShowClearDialog] = useState(false);
+  const [showGmailModal, setShowGmailModal] = useState(false);
+  const [gmailConnected, setGmailConnected] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -22,6 +25,13 @@ export default function Profile() {
       setMemoryCount(mems.length);
     }
     load();
+  }, []);
+
+  useEffect(() => {
+    // Check if Gmail is already connected
+    base44.functions.invoke('gmailScanner', {})
+      .then(() => setGmailConnected(true))
+      .catch(() => setGmailConnected(false));
   }, []);
 
   async function handleClearAll() {
@@ -84,6 +94,38 @@ export default function Profile() {
           </p>
         </div>
 
+        {/* Connections */}
+        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+          <h3 className="font-semibold text-gray-900 mb-3">Connections</h3>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-red-50 flex items-center justify-center">
+                <Mail className="w-4 h-4 text-red-500" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-900">Gmail</p>
+                <p className="text-xs text-gray-500">{gmailConnected ? 'Connected' : 'Not connected'}</p>
+              </div>
+            </div>
+            {gmailConnected ? (
+              <button
+                onClick={() => setShowGmailModal(true)}
+                className="flex items-center gap-1.5 text-xs text-violet-600 font-medium bg-violet-50 px-3 py-1.5 rounded-full"
+              >
+                <RefreshCw className="w-3 h-3" />
+                Re-scan
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowGmailModal(true)}
+                className="text-xs text-white font-medium bg-violet-600 px-3 py-1.5 rounded-full"
+              >
+                Connect
+              </button>
+            )}
+          </div>
+        </div>
+
         {/* Actions */}
         <div className="space-y-3">
           <Button
@@ -121,6 +163,17 @@ export default function Profile() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {showGmailModal && (
+        <GmailScannerModal
+          onClose={() => setShowGmailModal(false)}
+          onComplete={() => {
+            setShowGmailModal(false);
+            setGmailConnected(true);
+            toast({ title: '✨ Memories created from Gmail!' });
+          }}
+        />
+      )}
 
       <BottomNav />
     </div>

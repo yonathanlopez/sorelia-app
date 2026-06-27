@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
-import { Calendar, Target, Brain, MessageCircle, ChevronRight, Sparkles, Bell, User, Heart, Star } from 'lucide-react';
+import { Calendar, Target, Brain, MessageCircle, ChevronRight, Sparkles, Bell, User, Heart, Star, Mail } from 'lucide-react';
 import BottomNav from '@/components/BottomNav';
+import GmailScannerModal from '@/components/sorelia/GmailScannerModal';
 
 const typeIcons = {
   important_date: Calendar,
@@ -33,6 +34,8 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [memories, setMemories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showGmailModal, setShowGmailModal] = useState(false);
+  const [gmailConnected, setGmailConnected] = useState(true);
 
   useEffect(() => {
     async function load() {
@@ -45,6 +48,10 @@ export default function Home() {
       setLoading(false);
     }
     load();
+    // Check Gmail connection
+    base44.functions.invoke('gmailScanner', {})
+      .then(() => setGmailConnected(true))
+      .catch(() => setGmailConnected(false));
   }, []);
 
   if (loading) {
@@ -114,6 +121,22 @@ export default function Home() {
       </div>
 
       <div className="px-5 -mt-4 space-y-6">
+        {/* Gmail connect banner */}
+        {!gmailConnected && (
+          <button
+            onClick={() => setShowGmailModal(true)}
+            className="w-full bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl p-4 flex items-center gap-3 shadow-sm text-left"
+          >
+            <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+              <Mail className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1">
+              <p className="text-white font-semibold text-sm">Connect Gmail</p>
+              <p className="text-white/80 text-xs mt-0.5">Let Sorelia scan your inbox and build your life story</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-white/70 flex-shrink-0" />
+          </button>
+        )}
         {/* Upcoming dates */}
         {upcomingDates.length > 0 && (
           <section className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
@@ -251,6 +274,17 @@ export default function Home() {
           </section>
         )}
       </div>
+
+      {showGmailModal && (
+        <GmailScannerModal
+          onClose={() => setShowGmailModal(false)}
+          onComplete={() => {
+            setShowGmailModal(false);
+            setGmailConnected(true);
+            base44.entities.Memory.list('-created_date', 50).then(setMemories);
+          }}
+        />
+      )}
 
       <BottomNav />
     </div>
