@@ -286,13 +286,11 @@ export default function Home() {
         source: 'recurring',
         onDone: () => handleDone(m.id)
       })),
-    ...upcomingCalendar.filter(e => e.daysUntil === 0 && e.id)
+    ...upcomingCalendar.filter(e => e.daysUntil === 0)
       .map(e => ({ 
         title: e.title || e.summary, 
-        id: e.id,
         source: 'calendar',
-        time: (e.start || e.date).includes('T') ? new Date(e.start || e.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null,
-        onDone: e.id && e.id.includes('-') ? null : (() => handleDone(e.id))
+        time: (e.start || e.date).includes('T') ? new Date(e.start || e.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
       })),
   ];
 
