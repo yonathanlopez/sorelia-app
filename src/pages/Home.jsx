@@ -147,18 +147,31 @@ export default function Home() {
     .filter(e => e.daysUntil >= 0)
     .sort((a, b) => a.daysUntil - b.daysUntil);
 
-  const renderReminderItem = (m, i) => (
-    <div key={m.id || i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
-      <div className="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
-        <Bell className="w-4 h-4 text-amber-500" />
+  const renderReminderItem = (m, i) => {
+    const daysUntil = m.date ? getDaysUntil(m.date) : null;
+    let dateDisplay = null;
+    if (daysUntil !== null) {
+      if (daysUntil === 0) {
+        dateDisplay = <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
+      } else if (daysUntil === 1) {
+        dateDisplay = <span className="text-[10px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
+      } else if (daysUntil > 1) {
+        dateDisplay = <span className="text-[10px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{daysUntil}d</span>;
+      }
+    }
+    return (
+      <div key={m.id || i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+        <div className="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
+          <Bell className="w-4 h-4 text-amber-500" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-gray-900 truncate">{m.title}</p>
+          {m.description && <p className="text-xs text-gray-400 truncate mt-0.5">{m.description}</p>}
+        </div>
+        {dateDisplay}
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-gray-900 truncate">{m.title}</p>
-        {m.description && <p className="text-xs text-gray-400 truncate mt-0.5">{m.description}</p>}
-      </div>
-      {m.date && <DaysBadge days={getDaysUntil(m.date)} />}
-    </div>
-  );
+    );
+  };
 
   const renderCalendarItem = (ev, i) => {
     const rawDate = ev.start || ev.date || '';
@@ -201,6 +214,14 @@ export default function Home() {
   const renderComingItem = (ev, i) => {
     const Icon = typeIcons[ev.type] || Clock;
     const color = typeColors[ev.type] || 'bg-gray-100 text-gray-500';
+    let dateDisplay = null;
+    if (ev.daysUntil === 0) {
+      dateDisplay = <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
+    } else if (ev.daysUntil === 1) {
+      dateDisplay = <span className="text-[10px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
+    } else {
+      dateDisplay = <span className="text-[10px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{ev.daysUntil}d</span>;
+    }
     return (
       <div key={ev.id || i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
@@ -210,7 +231,7 @@ export default function Home() {
           <p className="text-sm font-semibold text-gray-900 truncate">{ev.title}</p>
           <p className="text-xs text-gray-400 mt-0.5">{new Date(ev.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
         </div>
-        <DaysBadge days={ev.daysUntil} />
+        {dateDisplay}
       </div>
     );
   };
