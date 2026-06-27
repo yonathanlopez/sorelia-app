@@ -160,21 +160,26 @@ export default function Home() {
     </div>
   );
 
+  const STRIP_COLORS = ['#F97316','#22C55E','#3B82F6','#A855F7','#EF4444','#14B8A6','#F59E0B','#EC4899'];
+
   const renderCalendarItem = (ev, i) => {
-    const dateStr = (ev.start || ev.date).split('T')[0];
-    const d = new Date(dateStr + 'T00:00:00');
+    const accentColor = STRIP_COLORS[i % STRIP_COLORS.length];
+    const dateStr = (ev.start || ev.date || '').split('T')[0];
+    const hasTime = (ev.start || ev.date || '').includes('T');
+    const timeStr = hasTime
+      ? new Date(ev.start || ev.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+      : null;
     return (
-      <div key={i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
-        <div className="w-12 text-center flex-shrink-0">
-          <p className="text-xl font-bold text-violet-600 leading-none">{d.getDate()}</p>
-          <p className="text-[10px] text-gray-400 font-medium uppercase mt-0.5">{d.toLocaleDateString('en-US', { month: 'short' })}</p>
-        </div>
-        <div className="w-px h-10 bg-gray-100 flex-shrink-0" />
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-gray-900 truncate">{ev.summary || ev.title}</p>
-          {ev.location && <p className="text-xs text-gray-400 truncate mt-0.5">{ev.location}</p>}
-        </div>
-        <DaysBadge days={ev.daysUntil} />
+      <div
+        key={i}
+        className="flex-shrink-0 bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col p-4 gap-3"
+        style={{ width: 160, borderLeft: `4px solid ${accentColor}` }}
+      >
+        <span className="text-xs font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full self-start whitespace-nowrap">
+          {timeStr || (ev.summary || ev.title)}
+        </span>
+        <p className="text-base font-bold text-gray-900 leading-snug line-clamp-2">{ev.summary || ev.title}</p>
+        <div className="mt-auto w-4 h-4 rounded-full flex-shrink-0" style={{ background: accentColor }} />
       </div>
     );
   };
@@ -209,6 +214,8 @@ export default function Home() {
       .map(e => ({ label: e.title || e.summary, emoji: '📆' })),
   ];
 
+  const todayLabel = new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric' });
+
   const sections = [
     {
       id: 'reminders',
@@ -226,9 +233,10 @@ export default function Home() {
       icon: Calendar,
       iconColor: 'bg-violet-100 text-violet-600',
       items: upcomingCalendar,
-      preview: upcomingCalendar.slice(0, 4),
+      preview: upcomingCalendar.slice(0, 6),
       renderItem: renderCalendarItem,
       emptyText: 'No calendar events — ask Sorelia to check your schedule!',
+      subtitle: todayLabel,
     },
     {
       id: 'coming',
@@ -310,7 +318,10 @@ export default function Home() {
                 <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${s.iconColor}`}>
                   <s.icon className="w-3.5 h-3.5" />
                 </div>
-                <span className="text-sm font-bold text-gray-900">{s.title}</span>
+                <div className="flex flex-col items-start">
+                  <span className="text-sm font-bold text-gray-900">{s.title}</span>
+                  {s.subtitle && <span className="text-[10px] text-gray-400 font-medium">{s.subtitle}</span>}
+                </div>
                 <span className="text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">{s.items.length}</span>
               </div>
               <div className="flex items-center gap-1 text-violet-500">
@@ -320,28 +331,40 @@ export default function Home() {
             </button>
 
             {/* Preview items */}
-            <div className="px-3 py-2 space-y-0.5">
-              {s.preview.length === 0 ? (
-                <Link to="/" className="block text-xs text-violet-500 font-medium text-center py-3 hover:text-violet-700">{s.emptyText}</Link>
-              ) : (
-                s.preview.map((item, i) => (
-                  <div key={i} className="flex items-center gap-2 px-1 py-1.5">
-                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${s.iconColor}`}>
-                      <s.icon className="w-3 h-3" />
-                    </div>
-                    <p className="text-xs font-medium text-gray-800 flex-1 truncate">
-                      {item.title || item.summary}
-                    </p>
-                    <DaysBadge days={item.daysUntil ?? (item.date ? getDaysUntil(item.date) : null)} />
+            {s.id === 'calendar' ? (
+              <div className="px-3 py-3">
+                {s.preview.length === 0 ? (
+                  <Link to="/" className="block text-xs text-violet-500 font-medium text-center py-3 hover:text-violet-700">{s.emptyText}</Link>
+                ) : (
+                  <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
+                    {s.preview.map((item, i) => s.renderItem(item, i))}
                   </div>
-                ))
-              )}
-              {s.items.length > 4 && (
-                <button onClick={() => setModal(s.id)} className="w-full text-center text-[10px] text-violet-400 font-medium py-1">
-                  +{s.items.length - 4} more
-                </button>
-              )}
-            </div>
+                )}
+              </div>
+            ) : (
+              <div className="px-3 py-2 space-y-0.5">
+                {s.preview.length === 0 ? (
+                  <Link to="/" className="block text-xs text-violet-500 font-medium text-center py-3 hover:text-violet-700">{s.emptyText}</Link>
+                ) : (
+                  s.preview.map((item, i) => (
+                    <div key={i} className="flex items-center gap-2 px-1 py-1.5">
+                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${s.iconColor}`}>
+                        <s.icon className="w-3 h-3" />
+                      </div>
+                      <p className="text-xs font-medium text-gray-800 flex-1 truncate">
+                        {item.title || item.summary}
+                      </p>
+                      <DaysBadge days={item.daysUntil ?? (item.date ? getDaysUntil(item.date) : null)} />
+                    </div>
+                  ))
+                )}
+                {s.items.length > 4 && (
+                  <button onClick={() => setModal(s.id)} className="w-full text-center text-[10px] text-violet-400 font-medium py-1">
+                    +{s.items.length - 4} more
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>
