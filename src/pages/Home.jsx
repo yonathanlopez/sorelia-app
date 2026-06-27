@@ -250,11 +250,22 @@ export default function Home() {
   };
 
   async function handleDone(id, isMemory = true) {
-    setCompletedToday(prev => new Set([...prev, id]));
+    const isCurrentlyCompleted = completedToday.has(id);
+    if (isCurrentlyCompleted) {
+      setCompletedToday(prev => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    } else {
+      setCompletedToday(prev => new Set([...prev, id]));
+    }
+    
     if (isMemory) {
       // Extract base memory ID for birthdays/anniversaries (id format: "uuid-bday" or "uuid-anniv")
       const memoryId = id.includes('-') ? id.split('-')[0] : id;
-      await base44.entities.Memory.update(memoryId, { status: 'completed' });
+      const newStatus = isCurrentlyCompleted ? 'active' : 'completed';
+      await base44.entities.Memory.update(memoryId, { status: newStatus });
       const mems = await base44.entities.Memory.list('-created_date', 200);
       setMemories(mems);
     }
