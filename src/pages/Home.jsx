@@ -128,8 +128,19 @@ export default function Home() {
     .filter(ev => ev.daysUntil >= 0 && ev.daysUntil <= 90)
     .sort((a, b) => a.daysUntil - b.daysUntil);
 
-  const upcomingCalendar = calendarEvents
-    .filter(e => e.start || e.date)
+  // Use saved Google Calendar memories (source: 'google_calendar') + live API events merged
+  const gcalMemories = memories
+    .filter(m => m.source === 'google_calendar' && m.date)
+    .map(m => ({ id: m.id, title: m.title, start: m.date, date: m.date, location: m.description }));
+
+  const liveEvents = calendarEvents.filter(e => e.start || e.date);
+  const liveKeys = new Set(liveEvents.map(e => (e.start || e.date).split('T')[0] + '||' + (e.title || e.summary)));
+  const mergedCalendar = [
+    ...liveEvents,
+    ...gcalMemories.filter(m => !liveKeys.has(m.date.split('T')[0] + '||' + m.title)),
+  ];
+
+  const upcomingCalendar = mergedCalendar
     .map(e => ({ ...e, daysUntil: getDaysUntil((e.start || e.date).split('T')[0]) }))
     .filter(e => e.daysUntil >= 0)
     .sort((a, b) => a.daysUntil - b.daysUntil);
@@ -193,7 +204,7 @@ export default function Home() {
     ...memories.filter(m => m.type === 'person' && m.person_anniversary && getDaysUntil(m.person_anniversary.replace(/^\d{4}/, new Date().getFullYear())) === 0)
       .map(m => ({ label: `${m.title}'s Anniversary`, emoji: '💍' })),
     ...upcomingCalendar.filter(e => e.daysUntil === 0)
-      .map(e => ({ label: e.summary || e.title, emoji: '📆' })),
+      .map(e => ({ label: e.title || e.summary, emoji: '📆' })),
   ];
 
   const sections = [

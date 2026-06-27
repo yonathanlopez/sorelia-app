@@ -68,8 +68,8 @@ export default function CalendarPage() {
       original_id: p.id,
     }));
 
-    // Google Calendar events
-    const gcalEvents = (calRes?.data?.events || []).map(e => ({
+    // Live Google Calendar events from API
+    const gcalLive = (calRes?.data?.events || []).map(e => ({
       id: `gcal-${e.id || Math.random()}`,
       type: 'gcal',
       title: e.summary || e.title || 'Untitled',
@@ -77,11 +77,31 @@ export default function CalendarPage() {
       date: (e.start || e.date || '').split('T')[0],
       time: (e.start || '').includes('T') ? e.start : null,
     }));
-    
+    const liveKeys = new Set(gcalLive.map(e => e.date + '||' + e.title));
+
+    // Saved Google Calendar memories — use as fallback when live API doesn't return them
+    const gcalSaved = memories
+      .filter(m => m.source === 'google_calendar' && m.date)
+      .map(m => ({
+        id: m.id,
+        type: 'gcal',
+        title: m.title,
+        description: m.description || null,
+        date: m.date.split('T')[0],
+        time: m.date.includes('T') ? m.date : null,
+      }))
+      .filter(e => !liveKeys.has(e.date + '||' + e.title));
+
+    // Non-gcal memories with dates (person memories handled separately via birthdayEvents)
+    const otherMemories = memories
+      .filter(m => m.source !== 'google_calendar' && m.type !== 'person' && m.date)
+      .map(m => ({ ...m, type: m.type }));
+
     const allEvents = [
-      ...memories.filter(m => m.date),
+      ...otherMemories,
       ...birthdayEvents,
-      ...gcalEvents,
+      ...gcalLive,
+      ...gcalSaved,
     ];
     
     setEvents(allEvents);
@@ -114,14 +134,12 @@ export default function CalendarPage() {
     const d = parseEventDate(ev.date);
     if (!d) continue;
     
-    // For birthdays (type='person'), match any year by month+day only
-    if (ev.type === 'person' && ev.original_id) {
-      if (d.getMonth() === currentMonth) {
-        const day = d.getDate();
-        if (!eventsByDay[day]) eventsByDay[day] = [];
-        eventsByDay[day].push(ev);
-      }
-    } else if (d.getFullYear() === currentYear && d.getMonth() === currentMonth) {
+    // Birthdays: match any year by month+day only
+    const matchMonth = ev.type === 'person' && ev.original_id
+      ? d.getMonth() === currentMonth
+      : d.getFullYear() === currentYear && d.getMonth() === currentMonth;
+
+    if (matchMonth) {
       const day = d.getDate();
       if (!eventsByDay[day]) eventsByDay[day] = [];
       eventsByDay[day].push(ev);
