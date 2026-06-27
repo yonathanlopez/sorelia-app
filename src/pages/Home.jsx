@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
-import { Calendar, Target, Brain, MessageCircle, ChevronRight, Sparkles, Bell, User, Heart, Star, Mail, Clock } from 'lucide-react';
+import { Calendar, Target, Brain, MessageCircle, ChevronRight, Sparkles, Bell, User, Heart, Star, Mail, Clock, RefreshCw } from 'lucide-react';
 import BottomNav from '@/components/BottomNav';
 import GmailScannerModal from '@/components/sorelia/GmailScannerModal';
 
@@ -46,6 +46,7 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [memories, setMemories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
   const [showGmailModal, setShowGmailModal] = useState(false);
   const [gmailConnected, setGmailConnected] = useState(true);
 
@@ -61,6 +62,16 @@ export default function Home() {
     }
     load();
   }, []);
+
+  async function handleSync() {
+    setSyncing(true);
+    try {
+      await base44.functions.invoke('calendarScanner', {});
+      const mems = await base44.entities.Memory.list('-created_date', 50);
+      setMemories(mems);
+    } catch {}
+    setSyncing(false);
+  }
 
   if (loading) {
     return (
@@ -145,6 +156,22 @@ export default function Home() {
       </div>
 
       <div className="px-4 -mt-5 space-y-4">
+        {/* Sync button */}
+        <button
+          onClick={handleSync}
+          disabled={syncing}
+          className="w-full bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl p-4 flex items-center gap-3 shadow-md text-left hover:from-violet-700 hover:to-purple-700 transition-all disabled:opacity-50"
+        >
+          <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+            <RefreshCw className={`w-5 h-5 text-white ${syncing ? 'animate-spin' : ''}`} />
+          </div>
+          <div className="flex-1">
+            <p className="text-white font-semibold text-sm">{syncing ? 'Syncing...' : 'Sync Everything'}</p>
+            <p className="text-white/80 text-xs mt-0.5">Pull in your calendar events, dates, and goals</p>
+          </div>
+          <ChevronRight className="w-5 h-5 text-white/70 flex-shrink-0" />
+        </button>
+
         {/* Gmail connect banner */}
         {!gmailConnected && (
           <button
