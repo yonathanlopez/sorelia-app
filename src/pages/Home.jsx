@@ -290,24 +290,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <div className="px-5 pt-8 pb-4 flex-shrink-0">
-        <div className="flex items-center justify-between gap-4">
-          <p className="text-gray-900 text-lg font-semibold">Good afternoon, Yonathan</p>
-          <div className="flex items-center gap-2">
-            {user?.picture && (
-              <Avatar className="w-10 h-10 border border-gray-200">
-                <AvatarImage src={user.picture} alt={userName} />
-                <AvatarFallback>{userName[0]?.toUpperCase()}</AvatarFallback>
-              </Avatar>
-            )}
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 rounded-lg border border-orange-200">
-              <span className="text-lg">🔥</span>
-              <span className="text-sm font-bold text-orange-600">12</span>
-            </div>
-          </div>
-        </div>
-      </div>
+
 
       {/* Today's Summary */}
       <div className="px-4 pt-4">
