@@ -60,7 +60,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [modal, setModal] = useState(null); // 'reminders' | 'calendar' | 'coming' | 'today'
-  const [showAllToday, setShowAllToday] = useState(false);
 
   useEffect(() => { load(); }, []);
 
@@ -311,34 +310,21 @@ export default function Home() {
       {/* Today's Summary */}
       <div className="px-4 pt-4">
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-3">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <span className="text-base">✨</span>
-              <h2 className="text-sm font-bold text-gray-900">Today's Summary</h2>
-              {todayItems.length > 0 && <span className="text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">{todayItems.length}</span>}
-            </div>
-            {todayItems.length > 4 && (
-              <button onClick={() => setShowAllToday(!showAllToday)} className="text-xs text-violet-500 font-medium flex items-center gap-0.5">
-                {showAllToday ? 'Show less' : `See all`}
-                <ChevronRight className={`w-3 h-3 transition-transform ${showAllToday ? 'rotate-90' : ''}`} />
-              </button>
-            )}
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-base">✨</span>
+            <h2 className="text-sm font-bold text-gray-900">Today's Summary</h2>
+            {todayItems.length > 0 && <span className="text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">{todayItems.length}</span>}
           </div>
           {todayItems.length === 0 ? (
             <p className="text-xs text-gray-400">Nothing special today — enjoy the calm! 🌿</p>
           ) : (
             <div className="space-y-1.5">
-              {(showAllToday ? todayItems : todayItems.slice(0, 4)).map((item, i) => (
+              {todayItems.map((item, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <span className="text-sm">{item.emoji}</span>
                   <span className="text-xs text-gray-700 font-medium">{item.label}</span>
                 </div>
               ))}
-              {!showAllToday && todayItems.length > 4 && (
-                <button onClick={() => setShowAllToday(true)} className="text-[10px] text-violet-400 font-medium pt-0.5">
-                  +{todayItems.length - 4} more
-                </button>
-              )}
             </div>
           )}
         </div>
@@ -426,11 +412,6 @@ export default function Home() {
                         </div>
                       );
                     })
-              )}
-              {s.items.length > 4 && (
-                <div className="w-full text-center text-[10px] text-violet-400 font-medium py-1">
-                  +{s.items.length - 4} more
-                </div>
               )}
             </div>
           </button>
