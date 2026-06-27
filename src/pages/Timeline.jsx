@@ -4,30 +4,21 @@ import { Loader2, ChevronLeft, ChevronRight, Sparkles, MapPin, Calendar, Refresh
 import BottomNav from '@/components/BottomNav';
 
 const typeEmoji = {
-  life_event: '🌟',
   goal: '🎯',
   important_date: '📅',
   person: '👤',
-  preference: '💜',
-  reminder: '🔔',
 };
 
 const typeDot = {
-  life_event: 'bg-amber-400',
   goal: 'bg-emerald-400',
   important_date: 'bg-violet-500',
   person: 'bg-blue-400',
-  preference: 'bg-pink-400',
-  reminder: 'bg-cyan-400',
 };
 
 const typeCard = {
-  life_event: 'border-amber-200',
   goal: 'border-emerald-200',
   important_date: 'border-violet-200',
   person: 'border-blue-200',
-  preference: 'border-pink-200',
-  reminder: 'border-cyan-200',
 };
 
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -107,7 +98,7 @@ ${memorySummary}
 Emails:
 ${emailSummary}
 
-Return JSON with "events" array. Each: { "type": "life_event"|"goal"|"important_date"|"person"|"preference"|"reminder", "title": string, "description": string (optional), "date": string (must include year, e.g. "March 2023") }
+Return JSON with "events" array. Each: { "type": "goal"|"important_date"|"person", "title": string, "description": string (optional), "date": string (must include year, e.g. "March 2023") }
 Only events with a clear year. Max 30. Sort oldest first.`,
       model: 'gpt_5_5',
       response_json_schema: {

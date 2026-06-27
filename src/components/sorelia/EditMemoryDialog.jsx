@@ -60,7 +60,7 @@ export default function EditMemoryDialog({ memory, open, onClose, onSave, defaul
   };
 
   const isPerson = form.type === 'person';
-  const isDate = form.type === 'important_date' || form.type === 'reminder';
+  const isDate = form.type === 'important_date';
   const isGoal = form.type === 'goal';
 
   return (
@@ -78,13 +78,10 @@ export default function EditMemoryDialog({ memory, open, onClose, onSave, defaul
               <Select value={form.type} onValueChange={(v) => set('type', v)}>
                 <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="person">Person</SelectItem>
-                  <SelectItem value="goal">Goal</SelectItem>
-                  <SelectItem value="important_date">Important Date</SelectItem>
-                  <SelectItem value="preference">Preference</SelectItem>
-                  <SelectItem value="life_event">Life Event</SelectItem>
-                  <SelectItem value="reminder">Reminder</SelectItem>
-                </SelectContent>
+                    <SelectItem value="person">Person</SelectItem>
+                    <SelectItem value="goal">Goal</SelectItem>
+                    <SelectItem value="important_date">Important Date</SelectItem>
+                  </SelectContent>
               </Select>
             </div>
           )}
@@ -136,15 +133,9 @@ export default function EditMemoryDialog({ memory, open, onClose, onSave, defaul
                 <Label className="text-xs text-gray-500">Description</Label>
                 <Textarea className="mt-1" rows={2} value={form.description} onChange={e => set('description', e.target.value)} />
               </div>
-              {(isDate || isGoal || form.type === 'life_event') && (
+              {(isDate || isGoal) && (
                 <div>
                   <Label className="text-xs text-gray-500">Date</Label>
-                  <Input className="mt-1" type="date" value={form.date} onChange={e => set('date', e.target.value)} />
-                </div>
-              )}
-              {form.type === 'reminder' && (
-                <div>
-                  <Label className="text-xs text-gray-500">Due Date</Label>
                   <Input className="mt-1" type="date" value={form.date} onChange={e => set('date', e.target.value)} />
                 </div>
               )}

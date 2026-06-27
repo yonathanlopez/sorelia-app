@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Calendar, User, Target, Heart, Star, Bell, Brain, ArrowLeft, Plus } from 'lucide-react';
+import { Calendar, User, Target, Brain, ArrowLeft, Plus } from 'lucide-react';
 import MemoryCard from '@/components/sorelia/MemoryCard';
 import EditMemoryDialog from '@/components/sorelia/EditMemoryDialog';
 import BottomNav from '@/components/BottomNav';
@@ -11,9 +11,6 @@ const categories = [
   { type: 'person', label: 'People', icon: User, color: 'bg-blue-100 text-blue-600' },
   { type: 'goal', label: 'Goals', icon: Target, color: 'bg-emerald-100 text-emerald-600' },
   { type: 'important_date', label: 'Important Dates', icon: Calendar, color: 'bg-violet-100 text-violet-600' },
-  { type: 'preference', label: 'Preferences', icon: Heart, color: 'bg-rose-100 text-rose-600' },
-  { type: 'life_event', label: 'Life Events', icon: Star, color: 'bg-amber-100 text-amber-600' },
-  { type: 'reminder', label: 'Reminders', icon: Bell, color: 'bg-cyan-100 text-cyan-600' },
 ];
 
 export default function Memories() {

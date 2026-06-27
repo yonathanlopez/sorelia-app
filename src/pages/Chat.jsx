@@ -119,12 +119,12 @@ Respond to the user's latest message naturally.`;
   }
 
   async function extractMemories(userMessage) {
-    const extractPrompt = `Analyze this message and extract any memories worth saving. A memory is any personal fact, date, person, goal, preference, life event, or reminder.
+    const extractPrompt = `Analyze this message and extract any memories worth saving. A memory is a personal fact, important date, person, or goal.
 
 Message: "${userMessage}"
 
 Return a JSON object with a "memories" array. Each memory should have:
-- type: one of "person", "goal", "important_date", "preference", "life_event", "reminder"
+- type: one of "person", "goal", "important_date"
 - title: short descriptive title
 - description: brief description (optional)
 - date: any date mentioned (optional, keep in natural format like "March 12")

@@ -1,13 +1,10 @@
 import React from 'react';
-import { Calendar, User, Target, Heart, Star, Bell, Pencil, Trash2 } from 'lucide-react';
+import { Calendar, User, Target, Pencil, Trash2 } from 'lucide-react';
 
 const typeConfig = {
   person: { icon: User, color: 'bg-blue-50 text-blue-600', label: 'Person' },
   goal: { icon: Target, color: 'bg-emerald-50 text-emerald-600', label: 'Goal' },
   important_date: { icon: Calendar, color: 'bg-violet-50 text-violet-600', label: 'Date' },
-  preference: { icon: Heart, color: 'bg-rose-50 text-rose-600', label: 'Preference' },
-  life_event: { icon: Star, color: 'bg-amber-50 text-amber-600', label: 'Life Event' },
-  reminder: { icon: Bell, color: 'bg-cyan-50 text-cyan-600', label: 'Reminder' },
 };
 
 export default function MemoryCard({ memory, onEdit, onDelete }) {
