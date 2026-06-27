@@ -291,8 +291,10 @@ export default function Home() {
     ...upcomingCalendar.filter(e => e.daysUntil === 0)
       .map(e => ({ 
         title: e.title || e.summary, 
+        id: e.id,
         source: 'calendar',
-        time: (e.start || e.date).includes('T') ? new Date(e.start || e.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
+        time: (e.start || e.date).includes('T') ? new Date(e.start || e.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null,
+        onDone: () => handleDone(e.id, false)
       })),
   ];
 
