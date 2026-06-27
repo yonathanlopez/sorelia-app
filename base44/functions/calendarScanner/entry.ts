@@ -9,9 +9,9 @@ Deno.serve(async (req) => {
     const { accessToken } = await base44.asServiceRole.connectors.getConnection('googlecalendar');
     const authHeader = { Authorization: `Bearer ${accessToken}` };
 
-    // Fetch all calendars the user has access to
+    // Step 1: Get all calendars
     const calListRes = await fetch(
-      'https://www.googleapis.com/calendar/v3/users/me/calendarList?maxResults=50',
+      'https://www.googleapis.com/calendar/v3/users/me/calendarList?maxResults=50&minAccessRole=reader',
       { headers: authHeader }
     );
     if (!calListRes.ok) {
@@ -24,21 +24,25 @@ Deno.serve(async (req) => {
     const timeMin = new Date().toISOString();
     const timeMax = new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString();
 
-    // Fetch events from ALL calendars
+    // Step 2: Fetch events from all calendars, skipping ones that fail
     const allEvents = [];
     for (const cal of calendars) {
-      const calId = encodeURIComponent(cal.id);
-      const res = await fetch(
-        `https://www.googleapis.com/calendar/v3/calendars/${calId}/events?maxResults=100&orderBy=startTime&singleEvents=true&timeMin=${timeMin}&timeMax=${timeMax}`,
-        { headers: authHeader }
-      );
-      if (!res.ok) continue;
-      const data = await res.json();
-      const items = (data.items || []).map(e => ({ ...e, calendarName: cal.summary }));
-      allEvents.push(...items);
+      try {
+        const calId = encodeURIComponent(cal.id);
+        const res = await fetch(
+          `https://www.googleapis.com/calendar/v3/calendars/${calId}/events?maxResults=50&orderBy=startTime&singleEvents=true&timeMin=${timeMin}&timeMax=${timeMax}`,
+          { headers: authHeader }
+        );
+        if (!res.ok) continue;
+        const data = await res.json();
+        const items = (data.items || []).map(e => ({ ...e, calendarName: cal.summary }));
+        allEvents.push(...items);
+      } catch {
+        continue;
+      }
     }
 
-    // Deduplicate by event id
+    // Step 3: Deduplicate by event id
     const seen = new Set();
     const uniqueEvents = allEvents.filter(e => {
       if (seen.has(e.id)) return false;
@@ -46,7 +50,7 @@ Deno.serve(async (req) => {
       return true;
     });
 
-    // Save each event as a memory if it doesn't already exist
+    // Step 4: Save new events as memories
     const existingMemories = await base44.asServiceRole.entities.Memory.filter({ source: 'google_calendar' });
     const existingKeys = new Set(existingMemories.map(m => `${m.title}||${m.date}`));
 
@@ -56,15 +60,12 @@ Deno.serve(async (req) => {
       const startDate = event.start?.dateTime || event.start?.date || '';
       const description = event.description || '';
       const location = event.location || '';
+      const calName = event.calendarName || '';
 
       const lowerTitle = title.toLowerCase();
       let memType = 'important_date';
       if (lowerTitle.includes('goal') || lowerTitle.includes('deadline') || lowerTitle.includes('due')) {
         memType = 'goal';
-      } else if (lowerTitle.includes('reminder') || lowerTitle.includes('remind')) {
-        memType = 'reminder';
-      } else if (event.recurrence) {
-        memType = 'reminder';
       }
 
       const key = `${title}||${startDate}`;
@@ -72,12 +73,13 @@ Deno.serve(async (req) => {
         await base44.asServiceRole.entities.Memory.create({
           type: memType,
           title,
-          description: [description, location ? `📍 ${location}` : '', event.calendarName ? `📅 ${event.calendarName}` : ''].filter(Boolean).join('\n').slice(0, 500),
+          description: [description, location ? `📍 ${location}` : '', calName ? `📅 ${calName}` : ''].filter(Boolean).join('\n').slice(0, 500),
           date: startDate,
           people: [],
           source: 'google_calendar',
         });
         memoriesCreated++;
+        existingKeys.add(key); // prevent re-adding within same run
       }
     }
 
