@@ -169,15 +169,14 @@ export default function Home() {
       ? new Date(rawDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
       : null;
     const daysUntil = getDaysUntil(dateStr);
-    let dateLabel = d.toLocaleDateString('en-US', { weekday: 'short' });
-    let dateColor = 'text-gray-400';
     
+    let dateDisplay = null;
     if (daysUntil === 0) {
-      dateLabel = 'Today';
-      dateColor = 'text-emerald-600';
+      dateDisplay = <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
     } else if (daysUntil === 1) {
-      dateLabel = 'Tomorrow';
-      dateColor = 'text-orange-500';
+      dateDisplay = <span className="text-[10px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
+    } else {
+      dateDisplay = <div className="w-10 flex flex-col items-center"><span className="text-[10px] font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</span><span className="text-lg font-bold text-violet-600 leading-tight">{d.getDate()}</span></div>;
     }
     
     return (
@@ -192,8 +191,8 @@ export default function Home() {
             {ev.location && <span className="text-[11px] text-gray-400 truncate">📍 {ev.location}</span>}
           </div>
         </div>
-        <div className="flex flex-col items-center flex-shrink-0 pt-0.5">
-          <span className={`text-[10px] font-bold uppercase ${dateColor}`}>{dateLabel}</span>
+        <div className="flex items-center flex-shrink-0 pt-0.5">
+          {dateDisplay}
         </div>
       </div>
     );
@@ -354,15 +353,14 @@ export default function Home() {
                         ? new Date(rawDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
                         : null;
                       const daysUntil = getDaysUntil(dateStr);
-                      let dateLabel = d.toLocaleDateString('en-US', { weekday: 'short' });
-                      let dateColor = 'text-gray-400';
                       
+                      let dateDisplay = null;
                       if (daysUntil === 0) {
-                        dateLabel = 'Today';
-                        dateColor = 'text-emerald-600';
+                        dateDisplay = <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
                       } else if (daysUntil === 1) {
-                        dateLabel = 'Tomorrow';
-                        dateColor = 'text-orange-500';
+                        dateDisplay = <span className="text-[9px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
+                      } else {
+                        dateDisplay = <div className="w-9 text-center"><p className="text-[9px] font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p><p className="text-base font-bold text-violet-600 leading-tight">{d.getDate()}</p></div>;
                       }
                       
                       return (
@@ -372,7 +370,7 @@ export default function Home() {
                             <p className="text-xs font-semibold text-gray-800 truncate">{item.title || item.summary}</p>
                             {timeStr && <span className="text-[10px] text-violet-400 font-medium">{timeStr}</span>}
                           </div>
-                          <p className={`text-[9px] font-bold uppercase ${dateColor}`}>{dateLabel}</p>
+                          {dateDisplay}
                         </div>
                       );
                     })
