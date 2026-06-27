@@ -61,8 +61,12 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [modal, setModal] = useState(null); // 'reminders' | 'calendar' | 'coming' | 'today'
+  const [user, setUser] = useState(null);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { 
+    base44.auth.me().then(setUser).catch(() => {});
+    load(); 
+  }, []);
 
   async function load() {
     const mems = await base44.entities.Memory.list('-created_date', 200);
@@ -274,14 +278,23 @@ export default function Home() {
 
   const activeModal = sections.find(s => s.id === modal);
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  };
+
+  const userName = user?.full_name?.split(' ')[0] || 'there';
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <div className="bg-gradient-to-br from-violet-600 via-violet-500 to-purple-600 px-5 pt-14 pb-5 flex-shrink-0">
+      <div className="bg-gradient-to-br from-violet-600 via-violet-500 to-purple-600 px-5 pt-14 pb-5 flex-shrink-0 backdrop-blur-lg bg-opacity-90">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-white text-2xl font-bold">Overview</h1>
-            <p className="text-violet-200 text-sm mt-0.5">
+            <h1 className="text-white text-2xl font-bold">{getGreeting()}, {userName}! 👋</h1>
+            <p className="text-violet-100 text-sm mt-0.5">
               {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </p>
           </div>
