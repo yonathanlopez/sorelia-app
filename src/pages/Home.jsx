@@ -169,19 +169,9 @@ export default function Home() {
       ? new Date(rawDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
       : null;
     const weekday = d.toLocaleDateString('en-US', { weekday: 'short' });
-    const daysUntil = ev.daysUntil ?? getDaysUntil(dateStr);
-    const isNearTerm = daysUntil <= 1; // Today or Tomorrow
     
-    const DateDisplay = () => (
-      <div className="w-10 flex flex-col items-center flex-shrink-0 pt-0.5">
-        <span className="text-[10px] font-semibold text-gray-400 uppercase">{weekday}</span>
-        <span className="text-lg font-bold text-violet-600 leading-tight">{d.getDate()}</span>
-      </div>
-    );
-
     return (
       <div key={i} className="flex items-stretch gap-3 px-1 py-1.5">
-        {isNearTerm && <DateDisplay />}
         <div className="w-0.5 rounded-full bg-violet-200 flex-shrink-0 my-1" />
         <div className="flex-1 min-w-0 flex flex-col justify-center">
           <p className="text-sm font-semibold text-gray-900 truncate">{ev.summary || ev.title}</p>
@@ -192,8 +182,10 @@ export default function Home() {
             {ev.location && <span className="text-[11px] text-gray-400 truncate">📍 {ev.location}</span>}
           </div>
         </div>
-        {!isNearTerm && <DateDisplay />}
-        <DaysBadge days={daysUntil} />
+        <div className="w-10 flex flex-col items-center flex-shrink-0 pt-0.5">
+          <span className="text-[10px] font-semibold text-gray-400 uppercase">{weekday}</span>
+          <span className="text-lg font-bold text-violet-600 leading-tight">{d.getDate()}</span>
+        </div>
       </div>
     );
   };
@@ -352,24 +344,17 @@ export default function Home() {
                       const timeStr = hasTime
                         ? new Date(rawDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
                         : null;
-                      const daysUntil = item.daysUntil ?? getDaysUntil(dateStr);
-                      const isNearTerm = daysUntil <= 1;
-                      const DateCol = (
-                        <div className="w-9 text-center flex-shrink-0">
-                          <p className="text-[9px] font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p>
-                          <p className="text-base font-bold text-violet-600 leading-tight">{d.getDate()}</p>
-                        </div>
-                      );
                       return (
                         <div key={i} className="flex items-center gap-2.5 px-1 py-1.5">
-                          {isNearTerm && DateCol}
                           <div className="w-0.5 h-7 rounded-full bg-violet-100 flex-shrink-0" />
                           <div className="flex-1 min-w-0">
                             <p className="text-xs font-semibold text-gray-800 truncate">{item.title || item.summary}</p>
                             {timeStr && <span className="text-[10px] text-violet-400 font-medium">{timeStr}</span>}
                           </div>
-                          {!isNearTerm && DateCol}
-                          <DaysBadge days={daysUntil} />
+                          <div className="w-9 text-center flex-shrink-0">
+                            <p className="text-[9px] font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p>
+                            <p className="text-base font-bold text-violet-600 leading-tight">{d.getDate()}</p>
+                          </div>
                         </div>
                       );
                     })
