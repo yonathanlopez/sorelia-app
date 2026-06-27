@@ -14,7 +14,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Navigate } from 'react-router-dom';
 import Home from '@/pages/Home.jsx';
 import Chat from '@/pages/Chat';
-import Memories from '@/pages/Memories';
+import Memories from '@/pages/Memories.jsx';
 import Profile from '@/pages/Profile.jsx';
 import Developer from '@/pages/Developer';
 import Timeline from '@/pages/Timeline';
