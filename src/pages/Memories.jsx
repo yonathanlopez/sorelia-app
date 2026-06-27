@@ -28,6 +28,18 @@ export default function Memories() {
     loadMemories();
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const typeParam = params.get('type');
+    if (typeParam === 'person') {
+      setActiveSection('people');
+    } else if (typeParam === 'goal') {
+      setActiveSection('goals');
+    } else if (typeParam === 'important_date') {
+      setActiveSection('dates');
+    }
+  }, []);
+
   async function loadMemories() {
     const mems = await base44.entities.Memory.list('-created_date', 200);
     setMemories(mems);
