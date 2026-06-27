@@ -266,7 +266,7 @@ export default function Home() {
       preview: reminders.slice(0, 4),
       renderItem: renderReminderItem,
       emptyText: 'No active reminders — tell Sorelia to add one!',
-      quickChips: ["Add goal", "Set reminder"],
+      quickChips: ["Remind me about...", "Create a task"],
     },
     {
       id: 'calendar',
@@ -277,7 +277,7 @@ export default function Home() {
       preview: upcomingCalendar.slice(0, 4),
       renderItem: renderCalendarItem,
       emptyText: 'No calendar events — ask Sorelia to check your schedule!',
-      quickChips: ["Add event", "Schedule meeting"],
+      quickChips: ["Schedule this for me", "What's on my calendar?"],
     },
     {
       id: 'coming',
@@ -288,7 +288,7 @@ export default function Home() {
       preview: upcomingEvents.slice(0, 4),
       renderItem: renderComingItem,
       emptyText: 'No recurring events — tell Sorelia about birthdays, bills & more!',
-      quickChips: ["Add birthday", "Add bill reminder"],
+      quickChips: ["Remember this birthday", "Track this bill"],
     },
   ];
 
