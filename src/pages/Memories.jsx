@@ -1,33 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Calendar, User, Target, Brain, ArrowLeft, Plus } from 'lucide-react';
-import MemoryCard from '@/components/sorelia/MemoryCard';
+import { Calendar, User, Target, Plus } from 'lucide-react';
+import PeopleSection from '@/components/sorelia/PeopleSection';
+import GoalsSection from '@/components/sorelia/GoalsSection';
+import DatesSection from '@/components/sorelia/DatesSection';
 import EditMemoryDialog from '@/components/sorelia/EditMemoryDialog';
 import BottomNav from '@/components/BottomNav';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/components/ui/use-toast';
 
-const categories = [
-  { type: 'person', label: 'People', icon: User, color: 'bg-blue-100 text-blue-600' },
-  { type: 'goal', label: 'Goals', icon: Target, color: 'bg-emerald-100 text-emerald-600' },
-  { type: 'important_date', label: 'Important Dates', icon: Calendar, color: 'bg-violet-100 text-violet-600' },
+const sections = [
+  { id: 'people', label: '👥 People', icon: User },
+  { id: 'goals', label: '🎯 Goals', icon: Target },
+  { id: 'dates', label: '📅 Dates', icon: Calendar },
 ];
 
 export default function Memories() {
   const [memories, setMemories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedType, setSelectedType] = useState(null);
+  const [activeSection, setActiveSection] = useState('people');
   const [editMemory, setEditMemory] = useState(null);
   const [deleteMemory, setDeleteMemory] = useState(null);
-  const [addingNew, setAddingNew] = useState(false);
+  const [addingNew, setAddingNew] = useState(null);
   const { toast } = useToast();
-
-  // Check URL for type filter
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const type = params.get('type');
-    if (type) setSelectedType(type);
-  }, []);
 
   useEffect(() => {
     loadMemories();
@@ -50,6 +45,7 @@ export default function Memories() {
         person_birthday: updated.person_birthday,
         person_relationship: updated.person_relationship,
         person_anniversary: updated.person_anniversary,
+        status: updated.status,
       });
       toast({ title: 'Memory updated' });
     } else {
@@ -62,12 +58,13 @@ export default function Memories() {
         person_birthday: updated.person_birthday,
         person_relationship: updated.person_relationship,
         person_anniversary: updated.person_anniversary,
+        status: updated.status || 'active',
         source: 'manual',
       });
       toast({ title: 'Memory saved ✨' });
     }
     setEditMemory(null);
-    setAddingNew(false);
+    setAddingNew(null);
     loadMemories();
   }
 
@@ -78,8 +75,11 @@ export default function Memories() {
     loadMemories();
   }
 
-  const filtered = selectedType ? memories.filter(m => m.type === selectedType) : memories;
-  const selectedCat = categories.find(c => c.type === selectedType);
+  async function handleComplete(id) {
+    await base44.entities.Memory.update(id, { status: 'completed' });
+    toast({ title: 'Goal completed! 🎉' });
+    loadMemories();
+  }
 
   if (loading) {
     return (
@@ -89,82 +89,74 @@ export default function Memories() {
     );
   }
 
+  const counts = {
+    people: memories.filter(m => m.type === 'person').length,
+    goals: memories.filter(m => m.type === 'goal').length,
+    dates: memories.filter(m => m.type === 'important_date').length,
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       {/* Header */}
-      <div className="bg-white border-b border-gray-100 px-5 pt-12 pb-4">
-        {selectedType ? (
-          <div className="flex items-center gap-3">
-            <button onClick={() => setSelectedType(null)} className="p-1.5 -ml-1.5 rounded-xl hover:bg-gray-100">
-              <ArrowLeft className="w-5 h-5 text-gray-600" />
+      <div className="bg-white border-b border-gray-100 px-5 pt-12 pb-4 sticky top-0 z-10">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-xl font-bold text-gray-900">My Memory</h1>
+          <span className="text-xs text-gray-400">
+            {counts.people + counts.goals + counts.dates} total
+          </span>
+        </div>
+
+        {/* Section tabs */}
+        <div className="flex gap-2">
+          {sections.map(s => (
+            <button
+              key={s.id}
+              onClick={() => setActiveSection(s.id)}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                activeSection === s.id
+                  ? 'bg-violet-100 text-violet-600'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {s.label}
+              <span className="text-xs bg-white/50 px-2 py-0.5 rounded-full">
+                {s.id === 'people' ? counts.people : s.id === 'goals' ? counts.goals : counts.dates}
+              </span>
             </button>
-            <div className="flex items-center gap-2">
-              {selectedCat && <selectedCat.icon className="w-5 h-5 text-violet-600" />}
-              <h1 className="font-semibold text-gray-900 text-lg">{selectedCat?.label || 'Memories'}</h1>
-            </div>
-            <div className="ml-auto flex items-center gap-2">
-              <span className="text-sm text-gray-400">{filtered.length}</span>
-              <button
-                onClick={() => setAddingNew(true)}
-                className="flex items-center gap-1 bg-violet-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-violet-700 transition-colors"
-              >
-                <Plus className="w-3.5 h-3.5" /> Add
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center gap-3">
-            <Brain className="w-6 h-6 text-violet-600" />
-            <h1 className="font-semibold text-gray-900 text-lg">Memories</h1>
-            <span className="ml-auto text-sm text-gray-400">{memories.length} total</span>
-          </div>
-        )}
+          ))}
+        </div>
       </div>
 
       <div className="px-5 pt-4">
-        {/* Category grid (when no type selected) */}
-        {!selectedType && (
-          <div className="grid grid-cols-2 gap-3 mb-6">
-            {categories.map(c => {
-              const count = memories.filter(m => m.type === c.type).length;
-              const Icon = c.icon;
-              return (
-                <button
-                  key={c.type}
-                  onClick={() => setSelectedType(c.type)}
-                  className={`flex items-center gap-3 p-4 rounded-2xl text-left transition-all hover:shadow-md ${c.color.split(' ')[0]} border border-transparent hover:border-gray-200`}
-                >
-                  <Icon className={`w-5 h-5 ${c.color.split(' ')[1]}`} />
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">{c.label}</p>
-                    <p className="text-xs text-gray-500">{count} saved</p>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+        {/* People */}
+        {activeSection === 'people' && (
+          <PeopleSection
+            memories={memories}
+            onAdd={() => setAddingNew('person')}
+            onEdit={setEditMemory}
+            onDelete={setDeleteMemory}
+          />
         )}
 
-        {/* Memory list */}
-        {filtered.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3">
-              <Brain className="w-7 h-7 text-gray-400" />
-            </div>
-            <p className="text-sm text-gray-500">No memories here yet</p>
-            <p className="text-xs text-gray-400 mt-1">Chat with Sorelia to start saving memories</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {filtered.map(m => (
-              <MemoryCard
-                key={m.id}
-                memory={m}
-                onEdit={setEditMemory}
-                onDelete={setDeleteMemory}
-              />
-            ))}
-          </div>
+        {/* Goals */}
+        {activeSection === 'goals' && (
+          <GoalsSection
+            memories={memories}
+            onAdd={() => setAddingNew('goal')}
+            onEdit={setEditMemory}
+            onDelete={setDeleteMemory}
+            onComplete={handleComplete}
+          />
+        )}
+
+        {/* Dates */}
+        {activeSection === 'dates' && (
+          <DatesSection
+            memories={memories}
+            onAdd={() => setAddingNew('important_date')}
+            onEdit={setEditMemory}
+            onDelete={setDeleteMemory}
+          />
         )}
       </div>
 
@@ -179,10 +171,10 @@ export default function Memories() {
       {/* Add new dialog */}
       <EditMemoryDialog
         memory={null}
-        open={addingNew}
-        onClose={() => setAddingNew(false)}
+        open={!!addingNew}
+        onClose={() => setAddingNew(null)}
         onSave={handleSave}
-        defaultType={selectedType || 'person'}
+        defaultType={addingNew || 'person'}
       />
 
       {/* Delete confirmation */}

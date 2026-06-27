@@ -7,10 +7,7 @@
       "enum": [
         "person",
         "goal",
-        "important_date",
-        "preference",
-        "life_event",
-        "reminder"
+        "important_date"
       ]
     },
     "title": {
@@ -39,6 +36,13 @@
     },
     "person_anniversary": {
       "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "completed"
+      ]
     }
   },
   "required": [
