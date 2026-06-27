@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Send, Loader2, Brain, Sparkles, ImageIcon, MessageCircle } from 'lucide-react';
+import { Send, Loader2, Brain, Sparkles } from 'lucide-react';
 import ChatBubble from '@/components/sorelia/ChatBubble';
 import BottomNav from '@/components/BottomNav';
-import LifeIllustration from '@/components/sorelia/LifeIllustration';
 
 export default function Chat() {
-  const [activeTab, setActiveTab] = useState('chat');
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
@@ -211,99 +209,70 @@ Only extract clear, specific facts — not vague statements.`;
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col pb-16">
       {/* Header */}
-      <div className="bg-white border-b border-gray-100 px-5 pt-12 pb-3">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-            <Brain className="w-5 h-5 text-white" />
-          </div>
-          <div className="flex-1">
-            <h1 className="font-semibold text-gray-900">Sorelia</h1>
-            <p className="text-xs text-gray-500">Your memory assistant</p>
-          </div>
-          {activeTab === 'chat' && (
-            <button
-              onClick={handleBuildProfile}
-              disabled={buildingProfile || sending}
-              className="flex items-center gap-1.5 text-xs font-medium bg-violet-50 text-violet-600 px-3 py-2 rounded-full disabled:opacity-40 hover:bg-violet-100 transition-colors"
-            >
-              {buildingProfile ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-              My Profile
-            </button>
-          )}
+      <div className="bg-white border-b border-gray-100 px-5 pt-12 pb-4 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+          <Brain className="w-5 h-5 text-white" />
         </div>
-        {/* Tabs */}
-        <div className="flex gap-1 bg-gray-100 rounded-xl p-1">
-          <button
-            onClick={() => setActiveTab('chat')}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition-colors ${activeTab === 'chat' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'}`}
-          >
-            <MessageCircle className="w-3.5 h-3.5" />
-            Chat
-          </button>
-          <button
-            onClick={() => setActiveTab('illustration')}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition-colors ${activeTab === 'illustration' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'}`}
-          >
-            <ImageIcon className="w-3.5 h-3.5" />
-            My Life
-          </button>
+        <div className="flex-1">
+          <h1 className="font-semibold text-gray-900">Sorelia</h1>
+          <p className="text-xs text-gray-500">Your memory assistant</p>
         </div>
+        <button
+          onClick={handleBuildProfile}
+          disabled={buildingProfile || sending}
+          className="flex items-center gap-1.5 text-xs font-medium bg-violet-50 text-violet-600 px-3 py-2 rounded-full disabled:opacity-40 hover:bg-violet-100 transition-colors"
+        >
+          {buildingProfile ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+          My Profile
+        </button>
       </div>
 
-      {activeTab === 'illustration' ? (
-        <div className="flex-1 overflow-y-auto">
-          <LifeIllustration />
-        </div>
-      ) : (
-        <>
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-4 py-4">
-            {messages.length === 0 && !sending && (
-              <div className="text-center py-16">
-                <div className="w-16 h-16 rounded-full bg-violet-100 flex items-center justify-center mx-auto mb-4">
-                  <Brain className="w-8 h-8 text-violet-600" />
-                </div>
-                <h2 className="text-lg font-semibold text-gray-900">Hi! I'm Sorelia</h2>
-                <p className="text-sm text-gray-500 mt-2 max-w-xs mx-auto">
-                  Tell me about the people, dates, and things that matter to you. I'll remember everything.
-                </p>
-              </div>
-            )}
-            {messages.map((msg, i) => (
-              <ChatBubble key={i} message={msg} />
-            ))}
-            {sending && (
-              <div className="flex justify-start mb-3">
-                <div className="bg-gray-100 rounded-2xl rounded-bl-md px-4 py-3">
-                  <Loader2 className="w-4 h-4 animate-spin text-violet-600" />
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-4 py-4">
+        {messages.length === 0 && !sending && (
+          <div className="text-center py-16">
+            <div className="w-16 h-16 rounded-full bg-violet-100 flex items-center justify-center mx-auto mb-4">
+              <Brain className="w-8 h-8 text-violet-600" />
+            </div>
+            <h2 className="text-lg font-semibold text-gray-900">Hi! I'm Sorelia</h2>
+            <p className="text-sm text-gray-500 mt-2 max-w-xs mx-auto">
+              Tell me about the people, dates, and things that matter to you. I'll remember everything.
+            </p>
           </div>
+        )}
+        {messages.map((msg, i) => (
+          <ChatBubble key={i} message={msg} />
+        ))}
+        {sending && (
+          <div className="flex justify-start mb-3">
+            <div className="bg-gray-100 rounded-2xl rounded-bl-md px-4 py-3">
+              <Loader2 className="w-4 h-4 animate-spin text-violet-600" />
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
 
-          {/* Input */}
-          <div className="bg-white border-t border-gray-100 px-4 py-3 mb-16">
-            <form onSubmit={handleSubmit} className="flex items-center gap-2">
-              <input
-                ref={inputRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Tell me something to remember..."
-                className="flex-1 bg-gray-100 rounded-full px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-violet-200 transition-all"
-                disabled={sending}
-              />
-              <button
-                type="submit"
-                disabled={!input.trim() || sending}
-                className="w-10 h-10 rounded-full bg-violet-600 flex items-center justify-center text-white disabled:opacity-40 hover:bg-violet-700 transition-colors flex-shrink-0"
-              >
-                <Send className="w-4 h-4" />
-              </button>
-            </form>
-          </div>
-        </>
-      )}
+      {/* Input */}
+      <div className="bg-white border-t border-gray-100 px-4 py-3 mb-16">
+        <form onSubmit={handleSubmit} className="flex items-center gap-2">
+          <input
+            ref={inputRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Tell me something to remember..."
+            className="flex-1 bg-gray-100 rounded-full px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-violet-200 transition-all"
+            disabled={sending}
+          />
+          <button
+            type="submit"
+            disabled={!input.trim() || sending}
+            className="w-10 h-10 rounded-full bg-violet-600 flex items-center justify-center text-white disabled:opacity-40 hover:bg-violet-700 transition-colors flex-shrink-0"
+          >
+            <Send className="w-4 h-4" />
+          </button>
+        </form>
+      </div>
 
       <BottomNav />
     </div>

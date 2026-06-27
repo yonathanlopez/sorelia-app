@@ -17,6 +17,7 @@ import Chat from '@/pages/Chat';
 import Memories from '@/pages/Memories';
 import Profile from '@/pages/Profile';
 import Developer from '@/pages/Developer';
+import Timeline from '@/pages/Timeline';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -54,6 +55,7 @@ const AuthenticatedApp = () => {
         <Route path="/memories" element={<Memories />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/developer" element={<Developer />} />
+        <Route path="/timeline" element={<Timeline />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
