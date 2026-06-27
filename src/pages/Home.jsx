@@ -33,7 +33,7 @@ function DaysBadge({ days }) {
 function SectionModal({ title, icon: Icon, color, items, renderItem, onClose }) {
   return (
     <div className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm" onClick={onClose}>
-      <div className="fixed inset-0 z-50 flex flex-col bg-white/95 backdrop-blur-md" onClick={(e) => e.stopPropagation()}>
+      <div className="fixed inset-0 z-50 flex flex-col bg-gray-50" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between px-4 pt-16 pb-3">
           <div className="flex items-center gap-2.5">
             <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${color}`}>
