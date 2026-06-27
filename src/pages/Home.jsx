@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Calendar, Clock, RefreshCw, ChevronRight, X, Target, User, Bell } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 import BottomNav from '@/components/BottomNav';
 import SoreliaFAB from '@/components/SoreliaFAB';
@@ -291,16 +292,24 @@ export default function Home() {
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
       <div className="bg-gradient-to-br from-violet-600/95 via-violet-500/95 to-purple-600/95 px-5 pt-14 pb-8 flex-shrink-0 backdrop-blur-3xl border-b border-white/10 shadow-2xl">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           <div className="flex-1">
             <h1 className="text-white text-3xl font-bold tracking-tight">{getGreeting()}, {userName}! 👋</h1>
             <p className="text-violet-50/70 text-sm mt-2 font-medium">
               {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </p>
           </div>
-          <button onClick={handleSync} disabled={syncing} className="w-11 h-11 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/25 flex items-center justify-center transition-all backdrop-blur-sm shadow-lg">
-            <RefreshCw className={`w-5 h-5 text-white ${syncing ? 'animate-spin' : ''}`} />
-          </button>
+          <div className="flex items-center gap-3">
+            {user?.picture && (
+              <Avatar className="w-11 h-11 border-2 border-white/30 shadow-lg">
+                <AvatarImage src={user.picture} alt={userName} />
+                <AvatarFallback>{userName[0]?.toUpperCase()}</AvatarFallback>
+              </Avatar>
+            )}
+            <button onClick={handleSync} disabled={syncing} className="w-11 h-11 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/25 flex items-center justify-center transition-all backdrop-blur-sm shadow-lg">
+              <RefreshCw className={`w-5 h-5 text-white ${syncing ? 'animate-spin' : ''}`} />
+            </button>
+          </div>
         </div>
       </div>
 
