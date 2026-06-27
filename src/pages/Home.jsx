@@ -294,8 +294,8 @@ export default function Home() {
       <div className="bg-gradient-to-br from-violet-600/95 via-violet-500/95 to-purple-600/95 px-5 pt-14 pb-8 flex-shrink-0 backdrop-blur-3xl border-b border-white/10 shadow-2xl">
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1">
-            <h1 className="text-white text-3xl font-bold tracking-tight">{getGreeting()}, {userName}! 👋</h1>
-            <p className="text-violet-50/70 text-sm mt-2 font-medium">
+            <h1 className="text-white text-3xl font-bold tracking-tight">{getGreeting()}, {userName}</h1>
+            <p className="text-white/60 text-sm mt-2 font-medium">
               {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </p>
           </div>
