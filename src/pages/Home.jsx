@@ -248,32 +248,51 @@ export default function Home() {
     );
   };
 
-  async function handleReminderDone(reminderId) {
-    await base44.entities.Memory.update(reminderId, { status: 'completed' });
-    const mems = await base44.entities.Memory.list('-created_date', 200);
-    setMemories(mems);
+  async function handleDone(id, isMemory = true) {
+    if (isMemory) {
+      await base44.entities.Memory.update(id, { status: 'completed' });
+      const mems = await base44.entities.Memory.list('-created_date', 200);
+      setMemories(mems);
+    }
   }
 
   const todayItems = [
     ...memories.filter(m => m.type === 'important_date' && m.date && getDaysUntil(m.date) === 0)
-      .map(m => ({ title: m.title, source: 'recurring' })),
+      .map(m => ({ 
+        title: m.title, 
+        id: m.id,
+        source: 'recurring',
+        onDone: () => handleDone(m.id)
+      })),
     ...reminders.filter(m => getDaysUntil(m.date) === 0)
       .map(m => ({ 
         title: m.title,
         id: m.id,
         source: 'reminders',
         time: m.date && m.date.includes('T') ? new Date(m.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null,
-        onDone: () => handleReminderDone(m.id)
+        onDone: () => handleDone(m.id)
       })),
     ...memories.filter(m => m.type === 'person' && m.person_birthday && getDaysUntil(m.person_birthday.replace(/^\d{4}/, new Date().getFullYear())) === 0)
-      .map(m => ({ title: `${m.title}'s Birthday`, source: 'recurring' })),
+      .map(m => ({ 
+        title: `${m.title}'s Birthday`, 
+        id: `${m.id}-bday`,
+        source: 'recurring',
+        onDone: () => handleDone(m.id)
+      })),
     ...memories.filter(m => m.type === 'person' && m.person_anniversary && getDaysUntil(m.person_anniversary.replace(/^\d{4}/, new Date().getFullYear())) === 0)
-      .map(m => ({ title: `${m.title}'s Anniversary`, source: 'recurring' })),
-    ...upcomingCalendar.filter(e => e.daysUntil === 0)
+      .map(m => ({ 
+        title: `${m.title}'s Anniversary`, 
+        id: `${m.id}-anniv`,
+        source: 'recurring',
+        onDone: () => handleDone(m.id)
+      })),
+    ...upcomingCalendar.filter(e => e.daysUntil === 0 && e.id)
       .map(e => ({ 
         title: e.title || e.summary, 
+        id: e.id,
         source: 'calendar',
-        time: (e.start || e.date).includes('T') ? new Date(e.start || e.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
+        time: (e.start || e.date).includes('T') ? new Date(e.start || e.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null,
+        onDone: e.id && e.id.includes('-') ? null : (() => handleDone(e.id))
       })),
   ];
 
