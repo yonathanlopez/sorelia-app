@@ -277,19 +277,25 @@ export default function Home() {
         onDone: () => handleDone(m.id)
       })),
     ...memories.filter(m => m.type === 'person' && m.person_birthday && getDaysUntil(m.person_birthday.replace(/^\d{4}/, new Date().getFullYear())) === 0)
-      .map(m => ({ 
-        title: `${m.title}'s Birthday`, 
-        id: `${m.id}-bday`,
-        source: 'recurring',
-        onDone: () => handleDone(m.id)
-      })),
+      .map(m => {
+        const itemId = `${m.id}-bday`;
+        return { 
+          title: `${m.title}'s Birthday`, 
+          id: itemId,
+          source: 'recurring',
+          onDone: () => handleDone(itemId)
+        };
+      }),
     ...memories.filter(m => m.type === 'person' && m.person_anniversary && getDaysUntil(m.person_anniversary.replace(/^\d{4}/, new Date().getFullYear())) === 0)
-      .map(m => ({ 
-        title: `${m.title}'s Anniversary`, 
-        id: `${m.id}-anniv`,
-        source: 'recurring',
-        onDone: () => handleDone(m.id)
-      })),
+      .map(m => {
+        const itemId = `${m.id}-anniv`;
+        return { 
+          title: `${m.title}'s Anniversary`, 
+          id: itemId,
+          source: 'recurring',
+          onDone: () => handleDone(itemId)
+        };
+      }),
     ...upcomingCalendar.filter(e => e.daysUntil === 0)
       .map(e => ({ 
         title: e.title || e.summary, 
