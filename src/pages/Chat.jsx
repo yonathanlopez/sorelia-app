@@ -82,7 +82,7 @@ ${memoryContext}
 Respond to the user's latest message naturally.`;
 
     const [reply] = await Promise.all([
-      base44.integrations.Core.InvokeLLM({ prompt: replyPrompt }),
+      base44.integrations.Core.InvokeLLM({ prompt: replyPrompt, model: 'gpt_5_5' }),
       // AI call 2: Extract memories (runs in parallel)
       extractMemories(msg),
     ]);
@@ -119,6 +119,7 @@ Only extract clear, specific facts — not vague statements.`;
 
     const result = await base44.integrations.Core.InvokeLLM({
       prompt: extractPrompt,
+      model: 'gpt_5_mini',
       response_json_schema: {
         type: 'object',
         properties: {

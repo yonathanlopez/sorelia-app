@@ -106,6 +106,7 @@ Only extract memories that are genuinely personally meaningful. Max 30 memories.
 
     const result = await base44.integrations.Core.InvokeLLM({
       prompt: extractPrompt,
+      model: 'gpt_5_5',
       response_json_schema: {
         type: 'object',
         properties: {
