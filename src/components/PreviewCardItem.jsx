@@ -41,7 +41,7 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil }
     );
   }
 
-  if (type === 'reminder') {
+  if (type === 'reminder' || type === 'reminders') {
     const hasTime = item.date && item.date.includes('T');
     const timeStr = hasTime
       ? new Date(item.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
