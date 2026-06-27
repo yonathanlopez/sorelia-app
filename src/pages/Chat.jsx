@@ -5,10 +5,12 @@ import BottomNav from '@/components/BottomNav';
 import ReactMarkdown from 'react-markdown';
 
 const SUGGESTIONS = [
-  "What's coming up this week?",
-  "What do you know about me?",
-  "Remind me of my goals",
-  "Who are the important people in my life?",
+  { emoji: "📅", text: "What's coming up this week?" },
+  { emoji: "🎯", text: "What are my active goals?" },
+  { emoji: "👥", text: "Who are the important people in my life?" },
+  { emoji: "🎂", text: "Any birthdays coming up soon?" },
+  { emoji: "💡", text: "What do you know about me?" },
+  { emoji: "📝", text: "Help me set a new goal" },
 ];
 
 function TypingIndicator() {
@@ -284,20 +286,20 @@ If nothing worth saving, return { "memories": [] }.`;
             </div>
 
             {/* Suggestion chips */}
-            <div className="space-y-2">
+            <div>
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-1 mb-3">Try asking</p>
-              {SUGGESTIONS.map((s, i) => (
-                <button
-                  key={i}
-                  onClick={() => sendMessage(s)}
-                  className="w-full text-left bg-white border border-gray-100 rounded-2xl px-4 py-3.5 shadow-sm hover:border-violet-200 hover:bg-violet-50 transition-all group"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700 group-hover:text-violet-700">{s}</span>
-                    <Send className="w-3.5 h-3.5 text-gray-300 group-hover:text-violet-400 flex-shrink-0" />
-                  </div>
-                </button>
-              ))}
+              <div className="grid grid-cols-2 gap-2">
+                {SUGGESTIONS.map((s, i) => (
+                  <button
+                    key={i}
+                    onClick={() => sendMessage(s.text)}
+                    className="text-left bg-white border border-gray-100 rounded-2xl px-3 py-3 shadow-sm hover:border-violet-200 hover:bg-violet-50 transition-all group"
+                  >
+                    <span className="text-lg block mb-1">{s.emoji}</span>
+                    <span className="text-xs text-gray-700 group-hover:text-violet-700 leading-snug">{s.text}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         )}
