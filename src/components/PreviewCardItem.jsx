@@ -69,6 +69,18 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil }
     );
   }
 
+  // Today's summary type
+  if (type === 'today') {
+    return (
+      <div className="flex items-center gap-2.5 px-1 py-2 border-l-2 border-emerald-200">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
+        <p className="text-xs font-semibold text-gray-800 flex-1">
+          {item.title || item.summary}
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center gap-2 px-2 py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
       <div className="w-1 h-5 rounded-full bg-gradient-to-b from-violet-400 to-violet-300 flex-shrink-0" />
