@@ -64,6 +64,7 @@ export default function Home() {
   const [syncing, setSyncing] = useState(false);
   const [modal, setModal] = useState(null); // 'reminders' | 'calendar' | 'coming' | 'today'
   const [user, setUser] = useState(null);
+  const [completedToday, setCompletedToday] = useState(new Set());
 
   useEffect(() => { 
     base44.auth.me().then(setUser).catch(() => {});
@@ -249,6 +250,7 @@ export default function Home() {
   };
 
   async function handleDone(id, isMemory = true) {
+    setCompletedToday(prev => new Set([...prev, id]));
     if (isMemory) {
       await base44.entities.Memory.update(id, { status: 'completed' });
       const mems = await base44.entities.Memory.list('-created_date', 200);
@@ -359,9 +361,9 @@ export default function Home() {
               </div>
             ) : (
                todayItems.map((item, i) => (
-                 <PreviewCardItem key={i} item={item} type="today" getDaysUntil={getDaysUntil} />
+                 <PreviewCardItem key={i} item={item} type="today" getDaysUntil={getDaysUntil} isCompleted={completedToday.has(item.id)} />
                ))
-             )}
+            )}
           </div>
         </button>
       </div>

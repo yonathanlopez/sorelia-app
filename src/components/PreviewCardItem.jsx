@@ -9,7 +9,7 @@ function DaysBadge({ days }) {
   return <span className="text-[9px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{days}d</span>;
 }
 
-export default function PreviewCardItem({ item, type = 'default', getDaysUntil }) {
+export default function PreviewCardItem({ item, type = 'default', getDaysUntil, isCompleted = false }) {
   if (type === 'calendar') {
     const rawDate = item.start || item.date || '';
     const dateStr = rawDate.split('T')[0];
@@ -74,21 +74,22 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil }
     const iconMap = { reminders: Bell, calendar: Calendar, recurring: Clock };
     const Icon = iconMap[item.source] || Bell;
     return (
-      <div className="flex items-center gap-2.5 px-1 py-2">
-        <Icon className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+      <div className={`flex items-center gap-2.5 px-1 py-2 ${isCompleted ? 'opacity-50' : ''}`}>
+        <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${isCompleted ? 'text-gray-300' : 'text-gray-400'}`} />
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-gray-800">
+          <p className={`text-xs font-semibold ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
             {item.title || item.summary}
           </p>
-          {item.time && <span className="text-[9px] text-gray-400">{item.time}</span>}
+          {item.time && <span className={`text-[9px] ${isCompleted ? 'text-gray-300' : 'text-gray-400'}`}>{item.time}</span>}
         </div>
         {item.onDone && (
           <button
             onClick={item.onDone}
-            className="w-5 h-5 flex items-center justify-center flex-shrink-0 hover:bg-gray-100 rounded-full transition-colors active:scale-90"
+            disabled={isCompleted}
+            className="w-5 h-5 flex items-center justify-center flex-shrink-0 hover:bg-gray-100 rounded-full transition-colors active:scale-90 disabled:hover:bg-transparent"
             title="Mark done"
           >
-            <CheckCircle2 className="w-5 h-5 text-gray-300 hover:text-emerald-500 transition-colors" />
+            <CheckCircle2 className={`w-5 h-5 transition-colors ${isCompleted ? 'text-emerald-500 fill-emerald-500' : 'text-gray-300 hover:text-emerald-500'}`} />
           </button>
         )}
       </div>
