@@ -33,7 +33,7 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
       <div className="flex items-center gap-2.5 px-1 py-2">
         <div className="w-0.5 h-7 rounded-full bg-violet-100 flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-gray-800 truncate text-xs">{item.title || item.summary}</p>
+          <p className="font-semibold truncate text-xs text-gray-600">{item.title || item.summary}</p>
           {timeStr && <span className="text-xs text-gray-400 font-medium">{timeStr}</span>}
         </div>
         {dateDisplay}
@@ -61,7 +61,7 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
       <div className="flex items-center gap-2.5 px-1 py-2">
         <div className="w-0.5 h-7 rounded-full bg-amber-100 flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-gray-800 truncate text-xs">{item.title}</p>
+          <p className="font-semibold truncate text-xs text-gray-600">{item.title}</p>
           {timeStr && <span className="text-xs text-gray-400 font-medium text-left capitalize">{timeStr}</span>}
         </div>
         {dateDisplay}
@@ -77,7 +77,7 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
       <div className={`flex items-center gap-2.5 px-1 py-2 ${isCompleted ? 'opacity-50' : ''}`}>
         <Icon className={`w-4 h-4 flex-shrink-0 ${isCompleted ? 'text-gray-300' : 'text-gray-400'}`} />
         <div className="flex-1 min-w-0">
-          <p className={`font-semibold text-xs ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
+          <p className={`font-semibold text-xs text-gray-600 ${isCompleted ? 'text-gray-400 line-through' : ""}`}>
             {item.title || item.summary}
           </p>
           {item.time && <span className={`text-xs ${isCompleted ? 'text-gray-300' : 'text-gray-400'}`}>{item.time}</span>}
@@ -102,7 +102,7 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
   return (
     <div className="flex items-center gap-2 px-2 py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
       <div className="w-1 h-5 rounded-full bg-gradient-to-b from-violet-400 to-violet-300 flex-shrink-0" />
-      <p className="text-xs font-medium flex-1 truncate text-gray-400">
+      <p className="text-xs font-medium flex-1 truncate text-gray-600">
         {item.title || item.summary}
       </p>
       <div className="flex-shrink-0">
