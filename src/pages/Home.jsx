@@ -293,8 +293,8 @@ export default function Home() {
 
 
       {/* Today's Summary */}
-      <div className="px-4 pt-4 pb-2">
-        <div className="bg-slate-50 rounded-2xl border border-slate-200 shadow-sm px-4 py-4 hover:shadow-md transition-shadow duration-200">
+      <div className="px-4 pt-4">
+        <div className="bg-slate-50 rounded-2xl border border-slate-200 shadow-sm px-4 py-3">
           <div className="flex items-center gap-2 mb-2">
             <h2 className="text-sm font-bold text-gray-900">Today's Summary</h2>
             {todayItems.length > 0 && <span className="text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">{todayItems.length}</span>}
@@ -314,15 +314,15 @@ export default function Home() {
       </div>
 
       {/* Sections */}
-      <div className="flex flex-col gap-4 px-4 py-3 pb-28">
+      <div className="flex flex-col gap-3 px-4 py-4 pb-28">
         {sections.map(s => (
           <button
             key={s.id}
             onClick={() => setModal(s.id)}
-            className="w-full bg-white rounded-2xl border border-gray-100 shadow-sm text-left hover:shadow-lg hover:border-gray-200 active:scale-[0.98] transition-all duration-200"
+            className="w-full bg-white rounded-2xl border border-gray-100 shadow-sm text-left hover:shadow-md transition-shadow"
           >
             {/* Section header */}
-            <div className="flex items-center justify-between px-4 py-4 border-b border-gray-50">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
               <div className="flex items-center gap-2">
                 <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${s.iconColor}`}>
                   <s.icon className="w-3.5 h-3.5" />
@@ -345,7 +345,7 @@ export default function Home() {
                       };
                       navigate('/', { state: { prefill: `Sorelia, ${actions[s.id] || s.quickChips[0]}` } });
                     }}
-                    className="text-sm text-gray-700 font-medium mb-3 hover:text-gray-900 active:scale-95 transition-all"
+                    className="text-xs text-blue-600 font-medium mb-2 hover:text-blue-700 active:scale-95 transition-all"
                   >
                     {s.emptyText}
                   </button>
@@ -354,7 +354,7 @@ export default function Home() {
                       <button
                         key={chip}
                         onClick={() => navigate('/', { state: { prefill: `Sorelia, ${chip}` } })}
-                        className="text-[9px] bg-slate-100 text-gray-700 font-medium px-3 py-2 rounded-xl border border-slate-200 hover:bg-slate-200 hover:border-slate-300 active:scale-95 transition-all duration-150"
+                        className="text-[9px] bg-slate-100 text-gray-700 font-medium px-2.5 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-200 active:scale-95 transition-all"
                       >
                         {chip}
                       </button>
