@@ -358,12 +358,12 @@ export default function Home() {
               {s.preview.length === 0 ? (
                 <div className="text-center py-3">
                   <p className="text-xs text-violet-500 font-medium mb-2">{s.emptyText}</p>
-                  <div className="flex flex-wrap gap-1.5 justify-center">
+                  <div className="grid grid-cols-2 gap-1.5">
                     {s.quickChips.slice(0, 2).map(chip => (
                       <button
                         key={chip}
                         onClick={() => navigate('/', { state: { prefill: chip } })}
-                        className="text-[10px] bg-violet-50 text-violet-600 font-medium px-2 py-1 rounded-full border border-violet-100 active:scale-95 transition-transform"
+                        className="text-[9px] bg-gray-100 text-gray-600 font-medium px-2 py-1 rounded-lg border border-gray-200 active:scale-95 transition-transform"
                       >
                         {chip}
                       </button>
@@ -431,15 +431,15 @@ export default function Home() {
                     })
               )}
               {s.preview.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 pt-2 border-t border-gray-50 mt-2">
-                  {s.quickChips.map(chip => (
+                <div className="grid grid-cols-2 gap-1.5 pt-2 border-t border-gray-50 mt-2">
+                  {s.quickChips.slice(0, 2).map(chip => (
                     <button
                       key={chip}
                       onClick={(e) => {
                         e.stopPropagation();
                         navigate('/', { state: { prefill: chip } });
                       }}
-                      className="text-[10px] bg-violet-50 text-violet-600 font-medium px-2 py-1 rounded-full border border-violet-100 active:scale-95 transition-transform"
+                      className="text-[9px] bg-gray-100 text-gray-600 font-medium px-2 py-1 rounded-lg border border-gray-200 active:scale-95 transition-transform"
                     >
                       {chip}
                     </button>
