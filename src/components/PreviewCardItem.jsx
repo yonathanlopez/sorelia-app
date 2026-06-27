@@ -41,7 +41,8 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil }
   }
 
   return (
-    <div className="flex items-center gap-2 px-1 py-2">
+    <div className="flex items-center gap-2 px-2 py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
+      <div className="w-1 h-5 rounded-full bg-gradient-to-b from-violet-400 to-violet-300 flex-shrink-0" />
       <p className="text-xs font-medium text-gray-800 flex-1 truncate">
         {item.title || item.summary}
       </p>

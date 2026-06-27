@@ -231,15 +231,15 @@ export default function Home() {
 
   const todayItems = [
     ...memories.filter(m => m.type === 'important_date' && m.date && getDaysUntil(m.date) === 0)
-      .map(m => ({ label: m.title, emoji: '📅' })),
+      .map(m => m.title),
     ...memories.filter(m => m.type === 'goal' && m.status === 'active' && m.date && getDaysUntil(m.date) === 0)
-      .map(m => ({ label: m.title, emoji: '🎯' })),
+      .map(m => m.title),
     ...memories.filter(m => m.type === 'person' && m.person_birthday && getDaysUntil(m.person_birthday.replace(/^\d{4}/, new Date().getFullYear())) === 0)
-      .map(m => ({ label: `${m.title}'s Birthday`, emoji: '🎂' })),
+      .map(m => `${m.title}'s Birthday`),
     ...memories.filter(m => m.type === 'person' && m.person_anniversary && getDaysUntil(m.person_anniversary.replace(/^\d{4}/, new Date().getFullYear())) === 0)
-      .map(m => ({ label: `${m.title}'s Anniversary`, emoji: '💍' })),
+      .map(m => `${m.title}'s Anniversary`),
     ...upcomingCalendar.filter(e => e.daysUntil === 0)
-      .map(e => ({ label: e.title || e.summary, emoji: '📆' })),
+      .map(e => e.title || e.summary),
   ];
 
   const sections = [
@@ -292,19 +292,17 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Today's Summary */}
-      <div className="px-4 pt-5 pb-2">
-        <div className="bg-white rounded-xl border border-gray-100 shadow-xs px-4 py-3">
-          <div className="flex items-center gap-2 mb-2">
-            <h2 className="text-sm font-bold text-gray-900">Today's Summary</h2>
-            {todayItems.length > 0 && <span className="text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">{todayItems.length}</span>}
-          </div>
+      <div className="px-4 pt-5 pb-3">
+        <div className="bg-gradient-to-r from-emerald-50 to-white rounded-xl border border-emerald-100 shadow-xs px-4 py-3 border-l-4 border-l-emerald-400">
+          <h2 className="text-sm font-bold text-gray-900 mb-3">Today's Summary</h2>
           {todayItems.length === 0 ? (
-            <p className="text-xs text-gray-400">Nothing special today — enjoy the calm! 🌿</p>
+            <p className="text-xs text-gray-400">Nothing special today — enjoy the calm!</p>
           ) : (
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               {todayItems.map((item, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <span className="text-xs text-gray-700 font-medium">{item.label}</span>
+                <div key={i} className="flex items-center gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
+                  <span className="text-xs text-gray-700 font-medium">{item}</span>
                 </div>
               ))}
             </div>
