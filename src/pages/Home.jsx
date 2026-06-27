@@ -319,7 +319,7 @@ export default function Home() {
           <button
             key={s.id}
             onClick={() => setModal(s.id)}
-            className="w-full bg-white rounded-2xl border border-gray-100 shadow-sm text-left hover:shadow-md transition-shadow"
+            className="w-full bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200 shadow-sm text-left hover:shadow-md transition-shadow"
           >
             {/* Section header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
