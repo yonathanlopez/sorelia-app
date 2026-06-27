@@ -250,15 +250,15 @@ export default function Home() {
 
   const todayItems = [
     ...memories.filter(m => m.type === 'important_date' && m.date && getDaysUntil(m.date) === 0)
-      .map(m => m.title),
+      .map(m => ({ title: m.title, source: 'recurring' })),
     ...memories.filter(m => m.type === 'goal' && m.status === 'active' && m.date && getDaysUntil(m.date) === 0)
-      .map(m => m.title),
+      .map(m => ({ title: m.title, source: 'reminders' })),
     ...memories.filter(m => m.type === 'person' && m.person_birthday && getDaysUntil(m.person_birthday.replace(/^\d{4}/, new Date().getFullYear())) === 0)
-      .map(m => `${m.title}'s Birthday`),
+      .map(m => ({ title: `${m.title}'s Birthday`, source: 'recurring' })),
     ...memories.filter(m => m.type === 'person' && m.person_anniversary && getDaysUntil(m.person_anniversary.replace(/^\d{4}/, new Date().getFullYear())) === 0)
-      .map(m => `${m.title}'s Anniversary`),
+      .map(m => ({ title: `${m.title}'s Anniversary`, source: 'recurring' })),
     ...upcomingCalendar.filter(e => e.daysUntil === 0)
-      .map(e => e.title || e.summary),
+      .map(e => ({ title: e.title || e.summary, source: 'calendar' })),
   ];
 
   const sections = [
