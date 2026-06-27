@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Bell, Calendar, Clock, RefreshCw, ChevronRight, X, Target, User } from 'lucide-react';
+import { Calendar, Clock, RefreshCw, ChevronRight, X, Target, User, Bell } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import BottomNav from '@/components/BottomNav';
