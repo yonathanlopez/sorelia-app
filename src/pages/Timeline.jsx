@@ -54,6 +54,7 @@ export default function Timeline() {
   const [building, setBuilding] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(null); // { year, monthIndex }
   const scrubberRef = useRef(null);
+  const activeMonthRef = useRef(null);
 
   useEffect(() => { loadTimeline(); }, []);
 
@@ -73,9 +74,10 @@ export default function Timeline() {
 
     setEvents(withMeta);
 
-    // Auto-select first month
+    // Auto-select last (most recent) month
     if (withMeta.length > 0) {
-      setSelectedMonth({ year: withMeta[0].year, monthIndex: withMeta[0].monthIndex });
+      const last = withMeta[withMeta.length - 1];
+      setSelectedMonth({ year: last.year, monthIndex: last.monthIndex });
     }
     setLoading(false);
   }
@@ -161,9 +163,18 @@ Only events with a clear year. Max 30. Sort oldest first.`,
   const selectedKey = selectedMonth ? `${selectedMonth.year}-${selectedMonth.monthIndex ?? 'u'}` : null;
   const selectedIdx = monthSlots.findIndex(s => `${s.year}-${s.monthIndex ?? 'u'}` === selectedKey);
 
+  // Scroll active month into view whenever it changes
+  useEffect(() => {
+    if (activeMonthRef.current) {
+      activeMonthRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  }, [selectedKey]);
+
   function scrollScrubber(dir) {
-    if (!scrubberRef.current) return;
-    scrubberRef.current.scrollBy({ left: dir * 120, behavior: 'smooth' });
+    const newIdx = selectedIdx + dir;
+    if (newIdx >= 0 && newIdx < monthSlots.length) {
+      setSelectedMonth(monthSlots[newIdx]);
+    }
   }
 
   const visibleEvents = selectedMonth
@@ -232,6 +243,7 @@ Only events with a clear year. Max 30. Sort oldest first.`,
                 return (
                   <button
                     key={key}
+                    ref={isActive ? activeMonthRef : null}
                     onClick={() => setSelectedMonth(slot)}
                     className={`flex-shrink-0 flex flex-col items-center px-3 py-1.5 rounded-xl transition-colors ${
                       isActive
