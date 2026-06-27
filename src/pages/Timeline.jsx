@@ -124,10 +124,29 @@ Only include events with a clear year. Max 30 events. Sort oldest first.`,
     setBuilding(false);
   }
 
-  // Group events by year
-  const grouped = events.reduce((acc, ev) => {
-    if (!acc[ev.year]) acc[ev.year] = [];
-    acc[ev.year].push(ev);
+  // Group events by year then month
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const monthOrder = { jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11,
+    january:0,february:1,march:2,april:3,june:5,july:6,august:7,september:8,october:9,november:10,december:11 };
+
+  function getMonthIndex(dateStr) {
+    if (!dateStr) return null;
+    const lower = dateStr.toLowerCase();
+    for (const [name, idx] of Object.entries(monthOrder)) {
+      if (lower.includes(name)) return idx;
+    }
+    const numMatch = dateStr.match(/\b(\d{1,2})[\/\-](\d{4})\b/);
+    if (numMatch) return parseInt(numMatch[1]) - 1;
+    return null;
+  }
+
+  const withMonth = events.map(ev => ({ ...ev, monthIndex: getMonthIndex(ev.date) }));
+
+  const grouped = withMonth.reduce((acc, ev) => {
+    if (!acc[ev.year]) acc[ev.year] = {};
+    const key = ev.monthIndex !== null ? ev.monthIndex : 'unknown';
+    if (!acc[ev.year][key]) acc[ev.year][key] = [];
+    acc[ev.year][key].push(ev);
     return acc;
   }, {});
   const years = Object.keys(grouped).sort((a, b) => a - b);
@@ -180,47 +199,62 @@ Only include events with a clear year. Max 30 events. Sort oldest first.`,
             <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-violet-300 via-violet-200 to-transparent" />
 
             <div className="space-y-0">
-              {years.map((year, yi) => (
-                <div key={year}>
-                  {/* Year marker */}
-                  <div className="relative flex items-center gap-4 mb-4 mt-2">
-                    <div className="w-12 h-12 rounded-full bg-violet-600 flex items-center justify-center z-10 shadow-lg flex-shrink-0">
-                      <span className="text-white text-[10px] font-bold">{year}</span>
+              {years.map((year) => {
+                const monthKeys = Object.keys(grouped[year]).sort((a, b) => {
+                  if (a === 'unknown') return 1;
+                  if (b === 'unknown') return -1;
+                  return a - b;
+                });
+                return (
+                  <div key={year}>
+                    {/* Year marker */}
+                    <div className="relative flex items-center gap-4 mb-4 mt-2">
+                      <div className="w-12 h-12 rounded-full bg-violet-600 flex items-center justify-center z-10 shadow-lg flex-shrink-0">
+                        <span className="text-white text-[10px] font-bold">{year}</span>
+                      </div>
+                      <div className="h-px flex-1 bg-violet-100" />
                     </div>
-                    <div className="h-px flex-1 bg-violet-100" />
-                  </div>
 
-                  {/* Events in this year */}
-                  <div className="pl-16 space-y-3 mb-6">
-                    {grouped[year].map((ev, i) => (
-                      <div key={ev.id || i} className="relative">
-                        {/* Connector dot */}
-                        <div className={`absolute -left-[2.15rem] top-3.5 w-3 h-3 rounded-full border-2 border-white shadow-sm ${dotColor[ev.type] || 'bg-violet-400'}`} />
-                        {/* Card */}
-                        <div className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-gray-100">
-                          <div className="flex items-start gap-2">
-                            <span className="text-lg leading-none mt-0.5">{typeEmoji[ev.type] || '📌'}</span>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-semibold text-gray-900 leading-snug">{ev.title}</p>
-                              {ev.description && (
-                                <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{ev.description}</p>
-                              )}
-                              <div className="flex items-center gap-2 mt-1.5">
-                                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${typeColor[ev.type] || 'bg-gray-100 text-gray-500 border-gray-200'}`}>
-                                  {ev.type?.replace('_', ' ')}
-                                </span>
-                                {ev.date && ev.date !== String(ev.year) && (
-                                  <span className="text-[10px] text-gray-400">{ev.date}</span>
-                                )}
+                    {/* Months */}
+                    <div className="pl-16 mb-6 space-y-4">
+                      {monthKeys.map((mKey) => (
+                        <div key={mKey}>
+                          {/* Month label */}
+                          <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+                            {mKey === 'unknown' ? 'Unknown month' : MONTHS[parseInt(mKey)]}
+                          </p>
+                          <div className="space-y-3">
+                            {grouped[year][mKey].map((ev, i) => (
+                              <div key={ev.id || i} className="relative">
+                                <div className={`absolute -left-[2.15rem] top-3.5 w-3 h-3 rounded-full border-2 border-white shadow-sm ${dotColor[ev.type] || 'bg-violet-400'}`} />
+                                <div className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-gray-100">
+                                  <div className="flex items-start gap-2">
+                                    <span className="text-lg leading-none mt-0.5">{typeEmoji[ev.type] || '📌'}</span>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-sm font-semibold text-gray-900 leading-snug">{ev.title}</p>
+                                      {ev.description && (
+                                        <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{ev.description}</p>
+                                      )}
+                                      <div className="flex items-center gap-2 mt-1.5">
+                                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${typeColor[ev.type] || 'bg-gray-100 text-gray-500 border-gray-200'}`}>
+                                          {ev.type?.replace('_', ' ')}
+                                        </span>
+                                        {ev.date && ev.date !== String(ev.year) && (
+                                          <span className="text-[10px] text-gray-400">{ev.date}</span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
+                            ))}
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
 
               {/* Road end marker */}
               <div className="relative flex items-center gap-4 pl-1">
