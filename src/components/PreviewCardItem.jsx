@@ -84,7 +84,10 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
         </div>
         {item.onDone && (
           <button
-            onClick={item.onDone}
+            onClick={(e) => {
+              e.stopPropagation();
+              item.onDone();
+            }}
             disabled={isCompleted}
             className={`w-5 h-5 flex items-center justify-center flex-shrink-0 rounded-full transition-colors active:scale-90 ${isCompleted ? 'bg-emerald-500' : 'border border-gray-300 hover:border-emerald-500'}`}
             title="Mark done"
