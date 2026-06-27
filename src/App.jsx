@@ -15,10 +15,9 @@ import { Navigate } from 'react-router-dom';
 import Home from '@/pages/Home.jsx';
 import Chat from '@/pages/Chat';
 import Memories from '@/pages/Memories.jsx';
-import Profile from '@/pages/Profile.jsx';
+import Settings from '@/pages/Settings.jsx';
 import Developer from '@/pages/Developer';
 import Timeline from '@/pages/Timeline';
-import CalendarPage from '@/pages/CalendarPage';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -54,10 +53,9 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<Home />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/memories" element={<Memories />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="/developer" element={<Developer />} />
         <Route path="/timeline" element={<Timeline />} />
-        <Route path="/calendar" element={<CalendarPage />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

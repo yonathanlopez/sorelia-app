@@ -183,13 +183,13 @@ Only events with a clear year. Max 30. Sort oldest first.`,
     : events;
 
   return (
-    <div className="min-h-screen bg-[#F7F7FB] flex flex-col pb-20">
+    <div className="min-h-screen bg-[#FAFAFA] flex flex-col pb-24">
       {/* Header */}
-      <div className="bg-white px-5 pt-12 pb-4 border-b border-gray-100">
+      <div className="bg-white px-5 pt-14 pb-4 border-b border-gray-100">
         <div className="flex items-center justify-between mb-1">
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Your memory map</h1>
-            <p className="text-xs text-gray-400 mt-0.5">A timeline of moments Sorelia has remembered.</p>
+            <h1 className="text-[22px] font-bold text-gray-900">Timeline</h1>
+            <p className="text-[12px] text-gray-400 mt-0.5">Your life, moment by moment.</p>
           </div>
           <div className="flex items-center gap-2">
             <button
