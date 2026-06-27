@@ -1,16 +1,21 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, MessageCircle, Brain, User } from 'lucide-react';
+import { Home, MessageCircle, Brain, User, Terminal } from 'lucide-react';
+import { useAuth } from '@/lib/AuthContext';
 
-const tabs = [
+const baseTabs = [
   { path: '/', label: 'Home', icon: Home },
   { path: '/chat', label: 'Chat', icon: MessageCircle },
   { path: '/memories', label: 'Memories', icon: Brain },
   { path: '/profile', label: 'Profile', icon: User },
 ];
 
+const devTab = { path: '/developer', label: 'Dev', icon: Terminal };
+
 export default function BottomNav() {
   const location = useLocation();
+  const { user } = useAuth();
+  const tabs = user?.role === 'admin' ? [...baseTabs, devTab] : baseTabs;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-50 pb-[env(safe-area-inset-bottom)]">
