@@ -57,7 +57,8 @@ export default function Home() {
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
-  const [modal, setModal] = useState(null); // 'reminders' | 'calendar' | 'coming'
+  const [modal, setModal] = useState(null); // 'reminders' | 'calendar' | 'coming' | 'today'
+  const [showAllToday, setShowAllToday] = useState(false);
 
   useEffect(() => { load(); }, []);
 
@@ -231,7 +232,7 @@ export default function Home() {
   const activeModal = sections.find(s => s.id === modal);
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-gradient-to-br from-violet-600 via-violet-500 to-purple-600 px-5 pt-14 pb-5 flex-shrink-0">
         <div className="flex items-center justify-between">
@@ -248,35 +249,49 @@ export default function Home() {
       </div>
 
       {/* Today's Summary */}
-      <div className="px-4 pt-4 flex-shrink-0">
+      <div className="px-4 pt-4">
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-3">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-base">✨</span>
-            <h2 className="text-sm font-bold text-gray-900">Today's Summary</h2>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <span className="text-base">✨</span>
+              <h2 className="text-sm font-bold text-gray-900">Today's Summary</h2>
+              {todayItems.length > 0 && <span className="text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">{todayItems.length}</span>}
+            </div>
+            {todayItems.length > 4 && (
+              <button onClick={() => setShowAllToday(!showAllToday)} className="text-xs text-violet-500 font-medium flex items-center gap-0.5">
+                {showAllToday ? 'Show less' : `See all`}
+                <ChevronRight className={`w-3 h-3 transition-transform ${showAllToday ? 'rotate-90' : ''}`} />
+              </button>
+            )}
           </div>
           {todayItems.length === 0 ? (
             <p className="text-xs text-gray-400">Nothing special today — enjoy the calm! 🌿</p>
           ) : (
             <div className="space-y-1.5">
-              {todayItems.map((item, i) => (
+              {(showAllToday ? todayItems : todayItems.slice(0, 4)).map((item, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <span className="text-sm">{item.emoji}</span>
                   <span className="text-xs text-gray-700 font-medium">{item.label}</span>
                 </div>
               ))}
+              {!showAllToday && todayItems.length > 4 && (
+                <button onClick={() => setShowAllToday(true)} className="text-[10px] text-violet-400 font-medium pt-0.5">
+                  +{todayItems.length - 4} more
+                </button>
+              )}
             </div>
           )}
         </div>
       </div>
 
-      {/* Sections — evenly distributed */}
-      <div className="flex-1 flex flex-col gap-3 px-4 py-4 pb-24 overflow-hidden">
+      {/* Sections */}
+      <div className="flex flex-col gap-3 px-4 py-4 pb-28">
         {sections.map(s => (
-          <div key={s.id} className="flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col overflow-hidden min-h-0">
+          <div key={s.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm">
             {/* Section header */}
             <button
               onClick={() => setModal(s.id)}
-              className="flex items-center justify-between px-4 py-3 border-b border-gray-50 flex-shrink-0"
+              className="w-full flex items-center justify-between px-4 py-3 border-b border-gray-50"
             >
               <div className="flex items-center gap-2">
                 <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${s.iconColor}`}>
@@ -292,14 +307,12 @@ export default function Home() {
             </button>
 
             {/* Preview items */}
-            <div className="flex-1 overflow-hidden px-3 py-1 space-y-0.5">
+            <div className="px-3 py-2 space-y-0.5">
               {s.preview.length === 0 ? (
-                <div className="h-full flex items-center justify-center">
-                  <p className="text-xs text-gray-400">{s.emptyText}</p>
-                </div>
+                <p className="text-xs text-gray-400 text-center py-3">{s.emptyText}</p>
               ) : (
                 s.preview.map((item, i) => (
-                  <div key={i} className="flex items-center gap-2 px-1 py-1">
+                  <div key={i} className="flex items-center gap-2 px-1 py-1.5">
                     <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${s.iconColor}`}>
                       <s.icon className="w-3 h-3" />
                     </div>
@@ -311,7 +324,7 @@ export default function Home() {
                 ))
               )}
               {s.items.length > 4 && (
-                <button onClick={() => setModal(s.id)} className="w-full text-center text-[10px] text-violet-400 font-medium pt-0.5">
+                <button onClick={() => setModal(s.id)} className="w-full text-center text-[10px] text-violet-400 font-medium py-1">
                   +{s.items.length - 4} more
                 </button>
               )}
