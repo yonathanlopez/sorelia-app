@@ -295,7 +295,6 @@ export default function Home() {
       <div className="px-4 pt-4">
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-3">
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-base">✨</span>
             <h2 className="text-sm font-bold text-gray-900">Today's Summary</h2>
             {todayItems.length > 0 && <span className="text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">{todayItems.length}</span>}
           </div>
