@@ -252,13 +252,21 @@ export default function Home() {
     ...memories.filter(m => m.type === 'important_date' && m.date && getDaysUntil(m.date) === 0)
       .map(m => ({ title: m.title, source: 'recurring' })),
     ...memories.filter(m => m.type === 'goal' && m.status === 'active' && m.date && getDaysUntil(m.date) === 0)
-      .map(m => ({ title: m.title, source: 'reminders' })),
+      .map(m => ({ 
+        title: m.title, 
+        source: 'reminders',
+        time: m.date && m.date.includes('T') ? new Date(m.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
+      })),
     ...memories.filter(m => m.type === 'person' && m.person_birthday && getDaysUntil(m.person_birthday.replace(/^\d{4}/, new Date().getFullYear())) === 0)
       .map(m => ({ title: `${m.title}'s Birthday`, source: 'recurring' })),
     ...memories.filter(m => m.type === 'person' && m.person_anniversary && getDaysUntil(m.person_anniversary.replace(/^\d{4}/, new Date().getFullYear())) === 0)
       .map(m => ({ title: `${m.title}'s Anniversary`, source: 'recurring' })),
     ...upcomingCalendar.filter(e => e.daysUntil === 0)
-      .map(e => ({ title: e.title || e.summary, source: 'calendar' })),
+      .map(e => ({ 
+        title: e.title || e.summary, 
+        source: 'calendar',
+        time: (e.start || e.date).includes('T') ? new Date(e.start || e.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
+      })),
   ];
 
   const sections = [

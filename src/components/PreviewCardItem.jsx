@@ -76,9 +76,12 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil }
     return (
       <div className="flex items-center gap-2.5 px-1 py-2">
         <Icon className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
-        <p className="text-xs font-semibold text-gray-800 flex-1">
-          {item.title || item.summary}
-        </p>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-semibold text-gray-800">
+            {item.title || item.summary}
+          </p>
+          {item.time && <span className="text-[9px] text-gray-400">{item.time}</span>}
+        </div>
       </div>
     );
   }
