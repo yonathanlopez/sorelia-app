@@ -312,26 +312,24 @@ export default function Home() {
       </div>
 
       {/* Sections */}
-      <div className="flex flex-col gap-3 px-4 py-4 pb-28">
+      <div className="flex flex-col gap-2 px-4 py-3 pb-28">
         {sections.map(s => (
           <button
             key={s.id}
             onClick={() => setModal(s.id)}
-            className="w-full bg-white rounded-2xl border border-gray-100 shadow-sm text-left hover:shadow-md transition-shadow"
+            className="w-full bg-white rounded-xl border border-gray-100 shadow-xs text-left hover:shadow-sm transition-all"
           >
             {/* Section header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
-              <div className="flex items-center gap-2">
-                <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${s.iconColor}`}>
-                  <s.icon className="w-3.5 h-3.5" />
-                </div>
-                <span className="text-sm font-bold text-gray-900">{s.title}</span>
-                <span className="text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">{s.items.length}</span>
+            <div className="flex items-center gap-2 px-3 py-2 border-b border-gray-50">
+              <div className={`w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 ${s.iconColor}`}>
+                <s.icon className="w-3 h-3" />
               </div>
+              <span className="text-sm font-semibold text-gray-900 flex-1">{s.title}</span>
+              <span className="text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full flex-shrink-0">{s.items.length}</span>
             </div>
 
             {/* Preview items */}
-            <div className="px-3 py-2.5 space-y-0.5">
+            <div className="px-3 py-2 space-y-0">
               {s.preview.length === 0 ? (
                 <div className="text-center py-3">
                   <button
