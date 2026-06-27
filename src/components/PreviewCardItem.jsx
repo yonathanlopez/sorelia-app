@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bell, Calendar, Clock, CheckCircle2 } from 'lucide-react';
+import { Bell, Calendar, Clock, Check } from 'lucide-react';
 
 function DaysBadge({ days }) {
   if (days === null) return null;
@@ -86,10 +86,10 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
           <button
             onClick={item.onDone}
             disabled={isCompleted}
-            className="w-5 h-5 flex items-center justify-center flex-shrink-0 hover:bg-gray-100 rounded-full transition-colors active:scale-90 disabled:hover:bg-transparent"
+            className={`w-5 h-5 flex items-center justify-center flex-shrink-0 rounded-full transition-colors active:scale-90 ${isCompleted ? 'bg-emerald-500' : 'border border-gray-300 hover:border-emerald-500'}`}
             title="Mark done"
           >
-            <CheckCircle2 className={`w-5 h-5 transition-colors ${isCompleted ? 'text-emerald-500 fill-emerald-500' : 'text-gray-300 hover:text-emerald-500'}`} />
+            {isCompleted && <Check className="w-3 h-3 text-white" />}
           </button>
         )}
       </div>
