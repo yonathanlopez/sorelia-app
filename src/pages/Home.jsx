@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
-import { Calendar, Target, Brain, MessageCircle, ChevronRight, Sparkles, Bell, User, Heart, Star, Mail, Clock, RefreshCw } from 'lucide-react';
+import { Calendar, Target, Brain, MessageCircle, ChevronRight, Sparkles, Bell, User, Heart, Star, Mail, Clock, RefreshCw, Flame } from 'lucide-react';
 import BottomNav from '@/components/BottomNav';
 import GmailScannerModal from '@/components/sorelia/GmailScannerModal';
 
@@ -84,6 +84,27 @@ export default function Home() {
   const firstName = user?.full_name?.split(' ')[0] || 'there';
   const categoryCounts = Object.fromEntries(categories.map(c => [c.type, memories.filter(m => m.type === c.type).length]));
 
+  // Calculate streak
+  let streak = 0;
+  if (memories.length > 0) {
+    const sortedByDate = [...memories].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+    const uniqueDates = new Set(sortedByDate.map(m => m.created_date?.split('T')[0]));
+    const dateArray = Array.from(uniqueDates).sort().reverse();
+    
+    let currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    
+    for (const dateStr of dateArray) {
+      const memoryDate = new Date(dateStr + 'T00:00:00');
+      const daysDiff = Math.floor((currentDate - memoryDate) / (1000 * 60 * 60 * 24));
+      if (daysDiff === streak) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+  }
+
   // Calculate upcoming events (birthdays, important dates, goals)
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -141,8 +162,21 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50 pb-24">
       {/* Header */}
       <div className="bg-gradient-to-br from-violet-600 via-violet-500 to-purple-600 px-6 pt-14 pb-10">
-        <p className="text-violet-200 text-sm font-medium">{getGreeting()},</p>
-        <h1 className="text-white text-3xl font-bold mt-0.5">{firstName}</h1>
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <p className="text-violet-200 text-sm font-medium">{getGreeting()},</p>
+            <h1 className="text-white text-3xl font-bold mt-0.5">{firstName}</h1>
+          </div>
+          {streak > 0 && (
+            <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-3 flex items-center gap-2 border border-white/30">
+              <Flame className="w-5 h-5 text-orange-300" />
+              <div className="text-right">
+                <p className="text-white font-bold text-lg">{streak}</p>
+                <p className="text-white/80 text-[10px] font-semibold">day streak</p>
+              </div>
+            </div>
+          )}
+        </div>
         <p className="text-violet-200 text-sm mt-1">Sorelia has {memories.length} memories about you</p>
 
         {/* CTA */}
