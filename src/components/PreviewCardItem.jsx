@@ -15,9 +15,9 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
     const dateStr = rawDate.split('T')[0];
     const d = new Date(dateStr + 'T00:00:00');
     const hasTime = rawDate.includes('T');
-    const timeStr = hasTime
-      ? new Date(rawDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-      : null;
+    const timeStr = hasTime ?
+    new Date(rawDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) :
+    null;
     const daysUntil = getDaysUntil(dateStr);
 
     let dateDisplay = null;
@@ -33,19 +33,19 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
       <div className="flex items-center gap-2.5 px-1 py-2">
         <div className="w-0.5 h-7 rounded-full bg-violet-100 flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-gray-800 truncate">{item.title || item.summary}</p>
+          <p className="font-semibold text-gray-800 truncate text-xs">{item.title || item.summary}</p>
           {timeStr && <span className="text-xs text-gray-400 font-medium">{timeStr}</span>}
         </div>
         {dateDisplay}
-      </div>
-    );
+      </div>);
+
   }
 
   if (type === 'reminder' || type === 'reminders') {
     const hasTime = item.date && item.date.includes('T');
-    const timeStr = hasTime
-      ? new Date(item.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-      : null;
+    const timeStr = hasTime ?
+    new Date(item.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) :
+    null;
     const daysUntil = getDaysUntil(item.date?.split('T')[0]);
 
     let dateDisplay = null;
@@ -61,12 +61,12 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
       <div className="flex items-center gap-2.5 px-1 py-2">
         <div className="w-0.5 h-7 rounded-full bg-amber-100 flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-gray-800 truncate">{item.title}</p>
-          {timeStr && <span className="text-xs text-gray-400 font-medium">{timeStr}</span>}
+          <p className="font-semibold text-gray-800 truncate text-xs">{item.title}</p>
+          {timeStr && <span className="text-xs text-gray-400 font-medium text-left">{timeStr}</span>}
         </div>
         {dateDisplay}
-      </div>
-    );
+      </div>);
+
   }
 
   // Today's summary type
@@ -77,26 +77,26 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
       <div className={`flex items-center gap-2.5 px-1 py-2 ${isCompleted ? 'opacity-50' : ''}`}>
         <Icon className={`w-4 h-4 flex-shrink-0 ${isCompleted ? 'text-gray-300' : 'text-gray-400'}`} />
         <div className="flex-1 min-w-0">
-          <p className={`text-sm font-semibold ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
+          <p className={`font-semibold text-xs ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
             {item.title || item.summary}
           </p>
           {item.time && <span className={`text-xs ${isCompleted ? 'text-gray-300' : 'text-gray-400'}`}>{item.time}</span>}
         </div>
-        {item.onDone && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              item.onDone();
-            }}
-            disabled={isCompleted}
-            className={`w-5 h-5 flex items-center justify-center flex-shrink-0 rounded-full transition-colors active:scale-90 ${isCompleted ? 'bg-emerald-500' : 'border border-gray-300 hover:border-emerald-500'}`}
-            title="Mark done"
-          >
+        {item.onDone &&
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            item.onDone();
+          }}
+          disabled={isCompleted}
+          className={`w-5 h-5 flex items-center justify-center flex-shrink-0 rounded-full transition-colors active:scale-90 ${isCompleted ? 'bg-emerald-500' : 'border border-gray-300 hover:border-emerald-500'}`}
+          title="Mark done">
+          
             {isCompleted && <Check className="w-3 h-3 text-white" />}
           </button>
-        )}
-      </div>
-    );
+        }
+      </div>);
+
   }
 
   return (
@@ -106,10 +106,10 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
         {item.title || item.summary}
       </p>
       <div className="flex-shrink-0">
-        {type === 'coming' ? (
-          <DaysBadge days={item.daysUntil ?? (item.date ? getDaysUntil(item.date) : null)} />
-        ) : null}
+        {type === 'coming' ?
+        <DaysBadge days={item.daysUntil ?? (item.date ? getDaysUntil(item.date) : null)} /> :
+        null}
       </div>
-    </div>
-  );
+    </div>);
+
 }
