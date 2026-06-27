@@ -13,6 +13,7 @@ const typeColors = {
   person: 'bg-blue-500',
   preference: 'bg-pink-500',
   life_event: 'bg-amber-500',
+  gcal: 'bg-sky-500',
 };
 
 function getDaysInMonth(year, month) {
@@ -51,23 +52,36 @@ export default function CalendarPage() {
 
   async function loadEvents() {
     setLoading(true);
-    const memories = await base44.entities.Memory.list('-date', 500);
+    const [memories, calRes] = await Promise.all([
+      base44.entities.Memory.list('-date', 500),
+      base44.functions.invoke('calendarScanner', {}).catch(() => null),
+    ]);
     
     // Add people's birthdays as events
     const people = memories.filter(m => m.type === 'person' && m.person_birthday);
     const birthdayEvents = people.map(p => ({
       id: `${p.id}-birthday`,
       type: 'person',
-      title: `${p.title}'s Birthday`,
+      title: `🎂 ${p.title}'s Birthday`,
       description: p.description,
-      date: p.person_birthday, // YYYY-MM-DD format
+      date: p.person_birthday,
       original_id: p.id,
     }));
+
+    // Google Calendar events
+    const gcalEvents = (calRes?.data?.events || []).map(e => ({
+      id: `gcal-${e.id || Math.random()}`,
+      type: 'gcal',
+      title: e.summary || e.title || 'Untitled',
+      description: e.description || e.location || null,
+      date: (e.start || e.date || '').split('T')[0],
+      time: (e.start || '').includes('T') ? e.start : null,
+    }));
     
-    // Combine dated memories + birthdays
     const allEvents = [
       ...memories.filter(m => m.date),
       ...birthdayEvents,
+      ...gcalEvents,
     ];
     
     setEvents(allEvents);
@@ -77,7 +91,6 @@ export default function CalendarPage() {
   async function syncCalendar() {
     setSyncing(true);
     try {
-      await base44.functions.invoke('calendarScanner', {});
       await loadEvents();
     } catch {}
     setSyncing(false);
@@ -101,9 +114,9 @@ export default function CalendarPage() {
     const d = parseEventDate(ev.date);
     if (!d) continue;
     
-    // For birthdays (type='person'), match any year
+    // For birthdays (type='person'), match any year by month+day only
     if (ev.type === 'person' && ev.original_id) {
-      if (d.getMonth() === currentMonth && d.getDate() === d.getDate()) {
+      if (d.getMonth() === currentMonth) {
         const day = d.getDate();
         if (!eventsByDay[day]) eventsByDay[day] = [];
         eventsByDay[day].push(ev);
@@ -235,9 +248,11 @@ export default function CalendarPage() {
 function EventCard({ event }) {
   const dot = typeColors[event.type] || 'bg-violet-500';
   const d = parseEventDate(event.date);
-  const timeStr = d && !event.date?.match(/^\d{4}-\d{2}-\d{2}$/)
-    ? d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-    : null;
+  const timeStr = event.time
+    ? new Date(event.time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+    : (d && !event.date?.match(/^\d{4}-\d{2}-\d{2}$/)
+      ? d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+      : null);
 
   return (
     <div className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-gray-100 flex items-start gap-3">
