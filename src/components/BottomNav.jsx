@@ -29,7 +29,7 @@ export default function BottomNav() {
     <>
       <SoreliaFAB />
       <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-100 z-50 pb-[env(safe-area-inset-bottom)]">
-        <div className="flex items-center justify-around max-w-lg mx-auto h-16">
+        <div className="flex items-center justify-around w-full h-16">
           {leftTabs.map(({ path, label, icon: Icon }) => (
             <Link key={path} to={path} className={tabClass(path)}>
               <Icon className={`w-5 h-5 ${iconClass(path)}`} />
