@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, User, Target, Pencil, Trash2 } from 'lucide-react';
+import { Calendar, User, Target, Pencil, Trash2, Check } from 'lucide-react';
 
 const typeConfig = {
   person: { icon: User, color: 'bg-blue-50 text-blue-600', label: 'Person' },
@@ -7,7 +7,7 @@ const typeConfig = {
   important_date: { icon: Calendar, color: 'bg-violet-50 text-violet-600', label: 'Date' },
 };
 
-export default function MemoryCard({ memory, onEdit, onDelete }) {
+export default function MemoryCard({ memory, onEdit, onDelete, onComplete }) {
   const config = typeConfig[memory.type] || typeConfig.person;
   const Icon = config.icon;
 
@@ -24,7 +24,9 @@ export default function MemoryCard({ memory, onEdit, onDelete }) {
               <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{memory.description}</p>
             )}
             {memory.date && (
-              <p className="text-xs text-violet-600 mt-1 font-medium">{memory.date}</p>
+              <p className="text-xs text-violet-600 mt-1 font-medium">
+                {memory.type === 'goal' ? '📅 Due: ' : ''}{memory.date}
+              </p>
             )}
             {memory.type === 'person' && (memory.person_relationship || memory.person_birthday || memory.person_anniversary) && (
               <div className="mt-1.5 space-y-0.5">
@@ -50,8 +52,13 @@ export default function MemoryCard({ memory, onEdit, onDelete }) {
             )}
           </div>
         </div>
-        {(onEdit || onDelete) && (
+        {(onEdit || onDelete || onComplete) && (
           <div className="flex items-center gap-1 ml-2 flex-shrink-0">
+            {onComplete && (
+              <button onClick={() => onComplete(memory.id)} className="p-1.5 text-gray-400 hover:text-emerald-600 rounded-lg hover:bg-emerald-50 transition-colors" title="Mark as complete">
+                <Check className="w-3.5 h-3.5" />
+              </button>
+            )}
             {onEdit && (
               <button onClick={() => onEdit(memory)} className="p-1.5 text-gray-400 hover:text-violet-600 rounded-lg hover:bg-violet-50 transition-colors">
                 <Pencil className="w-3.5 h-3.5" />

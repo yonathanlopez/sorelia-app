@@ -58,21 +58,13 @@ export default function GoalsSection({ memories, onAdd, onEdit, onDelete, onComp
       ) : (
         <div className="space-y-3">
           {filtered.map(m => (
-            <div key={m.id} className="group relative">
-              <MemoryCard
-                memory={m}
-                onEdit={onEdit}
-                onDelete={onDelete}
-              />
-              {filter === 'active' && (
-                <button
-                  onClick={() => onComplete(m.id)}
-                  className="absolute top-3 right-12 opacity-0 group-hover:opacity-100 transition-opacity bg-emerald-600 text-white text-xs px-2 py-1 rounded-full hover:bg-emerald-700"
-                >
-                  Complete
-                </button>
-              )}
-            </div>
+            <MemoryCard
+              key={m.id}
+              memory={m}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              onComplete={filter === 'active' ? onComplete : null}
+            />
           ))}
         </div>
       )}
