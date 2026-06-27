@@ -289,7 +289,7 @@ export default function Home() {
   const userName = user?.full_name?.split(' ')[0] || 'there';
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
 
 
       {/* Today's Summary */}
