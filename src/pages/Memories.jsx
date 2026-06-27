@@ -208,7 +208,6 @@ export default function Memories() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <SoreliaFAB />
       <BottomNav />
     </div>
   );

@@ -161,7 +161,6 @@ export default function Developer() {
         </div>
       </div>
 
-      <SoreliaFAB />
       <BottomNav />
     </div>
   );

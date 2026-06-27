@@ -146,7 +146,6 @@ export default function Profile() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <SoreliaFAB />
       <BottomNav />
     </div>
   );

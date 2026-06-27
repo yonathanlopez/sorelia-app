@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { ChevronLeft, ChevronRight, RefreshCw, Calendar, MapPin, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import BottomNav from '@/components/BottomNav';
 import SoreliaFAB from '@/components/SoreliaFAB';
 
@@ -275,7 +276,8 @@ export default function CalendarPage() {
             {Object.keys(eventsByDay).length === 0 ? (
               <div className="text-center py-10">
                 <Calendar className="w-10 h-10 text-violet-200 mx-auto mb-3" />
-                <p className="text-sm text-gray-400">No events this month. Tap Sync to pull from Google Calendar.</p>
+                <p className="text-sm text-gray-400 mb-2">No events this month.</p>
+                <Link to="/" className="text-sm text-violet-500 font-semibold">Ask Sorelia about your schedule →</Link>
               </div>
             ) : (
               Object.entries(eventsByDay)
@@ -291,7 +293,6 @@ export default function CalendarPage() {
         )}
       </div>
 
-      <SoreliaFAB />
       <BottomNav />
     </div>
   );

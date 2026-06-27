@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Bell, Calendar, Clock, RefreshCw, ChevronRight, X, Target, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
+
 import BottomNav from '@/components/BottomNav';
 import SoreliaFAB from '@/components/SoreliaFAB';
 
@@ -217,7 +218,7 @@ export default function Home() {
       items: reminders,
       preview: reminders.slice(0, 4),
       renderItem: renderReminderItem,
-      emptyText: 'No active reminders',
+      emptyText: 'No active reminders — tell Sorelia to add one!',
     },
     {
       id: 'calendar',
@@ -227,7 +228,7 @@ export default function Home() {
       items: upcomingCalendar,
       preview: upcomingCalendar.slice(0, 4),
       renderItem: renderCalendarItem,
-      emptyText: 'No upcoming calendar events',
+      emptyText: 'No calendar events — ask Sorelia to check your schedule!',
     },
     {
       id: 'coming',
@@ -237,7 +238,7 @@ export default function Home() {
       items: upcomingEvents,
       preview: upcomingEvents.slice(0, 4),
       renderItem: renderComingItem,
-      emptyText: 'No recurring events',
+      emptyText: 'No recurring events — tell Sorelia about birthdays, bills & more!',
     },
   ];
 
@@ -321,7 +322,7 @@ export default function Home() {
             {/* Preview items */}
             <div className="px-3 py-2 space-y-0.5">
               {s.preview.length === 0 ? (
-                <p className="text-xs text-gray-400 text-center py-3">{s.emptyText}</p>
+                <Link to="/" className="block text-xs text-violet-500 font-medium text-center py-3 hover:text-violet-700">{s.emptyText}</Link>
               ) : (
                 s.preview.map((item, i) => (
                   <div key={i} className="flex items-center gap-2 px-1 py-1.5">
@@ -357,7 +358,6 @@ export default function Home() {
         />
       )}
 
-      <SoreliaFAB />
       <BottomNav />
     </div>
   );
