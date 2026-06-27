@@ -335,8 +335,13 @@ export default function Home() {
             <div className="px-3 py-2.5 space-y-0.5">
               {s.preview.length === 0 ? (
                 <div className="text-center py-3">
-                  <p className="text-xs text-violet-500 font-medium mb-2">{s.emptyText}</p>
-                  <div className="grid grid-cols-2 gap-1.5">
+                  <button
+                    onClick={() => navigate('/', { state: { prefill: `Sorelia, ${s.quickChips[0]}` } })}
+                    className="text-xs text-violet-500 font-medium mb-2 hover:text-violet-600 active:scale-95 transition-all"
+                  >
+                    {s.emptyText}
+                  </button>
+                  <div className="grid grid-cols-2 gap-1.5 mt-2">
                     {s.quickChips.slice(0, 2).map(chip => (
                       <button
                         key={chip}
