@@ -52,10 +52,9 @@ export default function CalendarPage() {
 
   async function loadEvents() {
     setLoading(true);
-    const [memories, calRes] = await Promise.all([
-      base44.entities.Memory.list('-date', 500),
-      base44.functions.invoke('calendarScanner', {}).catch(() => null),
-    ]);
+    // Load saved memories instantly
+    const memories = await base44.entities.Memory.list('-date', 500);
+    const calRes = null;
     
     // Add people's birthdays as events
     const people = memories.filter(m => m.type === 'person' && m.person_birthday);
@@ -111,7 +110,31 @@ export default function CalendarPage() {
   async function syncCalendar() {
     setSyncing(true);
     try {
-      await loadEvents();
+      const [memories, calRes] = await Promise.all([
+        base44.entities.Memory.list('-date', 500),
+        base44.functions.invoke('calendarScanner', {}).catch(() => null),
+      ]);
+
+      const people = memories.filter(m => m.type === 'person' && m.person_birthday);
+      const birthdayEvents = people.map(p => ({
+        id: `${p.id}-birthday`, type: 'person',
+        title: `🎂 ${p.title}'s Birthday`, description: p.description,
+        date: p.person_birthday, original_id: p.id,
+      }));
+      const gcalLive = (calRes?.data?.events || []).map(e => ({
+        id: `gcal-${e.id || Math.random()}`, type: 'gcal',
+        title: e.summary || e.title || 'Untitled',
+        description: e.description || e.location || null,
+        date: (e.start || e.date || '').split('T')[0],
+        time: (e.start || '').includes('T') ? e.start : null,
+      }));
+      const liveKeys = new Set(gcalLive.map(e => e.date + '||' + e.title));
+      const gcalSaved = memories
+        .filter(m => m.source === 'google_calendar' && m.date)
+        .map(m => ({ id: m.id, type: 'gcal', title: m.title, description: m.description || null, date: m.date.split('T')[0], time: m.date.includes('T') ? m.date : null }))
+        .filter(e => !liveKeys.has(e.date + '||' + e.title));
+      const otherMemories = memories.filter(m => m.source !== 'google_calendar' && m.type !== 'person' && m.date).map(m => ({ ...m, type: m.type }));
+      setEvents([...otherMemories, ...birthdayEvents, ...gcalLive, ...gcalSaved]);
     } catch {}
     setSyncing(false);
   }
