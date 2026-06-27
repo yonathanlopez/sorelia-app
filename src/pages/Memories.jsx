@@ -6,6 +6,7 @@ import GoalsSection from '@/components/sorelia/GoalsSection';
 import DatesSection from '@/components/sorelia/DatesSection';
 import EditMemoryDialog from '@/components/sorelia/EditMemoryDialog';
 import BottomNav from '@/components/BottomNav';
+import SoreliaFAB from '@/components/SoreliaFAB';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -207,6 +208,7 @@ export default function Memories() {
         </AlertDialogContent>
       </AlertDialog>
 
+      <SoreliaFAB />
       <BottomNav />
     </div>
   );

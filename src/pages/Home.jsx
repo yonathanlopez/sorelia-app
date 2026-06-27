@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Bell, Calendar, Clock, RefreshCw, ChevronRight, X, Target, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import BottomNav from '@/components/BottomNav';
+import SoreliaFAB from '@/components/SoreliaFAB';
 
 const typeColors = {
   important_date: 'bg-violet-100 text-violet-600',
@@ -356,6 +357,7 @@ export default function Home() {
         />
       )}
 
+      <SoreliaFAB />
       <BottomNav />
     </div>
   );

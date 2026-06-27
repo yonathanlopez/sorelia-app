@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
 import BottomNav from '@/components/BottomNav';
+import SoreliaFAB from '@/components/SoreliaFAB';
 import { RefreshCw, Terminal, Calendar, Clock, MapPin, Trash2 } from 'lucide-react';
 
 export default function Developer() {
@@ -160,6 +161,7 @@ export default function Developer() {
         </div>
       </div>
 
+      <SoreliaFAB />
       <BottomNav />
     </div>
   );

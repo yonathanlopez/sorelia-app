@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { ChevronLeft, ChevronRight, RefreshCw, Calendar, MapPin, Clock } from 'lucide-react';
 import BottomNav from '@/components/BottomNav';
+import SoreliaFAB from '@/components/SoreliaFAB';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -290,6 +291,7 @@ export default function CalendarPage() {
         )}
       </div>
 
+      <SoreliaFAB />
       <BottomNav />
     </div>
   );
