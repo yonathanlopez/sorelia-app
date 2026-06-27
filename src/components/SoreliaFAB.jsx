@@ -41,9 +41,8 @@ export default function SoreliaFAB() {
   }, [open, messages]);
 
   useEffect(() => {
-    // Reset messages when page changes
-    setMessages([]);
     setOpen(false);
+    setMessages([]);
   }, [location.pathname]);
 
   async function sendMessage(text) {
