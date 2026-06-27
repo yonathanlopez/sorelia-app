@@ -29,7 +29,20 @@ export default function MemoryCard({ memory, onEdit, onDelete }) {
             {memory.date && (
               <p className="text-xs text-violet-600 mt-1 font-medium">{memory.date}</p>
             )}
-            {memory.people?.length > 0 && (
+            {memory.type === 'person' && (memory.person_relationship || memory.person_birthday || memory.person_anniversary) && (
+              <div className="mt-1.5 space-y-0.5">
+                {memory.person_relationship && (
+                  <p className="text-[11px] text-gray-500">👥 {memory.person_relationship}</p>
+                )}
+                {memory.person_birthday && (
+                  <p className="text-[11px] text-gray-500">🎂 Birthday: {new Date(memory.person_birthday + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</p>
+                )}
+                {memory.person_anniversary && (
+                  <p className="text-[11px] text-gray-500">💍 Anniversary: {new Date(memory.person_anniversary + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</p>
+                )}
+              </div>
+            )}
+            {memory.people?.length > 0 && memory.type !== 'person' && (
               <div className="flex gap-1 mt-1.5 flex-wrap">
                 {memory.people.map((p, i) => (
                   <span key={i} className="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">

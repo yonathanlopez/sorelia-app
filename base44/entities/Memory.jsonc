@@ -30,6 +30,15 @@
     },
     "source": {
       "type": "string"
+    },
+    "person_birthday": {
+      "type": "string"
+    },
+    "person_relationship": {
+      "type": "string"
+    },
+    "person_anniversary": {
+      "type": "string"
     }
   },
   "required": [

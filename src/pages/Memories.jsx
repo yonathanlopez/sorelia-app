@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Calendar, User, Target, Heart, Star, Bell, Brain, ArrowLeft } from 'lucide-react';
+import { Calendar, User, Target, Heart, Star, Bell, Brain, ArrowLeft, Plus } from 'lucide-react';
 import MemoryCard from '@/components/sorelia/MemoryCard';
 import EditMemoryDialog from '@/components/sorelia/EditMemoryDialog';
 import BottomNav from '@/components/BottomNav';
@@ -22,6 +22,7 @@ export default function Memories() {
   const [selectedType, setSelectedType] = useState(null);
   const [editMemory, setEditMemory] = useState(null);
   const [deleteMemory, setDeleteMemory] = useState(null);
+  const [addingNew, setAddingNew] = useState(false);
   const { toast } = useToast();
 
   // Check URL for type filter
@@ -42,15 +43,34 @@ export default function Memories() {
   }
 
   async function handleSave(updated) {
-    await base44.entities.Memory.update(updated.id, {
-      type: updated.type,
-      title: updated.title,
-      description: updated.description,
-      date: updated.date,
-      people: updated.people,
-    });
+    if (updated.id) {
+      await base44.entities.Memory.update(updated.id, {
+        type: updated.type,
+        title: updated.title,
+        description: updated.description,
+        date: updated.date,
+        people: updated.people,
+        person_birthday: updated.person_birthday,
+        person_relationship: updated.person_relationship,
+        person_anniversary: updated.person_anniversary,
+      });
+      toast({ title: 'Memory updated' });
+    } else {
+      await base44.entities.Memory.create({
+        type: updated.type,
+        title: updated.title,
+        description: updated.description,
+        date: updated.date,
+        people: updated.people,
+        person_birthday: updated.person_birthday,
+        person_relationship: updated.person_relationship,
+        person_anniversary: updated.person_anniversary,
+        source: 'manual',
+      });
+      toast({ title: 'Memory saved ✨' });
+    }
     setEditMemory(null);
-    toast({ title: 'Memory updated' });
+    setAddingNew(false);
     loadMemories();
   }
 
@@ -85,7 +105,15 @@ export default function Memories() {
               {selectedCat && <selectedCat.icon className="w-5 h-5 text-violet-600" />}
               <h1 className="font-semibold text-gray-900 text-lg">{selectedCat?.label || 'Memories'}</h1>
             </div>
-            <span className="ml-auto text-sm text-gray-400">{filtered.length}</span>
+            <div className="ml-auto flex items-center gap-2">
+              <span className="text-sm text-gray-400">{filtered.length}</span>
+              <button
+                onClick={() => setAddingNew(true)}
+                className="flex items-center gap-1 bg-violet-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-violet-700 transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" /> Add
+              </button>
+            </div>
           </div>
         ) : (
           <div className="flex items-center gap-3">
@@ -149,6 +177,15 @@ export default function Memories() {
         open={!!editMemory}
         onClose={() => setEditMemory(null)}
         onSave={handleSave}
+      />
+
+      {/* Add new dialog */}
+      <EditMemoryDialog
+        memory={null}
+        open={addingNew}
+        onClose={() => setAddingNew(false)}
+        onSave={handleSave}
+        defaultType={selectedType || 'person'}
       />
 
       {/* Delete confirmation */}
