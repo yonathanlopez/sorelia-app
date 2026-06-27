@@ -304,7 +304,6 @@ export default function Home() {
             <div className="space-y-1.5">
               {todayItems.map((item, i) => (
                 <div key={i} className="flex items-center gap-2">
-                  <span className="text-sm">{item.emoji}</span>
                   <span className="text-xs text-gray-700 font-medium">{item.label}</span>
                 </div>
               ))}
