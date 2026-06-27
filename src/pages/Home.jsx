@@ -325,7 +325,6 @@ export default function Home() {
                 <s.icon className="w-3 h-3" />
               </div>
               <span className="text-sm font-semibold text-gray-900 flex-1">{s.title}</span>
-              <span className="text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full flex-shrink-0">{s.items.length}</span>
             </div>
 
             {/* Preview items */}
