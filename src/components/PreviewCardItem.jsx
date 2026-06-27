@@ -26,7 +26,7 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
     } else if (daysUntil === 1) {
       dateDisplay = <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
     } else {
-      dateDisplay = <div className="w-9 text-center"><p className="text-xs font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p><p className="text-lg font-bold text-violet-600 leading-tight">{d.getDate()}</p></div>;
+      dateDisplay = <div className="w-9 text-center"><p className="text-xs font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p><p className="font-bold text-violet-600 leading-tight text-xs">{d.getDate()}</p></div>;
     }
 
     return (
