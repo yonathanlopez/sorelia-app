@@ -336,7 +336,14 @@ export default function Home() {
               {s.preview.length === 0 ? (
                 <div className="text-center py-3">
                   <button
-                    onClick={() => navigate('/', { state: { prefill: `Sorelia, ${s.quickChips[0]}` } })}
+                    onClick={() => {
+                      const actions = {
+                        reminders: 'Add a reminder for me',
+                        calendar: 'Check my calendar',
+                        coming: 'Remember a birthday for me',
+                      };
+                      navigate('/', { state: { prefill: `Sorelia, ${actions[s.id] || s.quickChips[0]}` } });
+                    }}
                     className="text-xs text-violet-500 font-medium mb-2 hover:text-violet-600 active:scale-95 transition-all"
                   >
                     {s.emptyText}
