@@ -170,14 +170,14 @@ export default function Home() {
       : null;
     const daysUntil = getDaysUntil(dateStr);
     let dateLabel = d.toLocaleDateString('en-US', { weekday: 'short' });
-    let dateNum = d.getDate();
+    let dateColor = 'text-gray-400';
     
     if (daysUntil === 0) {
       dateLabel = 'Today';
-      dateNum = '';
+      dateColor = 'text-emerald-600';
     } else if (daysUntil === 1) {
       dateLabel = 'Tomorrow';
-      dateNum = '';
+      dateColor = 'text-orange-500';
     }
     
     return (
@@ -192,9 +192,8 @@ export default function Home() {
             {ev.location && <span className="text-[11px] text-gray-400 truncate">📍 {ev.location}</span>}
           </div>
         </div>
-        <div className="w-10 flex flex-col items-center flex-shrink-0 pt-0.5">
-          <span className="text-[10px] font-semibold text-gray-400 uppercase">{dateLabel}</span>
-          {dateNum && <span className="text-lg font-bold text-violet-600 leading-tight">{dateNum}</span>}
+        <div className="flex flex-col items-center flex-shrink-0 pt-0.5">
+          <span className={`text-[10px] font-bold uppercase ${dateColor}`}>{dateLabel}</span>
         </div>
       </div>
     );
@@ -356,14 +355,14 @@ export default function Home() {
                         : null;
                       const daysUntil = getDaysUntil(dateStr);
                       let dateLabel = d.toLocaleDateString('en-US', { weekday: 'short' });
-                      let dateNum = d.getDate();
+                      let dateColor = 'text-gray-400';
                       
                       if (daysUntil === 0) {
                         dateLabel = 'Today';
-                        dateNum = '';
+                        dateColor = 'text-emerald-600';
                       } else if (daysUntil === 1) {
                         dateLabel = 'Tomorrow';
-                        dateNum = '';
+                        dateColor = 'text-orange-500';
                       }
                       
                       return (
@@ -373,10 +372,7 @@ export default function Home() {
                             <p className="text-xs font-semibold text-gray-800 truncate">{item.title || item.summary}</p>
                             {timeStr && <span className="text-[10px] text-violet-400 font-medium">{timeStr}</span>}
                           </div>
-                          <div className="w-9 text-center flex-shrink-0">
-                            <p className="text-[9px] font-semibold text-gray-400 uppercase">{dateLabel}</p>
-                            {dateNum && <p className="text-base font-bold text-violet-600 leading-tight">{dateNum}</p>}
-                          </div>
+                          <p className={`text-[9px] font-bold uppercase ${dateColor}`}>{dateLabel}</p>
                         </div>
                       );
                     })
