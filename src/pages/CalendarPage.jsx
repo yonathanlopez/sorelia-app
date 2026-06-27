@@ -224,7 +224,7 @@ export default function CalendarPage() {
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowCalendarPicker(false)} />
                   <div className="absolute right-0 top-10 z-50 bg-white rounded-2xl shadow-xl border border-gray-100 min-w-[220px] py-2 overflow-hidden">
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-4 py-2">Calendars</p>
+                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest px-4 py-2">Calendars</p>
                     {/* All option */}
                     <button
                       onClick={() => toggleCalendar('all')}
@@ -371,7 +371,7 @@ function EventCard({ event, calendarColorMap = {} }) {
           </p>
         )}
         {event.calendarName && (
-          <p className="text-[10px] text-gray-400 mt-0.5">{event.calendarName}</p>
+          <p className="text-[9px] text-gray-400 mt-0.5">{event.calendarName}</p>
         )}
         {event.description && (
           <p className="text-xs text-gray-500 mt-1 leading-relaxed line-clamp-2">{event.description}</p>
