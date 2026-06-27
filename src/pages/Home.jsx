@@ -291,23 +291,23 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <div className="bg-gradient-to-br from-violet-600/95 via-violet-500/95 to-purple-600/95 px-5 pt-14 pb-8 flex-shrink-0 backdrop-blur-3xl border-b border-white/10 shadow-2xl">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex-1">
-            <h1 className="text-white text-3xl font-bold tracking-tight">{getGreeting()}, {userName}</h1>
-            <p className="text-white/60 text-sm mt-2 font-medium">
-              {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+      <div className="bg-gradient-to-b from-slate-900/40 to-transparent px-5 pt-12 pb-6 flex-shrink-0">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1 pt-1">
+            <p className="text-slate-400 text-xs font-medium tracking-widest uppercase mb-3">
+              {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
             </p>
+            <h1 className="text-slate-900 text-4xl font-bold tracking-tight leading-tight">{getGreeting()},<br />{userName}</h1>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 flex-shrink-0">
             {user?.picture && (
-              <Avatar className="w-11 h-11 border-2 border-white/30 shadow-lg">
+              <Avatar className="w-12 h-12 border-2 border-slate-200 shadow-lg">
                 <AvatarImage src={user.picture} alt={userName} />
-                <AvatarFallback>{userName[0]?.toUpperCase()}</AvatarFallback>
+                <AvatarFallback className="bg-gradient-to-br from-violet-500 to-purple-600 text-white">{userName[0]?.toUpperCase()}</AvatarFallback>
               </Avatar>
             )}
-            <button onClick={handleSync} disabled={syncing} className="w-11 h-11 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/25 flex items-center justify-center transition-all backdrop-blur-sm shadow-lg">
-              <RefreshCw className={`w-5 h-5 text-white ${syncing ? 'animate-spin' : ''}`} />
+            <button onClick={handleSync} disabled={syncing} className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors active:scale-95">
+              <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
             </button>
           </div>
         </div>
