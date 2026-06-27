@@ -251,6 +251,8 @@ export default function Home() {
 
   async function handleDone(id, isMemory = true) {
     const isCurrentlyCompleted = completedToday.has(id);
+    
+    // Update UI state first
     if (isCurrentlyCompleted) {
       setCompletedToday(prev => {
         const next = new Set(prev);
@@ -261,13 +263,26 @@ export default function Home() {
       setCompletedToday(prev => new Set([...prev, id]));
     }
     
+    // Then update database if it's a memory
     if (isMemory) {
-      // Extract base memory ID for birthdays/anniversaries (id format: "uuid-bday" or "uuid-anniv")
-      const memoryId = id.includes('-') ? id.split('-')[0] : id;
-      const newStatus = isCurrentlyCompleted ? 'active' : 'completed';
-      await base44.entities.Memory.update(memoryId, { status: newStatus });
-      const mems = await base44.entities.Memory.list('-created_date', 200);
-      setMemories(mems);
+      try {
+        const memoryId = id.includes('-') ? id.split('-')[0] : id;
+        const newStatus = isCurrentlyCompleted ? 'active' : 'completed';
+        await base44.entities.Memory.update(memoryId, { status: newStatus });
+        const mems = await base44.entities.Memory.list('-created_date', 200);
+        setMemories(mems);
+      } catch (err) {
+        // If update fails, revert the UI state
+        setCompletedToday(prev => {
+          const reverted = new Set(prev);
+          if (isCurrentlyCompleted) {
+            reverted.add(id);
+          } else {
+            reverted.delete(id);
+          }
+          return reverted;
+        });
+      }
     }
   }
 
