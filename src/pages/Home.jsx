@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
-import { Calendar, Target, Brain, MessageCircle, ChevronRight, Sparkles, Bell, User, Heart, Star, Mail } from 'lucide-react';
+import { Calendar, Target, Brain, MessageCircle, ChevronRight, Sparkles, Bell, User, Heart, Star, Mail, RefreshCw } from 'lucide-react';
 import BottomNav from '@/components/BottomNav';
 import GmailScannerModal from '@/components/sorelia/GmailScannerModal';
 
@@ -36,6 +36,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [showGmailModal, setShowGmailModal] = useState(false);
   const [gmailConnected, setGmailConnected] = useState(true);
+  const [calendarEvents, setCalendarEvents] = useState([]);
+  const [scanningCalendar, setScanningCalendar] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -52,6 +54,14 @@ export default function Home() {
     base44.functions.invoke('gmailScanner', {})
       .then(() => setGmailConnected(true))
       .catch(() => setGmailConnected(false));
+
+    // Load calendar events
+    base44.functions.invoke('calendarScanner', {})
+      .then(res => {
+        const events = (res.data?.events || []).slice(0, 5);
+        setCalendarEvents(events);
+      })
+      .catch(() => {});
   }, []);
 
   if (loading) {
@@ -137,6 +147,50 @@ export default function Home() {
             <ChevronRight className="w-5 h-5 text-white/70 flex-shrink-0" />
           </button>
         )}
+        {/* Google Calendar upcoming events */}
+        {calendarEvents.length > 0 && (
+          <section className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-violet-600" />
+                <h2 className="text-sm font-semibold text-gray-900">Upcoming Events</h2>
+              </div>
+              <button
+                onClick={async () => {
+                  setScanningCalendar(true);
+                  try {
+                    const res = await base44.functions.invoke('calendarScanner', {});
+                    setCalendarEvents((res.data?.events || []).slice(0, 5));
+                  } catch {}
+                  setScanningCalendar(false);
+                }}
+                className="text-xs text-violet-600 font-medium flex items-center gap-1"
+              >
+                <RefreshCw className={`w-3 h-3 ${scanningCalendar ? 'animate-spin' : ''}`} />
+                Sync
+              </button>
+            </div>
+            <div className="space-y-2.5">
+              {calendarEvents.map(ev => {
+                const d = ev.start ? new Date(ev.start) : null;
+                const dateStr = d ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: ev.allDay ? undefined : 'numeric', minute: ev.allDay ? undefined : '2-digit' }) : '';
+                return (
+                  <div key={ev.id} className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-violet-50 flex items-center justify-center flex-shrink-0">
+                      <Calendar className="w-4 h-4 text-violet-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900 truncate">{ev.title}</p>
+                      <p className="text-xs text-violet-500">{dateStr}</p>
+                      {ev.location && <p className="text-xs text-gray-400 truncate">📍 {ev.location}</p>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
         {/* Upcoming dates */}
         {upcomingDates.length > 0 && (
           <section className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
