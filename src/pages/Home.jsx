@@ -325,10 +325,10 @@ export default function Home() {
                 <p className="text-xs text-gray-400">Nothing special today</p>
               </div>
             ) : (
-              todayItems.map((item, i) => (
-                <PreviewCardItem key={i} item={{ title: item }} type="today" getDaysUntil={getDaysUntil} />
-              ))
-            )}
+               todayItems.map((item, i) => (
+                 <PreviewCardItem key={i} item={item} type="today" getDaysUntil={getDaysUntil} />
+               ))
+             )}
           </div>
         </button>
       </div>
