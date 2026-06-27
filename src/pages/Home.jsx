@@ -176,7 +176,7 @@ export default function Home() {
       icon: Bell,
       iconColor: 'bg-amber-100 text-amber-600',
       items: reminders,
-      preview: reminders.slice(0, 2),
+      preview: reminders.slice(0, 4),
       renderItem: renderReminderItem,
       emptyText: 'No active reminders',
     },
@@ -186,7 +186,7 @@ export default function Home() {
       icon: Calendar,
       iconColor: 'bg-violet-100 text-violet-600',
       items: upcomingCalendar,
-      preview: upcomingCalendar.slice(0, 2),
+      preview: upcomingCalendar.slice(0, 4),
       renderItem: renderCalendarItem,
       emptyText: 'No upcoming calendar events',
     },
@@ -196,7 +196,7 @@ export default function Home() {
       icon: Clock,
       iconColor: 'bg-rose-100 text-rose-500',
       items: upcomingEvents,
-      preview: upcomingEvents.slice(0, 2),
+      preview: upcomingEvents.slice(0, 4),
       renderItem: renderComingItem,
       emptyText: 'No upcoming events',
     },
@@ -244,14 +244,14 @@ export default function Home() {
             </button>
 
             {/* Preview items */}
-            <div className="flex-1 overflow-hidden px-3 py-2 space-y-1.5">
+            <div className="flex-1 overflow-hidden px-3 py-1 space-y-0.5">
               {s.preview.length === 0 ? (
                 <div className="h-full flex items-center justify-center">
                   <p className="text-xs text-gray-400">{s.emptyText}</p>
                 </div>
               ) : (
                 s.preview.map((item, i) => (
-                  <div key={i} className="flex items-center gap-2.5 px-1 py-1.5">
+                  <div key={i} className="flex items-center gap-2 px-1 py-1">
                     <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${s.iconColor}`}>
                       <s.icon className="w-3 h-3" />
                     </div>
@@ -262,9 +262,9 @@ export default function Home() {
                   </div>
                 ))
               )}
-              {s.items.length > 2 && (
+              {s.items.length > 4 && (
                 <button onClick={() => setModal(s.id)} className="w-full text-center text-[10px] text-violet-400 font-medium pt-0.5">
-                  +{s.items.length - 2} more
+                  +{s.items.length - 4} more
                 </button>
               )}
             </div>
