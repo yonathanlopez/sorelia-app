@@ -16,6 +16,30 @@
     },
     "memories_extracted": {
       "type": "number"
+    },
+    "category_label": {
+      "type": "string"
+    },
+    "category_reasoning": {
+      "type": "string"
+    },
+    "memory_types_found": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "was_skipped": {
+      "type": "boolean"
+    },
+    "skip_reason": {
+      "type": "string"
+    },
+    "confidence_score": {
+      "type": "number"
+    },
+    "extracted_entities": {
+      "type": "string"
     }
   },
   "required": [
