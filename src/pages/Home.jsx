@@ -421,7 +421,7 @@ export default function Home() {
             </div>
 
             {/* Preview items */}
-            <div className="px-2 py-2 space-y-0">
+            <div className="space-y-0 px-1.5 py-">
               {s.preview.length === 0 ?
             <div className="text-center py-3">
                   <button
