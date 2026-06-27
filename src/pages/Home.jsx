@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Bell, Calendar, Clock, RefreshCw, ChevronRight, X, Target, User, CreditCard, Cake, Heart } from 'lucide-react';
+import { Bell, Calendar, Clock, RefreshCw, ChevronRight, X, Target, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import BottomNav from '@/components/BottomNav';
@@ -157,9 +157,6 @@ export default function Home() {
     }
     return (
       <div key={m.id || i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
-          <Bell className="w-4 h-4 text-amber-500" />
-        </div>
         <div className="flex-1 min-w-0">
           <p className="text-base font-semibold text-gray-900 truncate">{m.title}</p>
           {m.description && <p className="text-sm text-gray-400 truncate mt-0.5">{m.description}</p>}
@@ -208,20 +205,6 @@ export default function Home() {
   };
 
   const renderComingItem = (ev, i) => {
-    let Icon, color;
-    if (ev.date_type === 'bills') {
-      Icon = CreditCard;
-      color = 'bg-blue-100 text-blue-600';
-    } else if (ev.date_type === 'birthday' || ev.type === 'person' && ev.id.endsWith('-bday')) {
-      Icon = Cake;
-      color = 'bg-rose-100 text-rose-500';
-    } else if (ev.date_type === 'anniversary' || ev.type === 'person' && ev.id.endsWith('-anniv')) {
-      Icon = Heart;
-      color = 'bg-pink-100 text-pink-500';
-    } else {
-      Icon = Calendar;
-      color = 'bg-gray-100 text-gray-500';
-    }
     let dateDisplay = null;
     if (ev.daysUntil === 0) {
       dateDisplay = <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
@@ -232,9 +215,6 @@ export default function Home() {
     }
     return (
       <div key={ev.id || i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
-        <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
-          <Icon className="w-4 h-4" />
-        </div>
         <div className="flex-1 min-w-0">
           <p className="text-base font-semibold text-gray-900 truncate">{ev.title}</p>
         </div>
@@ -373,62 +353,43 @@ export default function Home() {
               ) : (
                 s.id === 'calendar'
                   ? s.preview.map((item, i) => {
-                      const rawDate = item.start || item.date || '';
-                      const dateStr = rawDate.split('T')[0];
-                      const d = new Date(dateStr + 'T00:00:00');
-                      const hasTime = rawDate.includes('T');
-                      const timeStr = hasTime
-                        ? new Date(rawDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-                        : null;
-                      const daysUntil = getDaysUntil(dateStr);
-                      
-                      let dateDisplay = null;
-                      if (daysUntil === 0) {
-                        dateDisplay = <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
-                      } else if (daysUntil === 1) {
-                        dateDisplay = <span className="text-[9px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
-                      } else {
-                        dateDisplay = <div className="w-9 text-center"><p className="text-[9px] font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p><p className="text-base font-bold text-violet-600 leading-tight">{d.getDate()}</p></div>;
-                      }
-                      
-                      return (
-                        <div key={i} className="flex items-center gap-2.5 px-1 py-1.5">
-                          <div className="w-0.5 h-7 rounded-full bg-violet-100 flex-shrink-0" />
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs font-semibold text-gray-800 truncate">{item.title || item.summary}</p>
-                            {timeStr && <span className="text-[10px] text-violet-400 font-medium">{timeStr}</span>}
-                          </div>
-                          {dateDisplay}
+                    const rawDate = item.start || item.date || '';
+                    const dateStr = rawDate.split('T')[0];
+                    const d = new Date(dateStr + 'T00:00:00');
+                    const hasTime = rawDate.includes('T');
+                    const timeStr = hasTime
+                      ? new Date(rawDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+                      : null;
+                    const daysUntil = getDaysUntil(dateStr);
+
+                    let dateDisplay = null;
+                    if (daysUntil === 0) {
+                      dateDisplay = <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
+                    } else if (daysUntil === 1) {
+                      dateDisplay = <span className="text-[9px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
+                    } else {
+                      dateDisplay = <div className="w-9 text-center"><p className="text-[9px] font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p><p className="text-base font-bold text-violet-600 leading-tight">{d.getDate()}</p></div>;
+                    }
+
+                    return (
+                      <div key={i} className="flex items-center gap-2.5 px-1 py-1.5">
+                        <div className="w-0.5 h-7 rounded-full bg-violet-100 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-gray-800 truncate">{item.title || item.summary}</p>
+                          {timeStr && <span className="text-[10px] text-violet-400 font-medium">{timeStr}</span>}
                         </div>
-                      );
-                    })
-                  : s.preview.map((item, i) => {
-                      let Icon, color;
-                      if (item.date_type === 'bills') {
-                        Icon = CreditCard;
-                        color = 'bg-blue-100 text-blue-600';
-                      } else if (item.date_type === 'birthday' || item.type === 'person' && item.id?.endsWith('-bday')) {
-                        Icon = Cake;
-                        color = 'bg-rose-100 text-rose-500';
-                      } else if (item.date_type === 'anniversary' || item.type === 'person' && item.id?.endsWith('-anniv')) {
-                        Icon = Heart;
-                        color = 'bg-pink-100 text-pink-500';
-                      } else {
-                        Icon = s.icon;
-                        color = s.iconColor;
-                      }
-                      return (
-                        <div key={i} className="flex items-center gap-2 px-1 py-1.5">
-                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${color}`}>
-                            <Icon className="w-3 h-3" />
-                          </div>
-                          <p className="text-xs font-medium text-gray-800 flex-1 truncate">
-                            {item.title || item.summary}
-                          </p>
-                          <DaysBadge days={item.daysUntil ?? (item.date ? getDaysUntil(item.date) : null)} />
-                        </div>
-                      );
-                    })
+                        {dateDisplay}
+                      </div>
+                    );
+                  })
+                : s.preview.map((item, i) => (
+                    <div key={i} className="flex items-center gap-2 px-1 py-1.5">
+                      <p className="text-xs font-medium text-gray-800 flex-1 truncate">
+                        {item.title || item.summary}
+                      </p>
+                      <DaysBadge days={item.daysUntil ?? (item.date ? getDaysUntil(item.date) : null)} />
+                    </div>
+                  ))
               )}
               {s.preview.length > 0 && (
                 <div className="grid grid-cols-2 gap-1.5 pt-2 border-t border-gray-50 mt-2">
