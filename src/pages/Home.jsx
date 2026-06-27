@@ -313,15 +313,30 @@ export default function Home() {
                 return dateObj < today;
               }).length;
               const upcoming = dates.length - passed;
+              const percentage = dates.length > 0 ? Math.round((passed / dates.length) * 100) : 0;
               return (
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="bg-gray-100 rounded-lg p-3">
-                    <p className="text-[10px] text-gray-600">Passed</p>
-                    <p className="text-xl font-bold text-gray-700 mt-1">{passed}</p>
+                <div className="space-y-3">
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-xs text-gray-600">Timeline progress</span>
+                      <span className="text-sm font-bold text-gray-700">{percentage}%</span>
+                    </div>
+                    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-violet-500 transition-all"
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
                   </div>
-                  <div className="bg-violet-50 rounded-lg p-3">
-                    <p className="text-[10px] text-gray-600">Upcoming</p>
-                    <p className="text-xl font-bold text-violet-600 mt-1">{upcoming}</p>
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <div className="bg-gray-100 rounded-lg p-2">
+                      <p className="text-[10px] text-gray-600">Passed</p>
+                      <p className="text-lg font-bold text-gray-700">{passed}</p>
+                    </div>
+                    <div className="bg-violet-50 rounded-lg p-2">
+                      <p className="text-[10px] text-gray-600">Upcoming</p>
+                      <p className="text-lg font-bold text-violet-600">{upcoming}</p>
+                    </div>
                   </div>
                 </div>
               );
