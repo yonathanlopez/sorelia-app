@@ -22,10 +22,10 @@ function getDaysUntil(dateStr) {
 
 function DaysBadge({ days }) {
   if (days === null) return null;
-  if (days === 0) return <span className="text-sm font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full whitespace-nowrap">Today</span>;
-  if (days === 1) return <span className="text-sm font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full whitespace-nowrap">Tomorrow</span>;
-  if (days < 0) return <span className="text-sm text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full whitespace-nowrap">Passed</span>;
-  return <span className="text-sm text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{days}d</span>;
+  if (days === 0) return <span className="text-[8px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full whitespace-nowrap">Today</span>;
+  if (days === 1) return <span className="text-[8px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full whitespace-nowrap">Tomorrow</span>;
+  if (days < 0) return <span className="text-[8px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full whitespace-nowrap">Passed</span>;
+  return <span className="text-[8px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{days}d</span>;
 }
 
 function SectionModal({ title, icon: Icon, color, items, renderItem, onClose }) {
@@ -148,11 +148,11 @@ export default function Home() {
     let dateDisplay = null;
     if (daysUntil !== null) {
       if (daysUntil === 0) {
-        dateDisplay = <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
+        dateDisplay = <span className="text-[8px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
       } else if (daysUntil === 1) {
-        dateDisplay = <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
+        dateDisplay = <span className="text-[8px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
       } else if (daysUntil > 1) {
-        dateDisplay = <span className="text-xs text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{daysUntil}d</span>;
+        dateDisplay = <span className="text-[8px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{daysUntil}d</span>;
       }
     }
     return (
@@ -181,9 +181,9 @@ export default function Home() {
     
     let dateDisplay = null;
     if (daysUntil === 0) {
-      dateDisplay = <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
+      dateDisplay = <span className="text-[8px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
     } else if (daysUntil === 1) {
-      dateDisplay = <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
+      dateDisplay = <span className="text-[8px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
     } else {
       dateDisplay = <div className="w-10 flex flex-col items-center"><span className="text-xs font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</span><span className="text-xl font-bold text-violet-600 leading-tight">{d.getDate()}</span></div>;
     }
@@ -224,11 +224,11 @@ export default function Home() {
     }
     let dateDisplay = null;
     if (ev.daysUntil === 0) {
-      dateDisplay = <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
+      dateDisplay = <span className="text-[8px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
     } else if (ev.daysUntil === 1) {
-      dateDisplay = <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
+      dateDisplay = <span className="text-[8px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
     } else {
-      dateDisplay = <span className="text-xs text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{ev.daysUntil}d</span>;
+      dateDisplay = <span className="text-[8px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{ev.daysUntil}d</span>;
     }
     return (
       <div key={ev.id || i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
@@ -384,9 +384,9 @@ export default function Home() {
                       
                       let dateDisplay = null;
                       if (daysUntil === 0) {
-                        dateDisplay = <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
+                        dateDisplay = <span className="text-[8px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
                       } else if (daysUntil === 1) {
-                        dateDisplay = <span className="text-[9px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
+                        dateDisplay = <span className="text-[8px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
                       } else {
                         dateDisplay = <div className="w-9 text-center"><p className="text-[9px] font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p><p className="text-base font-bold text-violet-600 leading-tight">{d.getDate()}</p></div>;
                       }
