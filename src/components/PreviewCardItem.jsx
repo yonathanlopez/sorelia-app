@@ -50,7 +50,7 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
 
     let dateDisplay = null;
     if (daysUntil === 0) {
-      dateDisplay = <span className="text-xs font-bold text-emerald-600 bg-emerald-50 rounded-full px-4">Today</span>;
+      dateDisplay = <span className="text-xs font-bold text-emerald-600 bg-emerald-50 rounded-full px-2 my-1">Today</span>;
     } else if (daysUntil === 1) {
       dateDisplay = <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
     } else if (daysUntil !== null && daysUntil > 1) {
