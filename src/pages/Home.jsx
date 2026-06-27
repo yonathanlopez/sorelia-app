@@ -291,27 +291,18 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-600/10 via-purple-500/5 to-transparent px-5 pt-12 pb-8 flex-shrink-0 border-b border-indigo-100/30">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <p className="text-indigo-600 text-[10px] font-bold tracking-widest uppercase mb-3 opacity-75">
-              {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-            </p>
-            <h1 className="text-gray-900 text-5xl font-black tracking-tight leading-tight">
-              {getGreeting()},
-              <br />
-              <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">{userName}</span>
-            </h1>
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0 pt-2">
+      <div className="px-5 pt-8 pb-4 flex-shrink-0">
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-gray-900 text-lg font-semibold">Good afternoon, Yonathan</p>
+          <div className="flex items-center gap-2">
             {user?.picture && (
-              <Avatar className="w-14 h-14 border-2 border-indigo-200 shadow-xl ring-4 ring-indigo-50">
+              <Avatar className="w-10 h-10 border border-gray-200">
                 <AvatarImage src={user.picture} alt={userName} />
-                <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold text-lg">{userName[0]?.toUpperCase()}</AvatarFallback>
+                <AvatarFallback>{userName[0]?.toUpperCase()}</AvatarFallback>
               </Avatar>
             )}
-            <button onClick={handleSync} disabled={syncing} className="w-11 h-11 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-600 flex items-center justify-center transition-all active:scale-90 shadow-sm">
-              <RefreshCw className={`w-5 h-5 ${syncing ? 'animate-spin' : ''}`} />
+            <button onClick={handleSync} disabled={syncing} className="w-9 h-9 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition-colors">
+              <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
             </button>
           </div>
         </div>
