@@ -161,7 +161,7 @@ export default function Home() {
       }
     }
     return (
-      <div key={m.id || i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+      <div key={m.id || i} className="bg-gray-50 rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
         <div className="flex-1 min-w-0">
           <p className="text-base font-semibold text-gray-900 truncate">{m.title}</p>
           {m.description && <p className="text-sm text-gray-400 truncate mt-0.5">{m.description}</p>}
@@ -219,7 +219,7 @@ export default function Home() {
       dateDisplay = <span className="text-[9px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full whitespace-nowrap">{ev.daysUntil}d</span>;
     }
     return (
-      <div key={ev.id || i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+      <div key={ev.id || i} className="bg-gray-50 rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
         <div className="flex-1 min-w-0">
           <p className="text-base font-semibold text-gray-900 truncate">{ev.title}</p>
         </div>
@@ -289,7 +289,7 @@ export default function Home() {
   const userName = user?.full_name?.split(' ')[0] || 'there';
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
 
 
       {/* Today's Summary */}
@@ -319,7 +319,7 @@ export default function Home() {
           <button
             key={s.id}
             onClick={() => setModal(s.id)}
-            className="w-full bg-white rounded-2xl border border-gray-100 shadow-sm text-left hover:shadow-md transition-shadow"
+            className="w-full bg-gray-50 rounded-2xl border border-gray-100 shadow-sm text-left hover:shadow-md transition-shadow"
           >
             {/* Section header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
