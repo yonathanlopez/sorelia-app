@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Bell, Calendar, Clock, RefreshCw, ChevronRight, X, Target, User, CreditCard, Cake, Heart } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import BottomNav from '@/components/BottomNav';
 import SoreliaFAB from '@/components/SoreliaFAB';
@@ -55,6 +55,7 @@ function SectionModal({ title, icon: Icon, color, items, renderItem, onClose }) 
 }
 
 export default function Home() {
+  const navigate = useNavigate();
   const [memories, setMemories] = useState([]);
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -265,6 +266,7 @@ export default function Home() {
       preview: reminders.slice(0, 4),
       renderItem: renderReminderItem,
       emptyText: 'No active reminders — tell Sorelia to add one!',
+      quickChips: ["What's my next reminder?", "Show all reminders", "Add a goal"],
     },
     {
       id: 'calendar',
@@ -275,6 +277,7 @@ export default function Home() {
       preview: upcomingCalendar.slice(0, 4),
       renderItem: renderCalendarItem,
       emptyText: 'No calendar events — ask Sorelia to check your schedule!',
+      quickChips: ["What's next on my calendar?", "Any events this week?", "Add an event"],
     },
     {
       id: 'coming',
@@ -285,6 +288,7 @@ export default function Home() {
       preview: upcomingEvents.slice(0, 4),
       renderItem: renderComingItem,
       emptyText: 'No recurring events — tell Sorelia about birthdays, bills & more!',
+      quickChips: ["Any birthdays soon?", "Show upcoming bills", "Add an anniversary"],
     },
   ];
 
@@ -350,9 +354,22 @@ export default function Home() {
             </div>
 
             {/* Preview items */}
-            <div className="px-3 py-2 space-y-0.5">
+            <div className="px-3 py-2.5 space-y-0.5">
               {s.preview.length === 0 ? (
-                <Link to="/" className="block text-xs text-violet-500 font-medium text-center py-3 hover:text-violet-700">{s.emptyText}</Link>
+                <div className="text-center py-3">
+                  <p className="text-xs text-violet-500 font-medium mb-2">{s.emptyText}</p>
+                  <div className="flex flex-wrap gap-1.5 justify-center">
+                    {s.quickChips.slice(0, 2).map(chip => (
+                      <button
+                        key={chip}
+                        onClick={() => navigate('/', { state: { prefill: chip } })}
+                        className="text-[10px] bg-violet-50 text-violet-600 font-medium px-2 py-1 rounded-full border border-violet-100 active:scale-95 transition-transform"
+                      >
+                        {chip}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               ) : (
                 s.id === 'calendar'
                   ? s.preview.map((item, i) => {
@@ -412,6 +429,22 @@ export default function Home() {
                         </div>
                       );
                     })
+              )}
+              {s.preview.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 pt-2 border-t border-gray-50 mt-2">
+                  {s.quickChips.map(chip => (
+                    <button
+                      key={chip}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate('/', { state: { prefill: chip } });
+                      }}
+                      className="text-[10px] bg-violet-50 text-violet-600 font-medium px-2 py-1 rounded-full border border-violet-100 active:scale-95 transition-transform"
+                    >
+                      {chip}
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
           </button>
