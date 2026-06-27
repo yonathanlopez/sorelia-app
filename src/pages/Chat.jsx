@@ -93,11 +93,15 @@ ${memoryContext}${emailContext}
 
 Respond to the user's latest message naturally.`;
 
-    const [reply] = await Promise.all([
-      base44.integrations.Core.InvokeLLM({ prompt: replyPrompt, model: 'gpt_5_5' }),
-      // AI call 2: Extract memories (runs in parallel)
-      extractMemories(msg),
-    ]);
+    let reply = "I'm sorry, I'm unable to respond right now — the AI integration credits for this workspace are exhausted. Please upgrade your plan or wait for the monthly reset.";
+    try {
+      [reply] = await Promise.all([
+        base44.integrations.Core.InvokeLLM({ prompt: replyPrompt, model: 'gpt_5_5' }),
+        extractMemories(msg),
+      ]);
+    } catch (e) {
+      // Credits exhausted or other integration error — reply already set above
+    }
 
     const assistantMsg = { role: 'assistant', content: reply, timestamp: new Date().toISOString() };
     const updatedMessages = [...newMessages, assistantMsg];
@@ -129,41 +133,44 @@ Return a JSON object with a "memories" array. Each memory should have:
 If no memories are found, return {"memories": []}.
 Only extract clear, specific facts — not vague statements.`;
 
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: extractPrompt,
-      model: 'gpt_5_mini',
-      response_json_schema: {
-        type: 'object',
-        properties: {
-          memories: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                type: { type: 'string' },
-                title: { type: 'string' },
-                description: { type: 'string' },
-                date: { type: 'string' },
-                people: { type: 'array', items: { type: 'string' } },
+    try {
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: extractPrompt,
+        model: 'gpt_5_mini',
+        response_json_schema: {
+          type: 'object',
+          properties: {
+            memories: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  type: { type: 'string' },
+                  title: { type: 'string' },
+                  description: { type: 'string' },
+                  date: { type: 'string' },
+                  people: { type: 'array', items: { type: 'string' } },
+                },
+                required: ['type', 'title'],
               },
-              required: ['type', 'title'],
             },
           },
         },
-      },
-    });
-
-    if (result?.memories?.length > 0) {
-      for (const mem of result.memories) {
-        await base44.entities.Memory.create({
-          type: mem.type,
-          title: mem.title,
-          description: mem.description || '',
-          date: mem.date || '',
-          people: mem.people || [],
-          source: 'chat',
-        });
+      });
+      if (result?.memories?.length > 0) {
+        for (const mem of result.memories) {
+          await base44.entities.Memory.create({
+            type: mem.type,
+            title: mem.title,
+            description: mem.description || '',
+            date: mem.date || '',
+            people: mem.people || [],
+            source: 'chat',
+          });
+        }
       }
+    } catch {
+      // Integration credits exhausted — skip memory extraction silently
     }
   }
 
