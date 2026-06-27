@@ -293,16 +293,20 @@ export default function Home() {
     <div className="min-h-screen bg-gray-100">
       {/* Today's Summary */}
       <div className="px-4 pt-5 pb-3">
-        <div className="bg-gradient-to-r from-emerald-50 to-white rounded-xl border border-emerald-100 shadow-xs px-4 py-3 border-l-4 border-l-emerald-400">
-          <h2 className="text-sm font-bold text-gray-900 mb-3">Today's Summary</h2>
+        <div className="bg-white/40 backdrop-blur-md rounded-2xl border border-white/30 shadow-lg px-4 py-4">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-2 h-6 rounded-full bg-gradient-to-b from-emerald-400 to-emerald-600" />
+            <h2 className="text-base font-semibold text-gray-900">Today's Summary</h2>
+            {todayItems.length > 0 && <span className="text-xs text-emerald-600 font-bold ml-auto">{todayItems.length} items</span>}
+          </div>
           {todayItems.length === 0 ? (
-            <p className="text-xs text-gray-400">Nothing special today — enjoy the calm!</p>
+            <p className="text-sm text-gray-400 italic">Nothing scheduled — great day ahead!</p>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {todayItems.map((item, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
-                  <span className="text-xs text-gray-700 font-medium">{item}</span>
+                <div key={i} className="flex items-start gap-2.5 text-sm text-gray-700 font-medium">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0 mt-1" />
+                  <span className="leading-snug">{item}</span>
                 </div>
               ))}
             </div>
