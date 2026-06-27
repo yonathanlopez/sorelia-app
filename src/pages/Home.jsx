@@ -345,7 +345,7 @@ export default function Home() {
                       };
                       navigate('/', { state: { prefill: `Sorelia, ${actions[s.id] || s.quickChips[0]}` } });
                     }}
-                    className="text-xs text-blue-600 font-medium mb-2 hover:text-blue-700 active:scale-95 transition-all"
+                    className="text-xs text-gray-700 font-medium mb-2 hover:text-gray-800 active:scale-95 transition-all"
                   >
                     {s.emptyText}
                   </button>
