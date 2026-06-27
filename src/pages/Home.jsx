@@ -382,7 +382,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Today's Summary */}
-      <div className="px-2 pt-3 pb-2">
+      <div className="px-2 pt-3 pb-3">
         <button className="w-full bg-white rounded-xl border border-gray-100 shadow-xs text-left hover:shadow-sm transition-all">
           <div className="flex items-center gap-2 px-3 py-2 border-b border-gray-50">
             <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 bg-emerald-100 text-emerald-600">
