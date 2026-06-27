@@ -47,7 +47,7 @@ export default function Memories() {
         person_anniversary: updated.person_anniversary,
         status: updated.status,
       });
-      toast({ title: 'Memory updated' });
+      toast({ title: 'Memory updated', duration: 3000 });
     } else {
       await base44.entities.Memory.create({
         type: updated.type,
@@ -61,7 +61,7 @@ export default function Memories() {
         status: updated.status || 'active',
         source: 'manual',
       });
-      toast({ title: 'Memory saved ✨' });
+      toast({ title: 'Memory saved ✨', duration: 3000 });
     }
     setEditMemory(null);
     setAddingNew(null);
@@ -71,13 +71,13 @@ export default function Memories() {
   async function handleDelete() {
     await base44.entities.Memory.delete(deleteMemory.id);
     setDeleteMemory(null);
-    toast({ title: 'Memory forgotten' });
+    toast({ title: 'Memory forgotten', duration: 3000 });
     loadMemories();
   }
 
   async function handleComplete(id) {
     await base44.entities.Memory.update(id, { status: 'completed' });
-    toast({ title: 'Goal completed! 🎉' });
+    toast({ title: 'Goal completed! 🎉', duration: 3000 });
     loadMemories();
   }
 
