@@ -251,7 +251,7 @@ export default function Home() {
   const todayItems = [
     ...memories.filter(m => m.type === 'important_date' && m.date && getDaysUntil(m.date) === 0)
       .map(m => ({ title: m.title, source: 'recurring' })),
-    ...memories.filter(m => m.type === 'goal' && m.status === 'active' && m.date && getDaysUntil(m.date) === 0)
+    ...reminders.filter(m => getDaysUntil(m.date) === 0)
       .map(m => ({ 
         title: m.title, 
         source: 'reminders',
