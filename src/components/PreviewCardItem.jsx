@@ -1,4 +1,5 @@
 import React from 'react';
+import { Bell } from 'lucide-react';
 
 function DaysBadge({ days }) {
   if (days === null) return null;
@@ -40,6 +41,24 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil }
     );
   }
 
+  if (type === 'reminder') {
+    const timeStr = item.date
+      ? new Date(item.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+      : null;
+    return (
+      <div className="flex items-center gap-2.5 px-2 py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
+        <Bell className="w-4 h-4 text-violet-300 flex-shrink-0" />
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-medium text-gray-800 truncate">{item.title}</p>
+          {timeStr && <span className="text-[10px] text-gray-400">{timeStr}</span>}
+        </div>
+        <div className="flex-shrink-0">
+          <DaysBadge days={item.daysUntil ?? (item.date ? getDaysUntil(item.date) : null)} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center gap-2 px-2 py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
       <div className="w-1 h-5 rounded-full bg-gradient-to-b from-violet-400 to-violet-300 flex-shrink-0" />
@@ -47,7 +66,7 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil }
         {item.title || item.summary}
       </p>
       <div className="flex-shrink-0">
-        {type === 'reminder' || type === 'coming' ? (
+        {type === 'coming' ? (
           <DaysBadge days={item.daysUntil ?? (item.date ? getDaysUntil(item.date) : null)} />
         ) : null}
       </div>
