@@ -207,7 +207,7 @@ export default function CalendarPage() {
                 onClick={() => setShowCalendarPicker(p => !p)}
                 className="flex items-center gap-1.5 text-xs font-medium bg-gray-100 text-gray-700 px-3 py-2 rounded-full"
               >
-                <span className="flex gap-0.5">
+                <span className="flex gap-0.5 items-center">
                   {selectedCalendars.has('all')
                     ? <span className="w-2.5 h-2.5 rounded-full bg-violet-500 inline-block" />
                     : Array.from(selectedCalendars).slice(0, 3).map(name => (
@@ -215,7 +215,8 @@ export default function CalendarPage() {
                       ))
                   }
                 </span>
-                {selectedCalendars.has('all') ? 'All' : `${selectedCalendars.size}`}
+                {selectedCalendars.has('all') ? 'All calendars' : `${selectedCalendars.size} selected`}
+                <ChevronRight className={`w-3 h-3 transition-transform ${showCalendarPicker ? 'rotate-90' : 'rotate-0'}`} />
               </button>
 
               {/* Dropdown */}
@@ -226,7 +227,7 @@ export default function CalendarPage() {
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-4 py-2">Calendars</p>
                     {/* All option */}
                     <button
-                      onClick={() => { toggleCalendar('all'); setShowCalendarPicker(false); }}
+                      onClick={() => toggleCalendar('all')}
                       className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${selectedCalendars.has('all') ? 'bg-violet-50' : 'hover:bg-gray-50'}`}
                     >
                       <span className="w-3 h-3 rounded-full bg-violet-500 flex-shrink-0" />
