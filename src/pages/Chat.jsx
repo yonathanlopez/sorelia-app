@@ -52,12 +52,24 @@ export default function Chat() {
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);
 
-    // Fetch all memories for context
+    // Fetch all memories and scanned emails for context
+    const [allMemories, scannedEmails] = await Promise.all([
+      base44.entities.Memory.list('-created_date', 100),
+      base44.entities.ScannedEmail.list('-created_date', 50),
+    ]);
+
     let memoryContext = '';
-    const allMemories = await base44.entities.Memory.list('-created_date', 50);
     if (allMemories.length > 0) {
       memoryContext = '\n\nHere are the user\'s saved memories for context:\n' +
         allMemories.map(m => `- [${m.type}] ${m.title}${m.description ? ': ' + m.description : ''}${m.date ? ' (date: ' + m.date + ')' : ''}${m.people?.length ? ' (people: ' + m.people.join(', ') + ')' : ''}`).join('\n');
+    }
+
+    let emailContext = '';
+    if (scannedEmails.length > 0) {
+      emailContext = '\n\nHere are the user\'s recent emails for additional context:\n' +
+        scannedEmails.map(e =>
+          `- Subject: "${e.subject}"${e.sender ? ' | From: ' + e.sender : ''}${e.date ? ' | Date: ' + e.date : ''}${e.body_full ? '\n  Content: ' + e.body_full.slice(0, 500) : e.body_preview ? '\n  Content: ' + e.body_preview : ''}`
+        ).join('\n');
     }
 
     // Build conversation history for AI (last 20 messages)
@@ -77,7 +89,7 @@ Your personality:
 
 Conversation so far:
 ${historyForAI}
-${memoryContext}
+${memoryContext}${emailContext}
 
 Respond to the user's latest message naturally.`;
 
