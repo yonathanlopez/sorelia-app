@@ -301,9 +301,10 @@ export default function Home() {
                 <AvatarFallback>{userName[0]?.toUpperCase()}</AvatarFallback>
               </Avatar>
             )}
-            <button onClick={handleSync} disabled={syncing} className="w-9 h-9 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition-colors">
-              <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
-            </button>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 rounded-lg border border-orange-200">
+              <span className="text-lg">🔥</span>
+              <span className="text-sm font-bold text-orange-600">12</span>
+            </div>
           </div>
         </div>
       </div>
