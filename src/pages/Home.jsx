@@ -26,10 +26,7 @@ const typeColors = {
 const categories = [
   { type: 'person', label: 'People' },
   { type: 'goal', label: 'Goals' },
-  { type: 'important_date', label: 'Dates' },
-  { type: 'preference', label: 'Preferences' },
-  { type: 'life_event', label: 'Life Events' },
-  { type: 'reminder', label: 'Reminders' },
+  { type: 'important_date', label: 'Important Dates' },
 ];
 
 const quickQuestions = [
