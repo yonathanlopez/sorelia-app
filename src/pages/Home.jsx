@@ -266,7 +266,7 @@ export default function Home() {
       preview: reminders.slice(0, 4),
       renderItem: renderReminderItem,
       emptyText: 'No active reminders — tell Sorelia to add one!',
-      quickChips: ["Sorelia, remind me to call mom", "Sorelia, remind me to check emails", "Sorelia, add a reminder"],
+      quickChips: ["Add goal", "Set reminder"],
     },
     {
       id: 'calendar',
@@ -277,7 +277,7 @@ export default function Home() {
       preview: upcomingCalendar.slice(0, 4),
       renderItem: renderCalendarItem,
       emptyText: 'No calendar events — ask Sorelia to check your schedule!',
-      quickChips: ["Sorelia, schedule meeting at 3pm", "Sorelia, show my schedule for tomorrow", "Sorelia, add an event"],
+      quickChips: ["Add event", "Schedule meeting"],
     },
     {
       id: 'coming',
@@ -288,7 +288,7 @@ export default function Home() {
       preview: upcomingEvents.slice(0, 4),
       renderItem: renderComingItem,
       emptyText: 'No recurring events — tell Sorelia about birthdays, bills & more!',
-      quickChips: ["Sorelia, remind me mom's birthday", "Sorelia, add electric bill", "Sorelia, mark anniversary"],
+      quickChips: ["Add birthday", "Add bill reminder"],
     },
   ];
 
@@ -362,8 +362,8 @@ export default function Home() {
                     {s.quickChips.slice(0, 2).map(chip => (
                       <button
                         key={chip}
-                        onClick={() => navigate('/', { state: { prefill: chip } })}
-                        className="text-[9px] bg-gray-100 text-gray-600 font-medium px-2 py-1 rounded-lg border border-gray-200 active:scale-95 transition-transform"
+                        onClick={() => navigate('/', { state: { prefill: `Sorelia, ${chip}` } })}
+                        className="text-[9px] bg-white/40 text-gray-700 font-medium px-2.5 py-1.5 rounded-xl border border-white/30 backdrop-blur-sm hover:bg-white/60 active:scale-95 transition-all"
                       >
                         {chip}
                       </button>
@@ -437,9 +437,9 @@ export default function Home() {
                       key={chip}
                       onClick={(e) => {
                         e.stopPropagation();
-                        navigate('/', { state: { prefill: chip } });
+                        navigate('/', { state: { prefill: `Sorelia, ${chip}` } });
                       }}
-                      className="text-[9px] bg-gray-100 text-gray-600 font-medium px-2 py-1 rounded-lg border border-gray-200 active:scale-95 transition-transform"
+                      className="text-[9px] bg-white/40 text-gray-700 font-medium px-2.5 py-1.5 rounded-xl border border-white/30 backdrop-blur-sm hover:bg-white/60 active:scale-95 transition-all"
                     >
                       {chip}
                     </button>
