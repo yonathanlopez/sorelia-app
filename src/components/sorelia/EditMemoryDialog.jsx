@@ -65,12 +65,12 @@ export default function EditMemoryDialog({ memory, open, onClose, onSave, defaul
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-sm mx-auto rounded-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
+      <DialogContent className="max-w-sm mx-auto rounded-2xl flex flex-col max-h-[90vh] p-0 overflow-hidden">
+        <DialogHeader className="px-6 pt-6 pb-2 flex-shrink-0">
           <DialogTitle className="text-lg">{memory ? 'Edit' : 'Add'} Memory</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 py-2">
+        <div className="space-y-4 px-6 py-2 overflow-y-auto flex-1">
           {/* Type selector — only show when creating new */}
           {!memory && (
             <div>
@@ -156,7 +156,7 @@ export default function EditMemoryDialog({ memory, open, onClose, onSave, defaul
           )}
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="px-6 py-4 flex-shrink-0 border-t border-gray-100">
           <Button variant="outline" onClick={onClose} className="rounded-xl">Cancel</Button>
           <Button onClick={handleSave} disabled={!form.title.trim()} className="rounded-xl bg-violet-600 hover:bg-violet-700">Save</Button>
         </DialogFooter>
