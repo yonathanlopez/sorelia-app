@@ -103,10 +103,23 @@ export default function Home() {
   const upcomingEvents = memories
     .flatMap(m => {
       const events = [];
-      if (m.type === 'important_date' && m.date) events.push({ id: m.id, title: m.title, date: m.date, type: 'important_date', description: m.description });
+      // Bills, anniversaries, and other recurring important dates
+      if (m.type === 'important_date' && m.date && ['bills', 'anniversary', 'birthday'].includes(m.date_type)) {
+        events.push({ id: m.id, title: m.title, date: m.date, type: 'important_date', description: m.description, date_type: m.date_type });
+      }
+      // Custom recurring dates (no date_type = treat as recurring if it has a date)
+      if (m.type === 'important_date' && m.date && !m.date_type) {
+        events.push({ id: m.id, title: m.title, date: m.date, type: 'important_date', description: m.description });
+      }
+      // Birthdays from people
       if (m.type === 'person' && m.person_birthday) {
         const bdayThisYear = m.person_birthday.replace(/^\d{4}/, new Date().getFullYear());
-        events.push({ id: `${m.id}-bday`, title: `${m.title}'s Birthday`, date: bdayThisYear, type: 'person' });
+        events.push({ id: `${m.id}-bday`, title: `🎂 ${m.title}'s Birthday`, date: bdayThisYear, type: 'person' });
+      }
+      // Anniversaries from people
+      if (m.type === 'person' && m.person_anniversary) {
+        const annivThisYear = m.person_anniversary.replace(/^\d{4}/, new Date().getFullYear());
+        events.push({ id: `${m.id}-anniv`, title: `💍 ${m.title}'s Anniversary`, date: annivThisYear, type: 'person' });
       }
       return events;
     })
@@ -192,13 +205,13 @@ export default function Home() {
     },
     {
       id: 'coming',
-      title: 'Coming Up',
+      title: 'Recurring',
       icon: Clock,
       iconColor: 'bg-rose-100 text-rose-500',
       items: upcomingEvents,
       preview: upcomingEvents.slice(0, 4),
       renderItem: renderComingItem,
-      emptyText: 'No upcoming events',
+      emptyText: 'No recurring events',
     },
   ];
 
