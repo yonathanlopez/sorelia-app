@@ -1,0 +1,39 @@
+{
+  "name": "Memory",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "person",
+        "goal",
+        "important_date",
+        "preference",
+        "life_event",
+        "reminder"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string"
+    },
+    "people": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "source": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "type",
+    "title"
+  ]
+}
