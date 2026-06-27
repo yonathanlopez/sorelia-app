@@ -25,6 +25,14 @@ function getFirstDayOfMonth(year, month) {
 
 function parseEventDate(dateStr) {
   if (!dateStr) return null;
+  // Handle YYYY-MM-DD format (birthdays)
+  const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) {
+    const [, year, month, day] = match;
+    const d = new Date(year, parseInt(month) - 1, parseInt(day));
+    if (!isNaN(d)) return d;
+  }
+  // Fall back to Date constructor
   const d = new Date(dateStr);
   if (!isNaN(d)) return d;
   return null;
@@ -44,7 +52,25 @@ export default function CalendarPage() {
   async function loadEvents() {
     setLoading(true);
     const memories = await base44.entities.Memory.list('-date', 500);
-    setEvents(memories.filter(m => m.date));
+    
+    // Add people's birthdays as events
+    const people = memories.filter(m => m.type === 'person' && m.person_birthday);
+    const birthdayEvents = people.map(p => ({
+      id: `${p.id}-birthday`,
+      type: 'person',
+      title: `${p.title}'s Birthday`,
+      description: p.description,
+      date: p.person_birthday, // YYYY-MM-DD format
+      original_id: p.id,
+    }));
+    
+    // Combine dated memories + birthdays
+    const allEvents = [
+      ...memories.filter(m => m.date),
+      ...birthdayEvents,
+    ];
+    
+    setEvents(allEvents);
     setLoading(false);
   }
 
@@ -74,7 +100,15 @@ export default function CalendarPage() {
   for (const ev of events) {
     const d = parseEventDate(ev.date);
     if (!d) continue;
-    if (d.getFullYear() === currentYear && d.getMonth() === currentMonth) {
+    
+    // For birthdays (type='person'), match any year
+    if (ev.type === 'person' && ev.original_id) {
+      if (d.getMonth() === currentMonth && d.getDate() === d.getDate()) {
+        const day = d.getDate();
+        if (!eventsByDay[day]) eventsByDay[day] = [];
+        eventsByDay[day].push(ev);
+      }
+    } else if (d.getFullYear() === currentYear && d.getMonth() === currentMonth) {
       const day = d.getDate();
       if (!eventsByDay[day]) eventsByDay[day] = [];
       eventsByDay[day].push(ev);
