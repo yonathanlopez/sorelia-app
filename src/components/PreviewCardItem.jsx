@@ -3,10 +3,10 @@ import { Bell, Calendar, Clock, Check } from 'lucide-react';
 
 function DaysBadge({ days }) {
   if (days === null) return null;
-  if (days === 0) return <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full whitespace-nowrap">Today</span>;
-  if (days === 1) return <span className="text-[9px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full whitespace-nowrap">Tomorrow</span>;
-  if (days < 0) return <span className="text-[9px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full whitespace-nowrap">Passed</span>;
-  return <span className="text-[9px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{days}d</span>;
+  if (days === 0) return <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full whitespace-nowrap">Today</span>;
+  if (days === 1) return <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full whitespace-nowrap">Tomorrow</span>;
+  if (days < 0) return <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full whitespace-nowrap">Passed</span>;
+  return <span className="text-xs text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{days}d</span>;
 }
 
 export default function PreviewCardItem({ item, type = 'default', getDaysUntil, isCompleted = false }) {
@@ -22,19 +22,19 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
 
     let dateDisplay = null;
     if (daysUntil === 0) {
-      dateDisplay = <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
+      dateDisplay = <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
     } else if (daysUntil === 1) {
-      dateDisplay = <span className="text-[9px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
+      dateDisplay = <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
     } else {
-      dateDisplay = <div className="w-9 text-center"><p className="text-[9px] font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p><p className="text-base font-bold text-violet-600 leading-tight">{d.getDate()}</p></div>;
+      dateDisplay = <div className="w-9 text-center"><p className="text-xs font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p><p className="text-lg font-bold text-violet-600 leading-tight">{d.getDate()}</p></div>;
     }
 
     return (
       <div className="flex items-center gap-2.5 px-1 py-2">
         <div className="w-0.5 h-7 rounded-full bg-violet-100 flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-gray-800 truncate">{item.title || item.summary}</p>
-          {timeStr && <span className="text-[10px] text-gray-400 font-medium">{timeStr}</span>}
+          <p className="text-sm font-semibold text-gray-800 truncate">{item.title || item.summary}</p>
+          {timeStr && <span className="text-xs text-gray-400 font-medium">{timeStr}</span>}
         </div>
         {dateDisplay}
       </div>
@@ -50,19 +50,19 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
 
     let dateDisplay = null;
     if (daysUntil === 0) {
-      dateDisplay = <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
+      dateDisplay = <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
     } else if (daysUntil === 1) {
-      dateDisplay = <span className="text-[9px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
+      dateDisplay = <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
     } else if (daysUntil !== null && daysUntil > 1) {
-      dateDisplay = <span className="text-[9px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{daysUntil}d</span>;
+      dateDisplay = <span className="text-xs text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{daysUntil}d</span>;
     }
 
     return (
       <div className="flex items-center gap-2.5 px-1 py-2">
         <div className="w-0.5 h-7 rounded-full bg-amber-100 flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-gray-800 truncate">{item.title}</p>
-          {timeStr && <span className="text-[10px] text-gray-400 font-medium">{timeStr}</span>}
+          <p className="text-sm font-semibold text-gray-800 truncate">{item.title}</p>
+          {timeStr && <span className="text-xs text-gray-400 font-medium">{timeStr}</span>}
         </div>
         {dateDisplay}
       </div>
@@ -75,12 +75,12 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
     const Icon = iconMap[item.source] || Bell;
     return (
       <div className={`flex items-center gap-2.5 px-1 py-2 ${isCompleted ? 'opacity-50' : ''}`}>
-        <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${isCompleted ? 'text-gray-300' : 'text-gray-400'}`} />
+        <Icon className={`w-4 h-4 flex-shrink-0 ${isCompleted ? 'text-gray-300' : 'text-gray-400'}`} />
         <div className="flex-1 min-w-0">
-          <p className={`text-xs font-semibold ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
+          <p className={`text-sm font-semibold ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
             {item.title || item.summary}
           </p>
-          {item.time && <span className={`text-[9px] ${isCompleted ? 'text-gray-300' : 'text-gray-400'}`}>{item.time}</span>}
+          {item.time && <span className={`text-xs ${isCompleted ? 'text-gray-300' : 'text-gray-400'}`}>{item.time}</span>}
         </div>
         {item.onDone && (
           <button
