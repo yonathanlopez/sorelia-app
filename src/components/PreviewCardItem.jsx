@@ -46,18 +46,25 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil }
     const timeStr = hasTime
       ? new Date(item.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
       : null;
+    const daysUntil = getDaysUntil(item.date?.split('T')[0]);
+
+    let dateDisplay = null;
+    if (daysUntil === 0) {
+      dateDisplay = <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
+    } else if (daysUntil === 1) {
+      dateDisplay = <span className="text-[9px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
+    } else if (daysUntil !== null && daysUntil > 1) {
+      dateDisplay = <span className="text-[9px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{daysUntil}d</span>;
+    }
+
     return (
-      <div className="flex items-stretch gap-3 px-1 py-1.5">
-        <div className="w-0.5 rounded-full bg-amber-200 flex-shrink-0 my-1" />
-        <div className="flex-1 min-w-0 flex flex-col justify-center">
-          <p className="text-base font-semibold text-gray-900 truncate">{item.title}</p>
-          {timeStr && (
-            <span className="text-sm font-medium text-amber-500 bg-amber-50 px-2 py-0.5 rounded-full mt-0.5 w-fit">{timeStr}</span>
-          )}
+      <div className="flex items-center gap-2.5 px-1 py-2">
+        <div className="w-0.5 h-7 rounded-full bg-amber-100 flex-shrink-0" />
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-semibold text-gray-800 truncate">{item.title}</p>
+          {timeStr && <span className="text-[10px] text-gray-400 font-medium">{timeStr}</span>}
         </div>
-        <div className="flex items-center flex-shrink-0 pt-0.5">
-          <DaysBadge days={item.daysUntil ?? (item.date ? getDaysUntil(item.date) : null)} />
-        </div>
+        {dateDisplay}
       </div>
     );
   }
