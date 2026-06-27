@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Bell, Calendar, Clock, RefreshCw, ChevronRight, X, Target, User } from 'lucide-react';
+import { Bell, Calendar, Clock, RefreshCw, ChevronRight, X, Target, User, CreditCard, Cake, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import BottomNav from '@/components/BottomNav';
@@ -208,8 +208,20 @@ export default function Home() {
   };
 
   const renderComingItem = (ev, i) => {
-    const Icon = typeIcons[ev.type] || Clock;
-    const color = typeColors[ev.type] || 'bg-gray-100 text-gray-500';
+    let Icon, color;
+    if (ev.date_type === 'bills') {
+      Icon = CreditCard;
+      color = 'bg-blue-100 text-blue-600';
+    } else if (ev.date_type === 'birthday' || ev.type === 'person' && ev.id.endsWith('-bday')) {
+      Icon = Cake;
+      color = 'bg-rose-100 text-rose-500';
+    } else if (ev.date_type === 'anniversary' || ev.type === 'person' && ev.id.endsWith('-anniv')) {
+      Icon = Heart;
+      color = 'bg-pink-100 text-pink-500';
+    } else {
+      Icon = Calendar;
+      color = 'bg-gray-100 text-gray-500';
+    }
     let dateDisplay = null;
     if (ev.daysUntil === 0) {
       dateDisplay = <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
@@ -225,7 +237,6 @@ export default function Home() {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-gray-900 truncate">{ev.title}</p>
-          <p className="text-xs text-gray-400 mt-0.5">{new Date(ev.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
         </div>
         {dateDisplay}
       </div>
