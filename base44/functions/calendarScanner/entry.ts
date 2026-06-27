@@ -81,6 +81,7 @@ Deno.serve(async (req) => {
           date: startDate,
           people: [],
           source: 'google_calendar',
+          calendar_name: calName || '',
         });
         memoriesCreated++;
         existingKeys.add(key); // prevent re-adding within same run

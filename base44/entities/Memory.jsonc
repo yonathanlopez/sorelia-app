@@ -52,6 +52,9 @@
         "bills",
         "custom"
       ]
+    },
+    "calendar_name": {
+      "type": "string"
     }
   },
   "required": [

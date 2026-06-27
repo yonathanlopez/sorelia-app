@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { ChevronLeft, ChevronRight, RefreshCw, Calendar, MapPin, Clock } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import BottomNav from '@/components/BottomNav';
 import SoreliaFAB from '@/components/SoreliaFAB';
@@ -53,7 +53,6 @@ export default function CalendarPage() {
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [syncing, setSyncing] = useState(false);
   const [selectedDay, setSelectedDay] = useState(today.getDate());
   const [selectedCalendars, setSelectedCalendars] = useState(new Set(['all']));
   const [showCalendarPicker, setShowCalendarPicker] = useState(false);
@@ -98,6 +97,7 @@ export default function CalendarPage() {
         description: m.description || null,
         date: m.date.split('T')[0],
         time: m.date.includes('T') ? m.date : null,
+        calendarName: m.calendar_name || null,
       }))
       .filter(e => !liveKeys.has(e.date + '||' + e.title));
 
@@ -115,38 +115,6 @@ export default function CalendarPage() {
     
     setEvents(allEvents);
     setLoading(false);
-  }
-
-  async function syncCalendar() {
-    setSyncing(true);
-    try {
-      const [memories, calRes] = await Promise.all([
-        base44.entities.Memory.list('-date', 500),
-        base44.functions.invoke('calendarScanner', {}).catch(() => null),
-      ]);
-
-      const people = memories.filter(m => m.type === 'person' && m.person_birthday);
-      const birthdayEvents = people.map(p => ({
-        id: `${p.id}-birthday`, type: 'person',
-        title: `🎂 ${p.title}'s Birthday`, description: p.description,
-        date: p.person_birthday, original_id: p.id,
-      }));
-      const gcalLive = (calRes?.data?.events || []).map(e => ({
-        id: `gcal-${e.id || Math.random()}`, type: 'gcal',
-        title: e.summary || e.title || 'Untitled',
-        description: e.description || e.location || null,
-        date: (e.start || e.date || '').split('T')[0],
-        time: (e.start || '').includes('T') ? e.start : null,
-      }));
-      const liveKeys = new Set(gcalLive.map(e => e.date + '||' + e.title));
-      const gcalSaved = memories
-        .filter(m => m.source === 'google_calendar' && m.date)
-        .map(m => ({ id: m.id, type: 'gcal', title: m.title, description: m.description || null, date: m.date.split('T')[0], time: m.date.includes('T') ? m.date : null }))
-        .filter(e => !liveKeys.has(e.date + '||' + e.title));
-      const otherMemories = memories.filter(m => m.source !== 'google_calendar' && m.type !== 'person' && m.date).map(m => ({ ...m, type: m.type }));
-      setEvents([...otherMemories, ...birthdayEvents, ...gcalLive, ...gcalSaved]);
-    } catch {}
-    setSyncing(false);
   }
 
   function prevMonth() {
@@ -234,7 +202,6 @@ export default function CalendarPage() {
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-bold text-gray-900">Calendar</h1>
           <div className="flex items-center gap-2">
-            {/* Calendar filter button */}
             <div className="relative">
               <button
                 onClick={() => setShowCalendarPicker(p => !p)}
@@ -283,14 +250,6 @@ export default function CalendarPage() {
               )}
             </div>
 
-            <button
-              onClick={syncCalendar}
-              disabled={syncing}
-              className="flex items-center gap-1.5 text-xs font-medium bg-violet-50 text-violet-600 px-3 py-2 rounded-full disabled:opacity-40"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} />
-              {syncing ? 'Syncing…' : 'Sync'}
-            </button>
           </div>
         </div>
 
