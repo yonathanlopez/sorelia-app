@@ -248,6 +248,51 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Goals progress */}
+        {categoryCounts.goal > 0 && (
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Target className="w-4 h-4 text-emerald-600" />
+                <h2 className="text-sm font-semibold text-gray-900">Goals progress</h2>
+              </div>
+              <Link to="/memories?type=goal" className="text-xs text-violet-600 font-medium">View all</Link>
+            </div>
+            {(() => {
+              const goals = memories.filter(m => m.type === 'goal');
+              const completed = goals.filter(m => m.status === 'completed').length;
+              const active = goals.length - completed;
+              const percentage = Math.round((completed / goals.length) * 100);
+              return (
+                <div className="space-y-3">
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-xs text-gray-600">Progress</span>
+                      <span className="text-sm font-bold text-emerald-600">{percentage}%</span>
+                    </div>
+                    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-emerald-500 transition-all"
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <div className="bg-emerald-50 rounded-lg p-2">
+                      <p className="text-[10px] text-gray-600">Completed</p>
+                      <p className="text-lg font-bold text-emerald-600">{completed}</p>
+                    </div>
+                    <div className="bg-blue-50 rounded-lg p-2">
+                      <p className="text-[10px] text-gray-600">Active</p>
+                      <p className="text-lg font-bold text-blue-600">{active}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
         {/* Coming up */}
         {upcomingEvents.length > 0 && (
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
