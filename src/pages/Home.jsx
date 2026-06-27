@@ -32,25 +32,27 @@ function DaysBadge({ days }) {
 
 function SectionModal({ title, icon: Icon, color, items, renderItem, onClose }) {
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-white">
-      <div className="flex items-center justify-between px-5 pt-14 pb-4 border-b border-gray-100">
-        <div className="flex items-center gap-2">
-          <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${color}`}>
-            <Icon className="w-4 h-4" />
+    <div className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm" onClick={onClose}>
+      <div className="fixed inset-0 z-50 flex flex-col bg-white/95 backdrop-blur-md" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-4 pt-16 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${color}`}>
+              <Icon className="w-4 h-4" />
+            </div>
+            <h2 className="text-base font-bold text-gray-900">{title}</h2>
+            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{items.length}</span>
           </div>
-          <h2 className="text-lg font-bold text-gray-900">{title}</h2>
-          <span className="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full">{items.length}</span>
+          <button onClick={onClose} className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+            <X className="w-4 h-4 text-gray-600" />
+          </button>
         </div>
-        <button onClick={onClose} className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center">
-          <X className="w-4 h-4 text-gray-600" />
-        </button>
-      </div>
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2 pb-24">
-        {items.length === 0 ?
-        <p className="text-sm text-gray-400 text-center py-10">Nothing here yet</p> :
+        <div className="flex-1 overflow-y-auto px-2 py-3 space-y-1 pb-24">
+          {items.length === 0 ?
+          <p className="text-xs text-gray-400 text-center py-10">Nothing here yet</p> :
 
-        items.map((item, i) => renderItem(item, i))
-        }
+          items.map((item, i) => renderItem(item, i))
+          }
+        </div>
       </div>
     </div>);
 
