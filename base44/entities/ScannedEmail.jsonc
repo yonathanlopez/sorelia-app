@@ -1,0 +1,24 @@
+{
+  "name": "ScannedEmail",
+  "type": "object",
+  "properties": {
+    "subject": {
+      "type": "string"
+    },
+    "sender": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string"
+    },
+    "body_preview": {
+      "type": "string"
+    },
+    "memories_extracted": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "subject"
+  ]
+}

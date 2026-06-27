@@ -144,6 +144,22 @@ Max 30 memories. Only extract clear, specific, personally relevant facts.`;
       },
     });
 
+    // Save scanned emails log
+    for (const msg of emailResults.filter(Boolean).slice(0, 20)) {
+      const headers = msg.payload?.headers || [];
+      const subject = headers.find(h => h.name === 'Subject')?.value || '(no subject)';
+      const sender = headers.find(h => h.name === 'From')?.value || '';
+      const date = headers.find(h => h.name === 'Date')?.value || '';
+      const body = extractBodyText(msg.payload).slice(0, 300);
+      await base44.asServiceRole.entities.ScannedEmail.create({
+        subject,
+        sender,
+        date,
+        body_preview: body,
+        memories_extracted: 0,
+      });
+    }
+
     // Save memories
     let memoriesCreated = 0;
     if (result?.memories?.length > 0) {
