@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
     );
     if (!calListRes.ok) {
       const err = await calListRes.text();
-      return Response.json({ error: 'Calendar list error: ' + err }, { status: 400 });
+      return Response.json({ error: 'Calendar list error: ' + err, status: calListRes.status }, { status: 400 });
     }
     const calListData = await calListRes.json();
     const calendars = calListData.items || [];
@@ -25,6 +25,9 @@ Deno.serve(async (req) => {
     const timeMax = new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString();
 
     // Step 2: Fetch events from all calendars, skipping ones that fail
+    // Small delay helper to avoid hitting Google's rate limit
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
     const allEvents = [];
     for (const cal of calendars) {
       try {
@@ -37,6 +40,7 @@ Deno.serve(async (req) => {
         const data = await res.json();
         const items = (data.items || []).map(e => ({ ...e, calendarName: cal.summary }));
         allEvents.push(...items);
+        await sleep(200); // avoid rate limit
       } catch {
         continue;
       }
@@ -99,6 +103,6 @@ Deno.serve(async (req) => {
       })),
     });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json({ error: error.message, stack: error.stack }, { status: 500 });
   }
 });
