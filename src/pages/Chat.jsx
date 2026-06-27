@@ -214,15 +214,15 @@ Only extract clear, specific facts — not vague statements.`;
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] flex flex-col pb-16">
+    <div className="min-h-screen bg-gray-50 flex flex-col pb-16">
       {/* Header */}
-      <div className="bg-white border-b border-gray-100 px-5 pt-14 pb-4 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center">
+      <div className="bg-white border-b border-gray-100 px-5 pt-12 pb-4 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
           <Brain className="w-5 h-5 text-white" />
         </div>
         <div className="flex-1">
-          <h1 className="font-bold text-[17px] text-gray-900">Sorelia</h1>
-          <p className="text-[12px] text-gray-400">Your personal memory assistant</p>
+          <h1 className="font-semibold text-gray-900">Sorelia</h1>
+          <p className="text-xs text-gray-500">Your memory assistant</p>
         </div>
         <button
           onClick={handleBuildProfile}
