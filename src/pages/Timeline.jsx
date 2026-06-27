@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Loader2, ChevronLeft, ChevronRight, Sparkles, MapPin } from 'lucide-react';
+import { Loader2, ChevronLeft, ChevronRight, Sparkles, MapPin, Calendar, RefreshCw } from 'lucide-react';
 import BottomNav from '@/components/BottomNav';
 
 const typeEmoji = {
@@ -52,6 +52,7 @@ export default function Timeline() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [building, setBuilding] = useState(false);
+  const [syncingCalendar, setSyncingCalendar] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(null); // { year, monthIndex }
   const scrubberRef = useRef(null);
   const activeMonthRef = useRef(null);
@@ -190,14 +191,31 @@ Only events with a clear year. Max 30. Sort oldest first.`,
             <h1 className="text-xl font-bold text-gray-900">Your memory map</h1>
             <p className="text-xs text-gray-400 mt-0.5">A timeline of moments Sorelia has remembered.</p>
           </div>
-          <button
-            onClick={buildFromData}
-            disabled={building || loading}
-            className="flex items-center gap-1.5 text-xs font-medium bg-violet-50 text-violet-600 px-3 py-2 rounded-full disabled:opacity-40 hover:bg-violet-100 transition-colors"
-          >
-            {building ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-            {building ? 'Building…' : 'Build'}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={async () => {
+                setSyncingCalendar(true);
+                try {
+                  await base44.functions.invoke('calendarScanner', {});
+                  await loadTimeline();
+                } catch {}
+                setSyncingCalendar(false);
+              }}
+              disabled={syncingCalendar || loading}
+              className="flex items-center gap-1.5 text-xs font-medium bg-violet-50 text-violet-600 px-3 py-2 rounded-full disabled:opacity-40 hover:bg-violet-100 transition-colors"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${syncingCalendar ? 'animate-spin' : ''}`} />
+              {syncingCalendar ? 'Syncing…' : 'Sync'}
+            </button>
+            <button
+              onClick={buildFromData}
+              disabled={building || loading}
+              className="flex items-center gap-1.5 text-xs font-medium bg-violet-50 text-violet-600 px-3 py-2 rounded-full disabled:opacity-40 hover:bg-violet-100 transition-colors"
+            >
+              {building ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+              {building ? 'Building…' : 'Build'}
+            </button>
+          </div>
         </div>
       </div>
 
