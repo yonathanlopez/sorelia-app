@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
-import { Calendar, Target, Brain, MessageCircle, ChevronRight, Sparkles, Bell, User, Heart, Star, Mail } from 'lucide-react';
+import { Calendar, Target, Brain, MessageCircle, ChevronRight, Sparkles, Bell, User, Heart, Star, Mail, Clock } from 'lucide-react';
 import BottomNav from '@/components/BottomNav';
 import GmailScannerModal from '@/components/sorelia/GmailScannerModal';
 
@@ -71,8 +71,60 @@ export default function Home() {
   }
 
   const firstName = user?.full_name?.split(' ')[0] || 'there';
-  const recentMemories = memories.slice(0, 4);
   const categoryCounts = Object.fromEntries(categories.map(c => [c.type, memories.filter(m => m.type === c.type).length]));
+
+  // Calculate upcoming events (birthdays, important dates, goals)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const upcomingEvents = memories
+    .flatMap(m => {
+      const events = [];
+      // Add person's birthday
+      if (m.type === 'person' && m.person_birthday) {
+        events.push({
+          id: `${m.id}-birthday`,
+          title: `${m.title}'s Birthday`,
+          date: m.person_birthday,
+          type: 'person',
+          original: m,
+        });
+      }
+      // Add important dates
+      if (m.type === 'important_date' && m.date) {
+        events.push({
+          id: m.id,
+          title: m.title,
+          date: m.date,
+          type: 'important_date',
+          original: m,
+        });
+      }
+      // Add goals with due dates
+      if (m.type === 'goal' && m.date && m.status !== 'completed') {
+        events.push({
+          id: m.id,
+          title: m.title,
+          date: m.date,
+          type: 'goal',
+          original: m,
+        });
+      }
+      return events;
+    })
+    .map(ev => {
+      const dateStr = ev.date;
+      const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (match) {
+        const [, year, month, day] = match;
+        const eventDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        return { ...ev, eventDate };
+      }
+      return null;
+    })
+    .filter(ev => ev && ev.eventDate >= today)
+    .sort((a, b) => a.eventDate - b.eventDate)
+    .slice(0, 4);
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
@@ -135,25 +187,27 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Recent memories */}
-        {recentMemories.length > 0 && (
+        {/* Coming up */}
+        {upcomingEvents.length > 0 && (
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold text-gray-900">Recently remembered</h2>
-              <Link to="/memories" className="text-xs text-violet-600 font-medium">See all</Link>
+              <h2 className="text-sm font-semibold text-gray-900">Coming up</h2>
+              <Link to="/calendar" className="text-xs text-violet-600 font-medium">Calendar</Link>
             </div>
             <div className="space-y-2.5">
-              {recentMemories.map(m => {
-                const Icon = typeIcons[m.type] || Brain;
-                const color = typeColors[m.type] || 'bg-gray-100 text-gray-600';
+              {upcomingEvents.map(ev => {
+                const Icon = typeIcons[ev.type] || Clock;
+                const color = typeColors[ev.type] || 'bg-gray-100 text-gray-600';
+                const daysUntil = Math.ceil((ev.eventDate - today) / (1000 * 60 * 60 * 24));
+                const dateStr = daysUntil === 0 ? 'Today' : daysUntil === 1 ? 'Tomorrow' : `In ${daysUntil} days`;
                 return (
-                  <div key={m.id} className="flex items-center gap-3">
+                  <div key={ev.id} className="flex items-center gap-3">
                     <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
                       <Icon className="w-4 h-4" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">{m.title}</p>
-                      {m.description && <p className="text-xs text-gray-400 truncate">{m.description}</p>}
+                      <p className="text-sm font-medium text-gray-900 truncate">{ev.title}</p>
+                      <p className="text-xs text-violet-500 font-medium">{dateStr}</p>
                     </div>
                   </div>
                 );
