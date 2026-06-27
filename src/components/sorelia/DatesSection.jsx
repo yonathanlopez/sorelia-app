@@ -3,7 +3,7 @@ import { Calendar, Plus } from 'lucide-react';
 import MemoryCard from './MemoryCard';
 
 export default function DatesSection({ memories, onAdd, onEdit, onDelete }) {
-  const [filter, setFilter] = useState('upcoming'); // upcoming, calendar
+  const [dateType, setDateType] = useState('all');
   
   const dates = memories.filter(m => m.type === 'important_date').sort((a, b) => {
     const aDate = new Date(a.date || '9999-12-31');
@@ -11,36 +11,29 @@ export default function DatesSection({ memories, onAdd, onEdit, onDelete }) {
     return aDate - bDate;
   });
 
-  const upcoming = dates.filter(d => new Date(d.date) >= new Date());
-  const past = dates.filter(d => new Date(d.date) < new Date());
-
-  const filtered = filter === 'upcoming' ? upcoming : dates;
+  const filtered = dateType === 'all' 
+    ? dates 
+    : dates.filter(d => (d.date_type || 'custom') === dateType);
+  
+  const dateTypes = ['all', 'birthday', 'anniversary', 'bills', 'custom'];
 
   return (
     <div>
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-gray-100 px-5 -mx-5 mb-4">
-        <button
-          onClick={() => setFilter('upcoming')}
-          className={`px-4 py-3 text-sm font-medium border-b-2 -mb-px transition-colors ${
-            filter === 'upcoming'
-              ? 'text-violet-600 border-violet-600'
-              : 'text-gray-500 border-transparent hover:text-gray-700'
-          }`}
-        >
-          Upcoming
-        </button>
-        <button
-          onClick={() => setFilter('calendar')}
-          className={`px-4 py-3 text-sm font-medium border-b-2 -mb-px transition-colors flex items-center gap-1 ${
-            filter === 'calendar'
-              ? 'text-violet-600 border-violet-600'
-              : 'text-gray-500 border-transparent hover:text-gray-700'
-          }`}
-        >
-          <Calendar className="w-4 h-4" />
-          Calendar
-        </button>
+      <div className="flex gap-2 border-b border-gray-100 px-5 -mx-5 mb-4 overflow-x-auto">
+        {dateTypes.map(type => (
+          <button
+            key={type}
+            onClick={() => setDateType(type)}
+            className={`px-4 py-3 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap capitalize ${
+              dateType === type
+                ? 'text-violet-600 border-violet-600'
+                : 'text-gray-500 border-transparent hover:text-gray-700'
+            }`}
+          >
+            {type === 'all' ? 'All' : type}
+          </button>
+        ))}
       </div>
 
       {/* Add button */}
@@ -58,7 +51,7 @@ export default function DatesSection({ memories, onAdd, onEdit, onDelete }) {
             <Calendar className="w-6 h-6 text-violet-600" />
           </div>
           <p className="text-sm text-gray-500">
-            {filter === 'upcoming' ? 'No upcoming dates' : 'No dates yet'}
+            No {dateType === 'all' ? 'dates' : dateType} dates yet
           </p>
         </div>
       ) : (

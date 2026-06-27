@@ -43,6 +43,15 @@
         "active",
         "completed"
       ]
+    },
+    "date_type": {
+      "type": "string",
+      "enum": [
+        "birthday",
+        "anniversary",
+        "bills",
+        "custom"
+      ]
     }
   },
   "required": [

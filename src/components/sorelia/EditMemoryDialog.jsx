@@ -17,6 +17,7 @@ const defaultForm = {
   person_birthday: '',
   person_relationship: '',
   person_anniversary: '',
+  date_type: 'custom',
 };
 
 export default function EditMemoryDialog({ memory, open, onClose, onSave, defaultType }) {
@@ -33,6 +34,7 @@ export default function EditMemoryDialog({ memory, open, onClose, onSave, defaul
         person_birthday: memory.person_birthday || '',
         person_relationship: memory.person_relationship || '',
         person_anniversary: memory.person_anniversary || '',
+        date_type: memory.date_type || 'custom',
       });
     } else {
       setForm({ ...defaultForm, type: defaultType || 'person' });
@@ -55,6 +57,9 @@ export default function EditMemoryDialog({ memory, open, onClose, onSave, defaul
       payload.person_birthday = form.person_birthday;
       payload.person_relationship = form.person_relationship;
       payload.person_anniversary = form.person_anniversary;
+    }
+    if (form.type === 'important_date') {
+      payload.date_type = form.date_type;
     }
     onSave(payload);
   };
@@ -137,6 +142,22 @@ export default function EditMemoryDialog({ memory, open, onClose, onSave, defaul
                 <div>
                   <Label className="text-xs text-gray-500">Date</Label>
                   <Input className="mt-1" type="date" value={form.date} onChange={e => set('date', e.target.value)} />
+                </div>
+              )}
+              {isDate && (
+                <div>
+                  <Label className="text-xs text-gray-500">Date Type</Label>
+                  <Select value={form.date_type} onValueChange={v => set('date_type', v)}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="birthday">Birthday</SelectItem>
+                      <SelectItem value="anniversary">Anniversary</SelectItem>
+                      <SelectItem value="bills">Bills</SelectItem>
+                      <SelectItem value="custom">Custom</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               )}
               <div>
