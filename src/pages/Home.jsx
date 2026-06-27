@@ -168,7 +168,17 @@ export default function Home() {
     const timeStr = hasTime
       ? new Date(rawDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
       : null;
-    const weekday = d.toLocaleDateString('en-US', { weekday: 'short' });
+    const daysUntil = getDaysUntil(dateStr);
+    let dateLabel = d.toLocaleDateString('en-US', { weekday: 'short' });
+    let dateNum = d.getDate();
+    
+    if (daysUntil === 0) {
+      dateLabel = 'Today';
+      dateNum = '';
+    } else if (daysUntil === 1) {
+      dateLabel = 'Tomorrow';
+      dateNum = '';
+    }
     
     return (
       <div key={i} className="flex items-stretch gap-3 px-1 py-1.5">
@@ -183,8 +193,8 @@ export default function Home() {
           </div>
         </div>
         <div className="w-10 flex flex-col items-center flex-shrink-0 pt-0.5">
-          <span className="text-[10px] font-semibold text-gray-400 uppercase">{weekday}</span>
-          <span className="text-lg font-bold text-violet-600 leading-tight">{d.getDate()}</span>
+          <span className="text-[10px] font-semibold text-gray-400 uppercase">{dateLabel}</span>
+          {dateNum && <span className="text-lg font-bold text-violet-600 leading-tight">{dateNum}</span>}
         </div>
       </div>
     );
@@ -344,6 +354,18 @@ export default function Home() {
                       const timeStr = hasTime
                         ? new Date(rawDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
                         : null;
+                      const daysUntil = getDaysUntil(dateStr);
+                      let dateLabel = d.toLocaleDateString('en-US', { weekday: 'short' });
+                      let dateNum = d.getDate();
+                      
+                      if (daysUntil === 0) {
+                        dateLabel = 'Today';
+                        dateNum = '';
+                      } else if (daysUntil === 1) {
+                        dateLabel = 'Tomorrow';
+                        dateNum = '';
+                      }
+                      
                       return (
                         <div key={i} className="flex items-center gap-2.5 px-1 py-1.5">
                           <div className="w-0.5 h-7 rounded-full bg-violet-100 flex-shrink-0" />
@@ -352,8 +374,8 @@ export default function Home() {
                             {timeStr && <span className="text-[10px] text-violet-400 font-medium">{timeStr}</span>}
                           </div>
                           <div className="w-9 text-center flex-shrink-0">
-                            <p className="text-[9px] font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p>
-                            <p className="text-base font-bold text-violet-600 leading-tight">{d.getDate()}</p>
+                            <p className="text-[9px] font-semibold text-gray-400 uppercase">{dateLabel}</p>
+                            {dateNum && <p className="text-base font-bold text-violet-600 leading-tight">{dateNum}</p>}
                           </div>
                         </div>
                       );
