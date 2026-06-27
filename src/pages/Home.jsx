@@ -182,6 +182,19 @@ export default function Home() {
     );
   };
 
+  const todayItems = [
+    ...memories.filter(m => m.type === 'important_date' && m.date && getDaysUntil(m.date) === 0)
+      .map(m => ({ label: m.title, emoji: '📅' })),
+    ...memories.filter(m => m.type === 'goal' && m.status === 'active' && m.date && getDaysUntil(m.date) === 0)
+      .map(m => ({ label: m.title, emoji: '🎯' })),
+    ...memories.filter(m => m.type === 'person' && m.person_birthday && getDaysUntil(m.person_birthday.replace(/^\d{4}/, new Date().getFullYear())) === 0)
+      .map(m => ({ label: `${m.title}'s Birthday`, emoji: '🎂' })),
+    ...memories.filter(m => m.type === 'person' && m.person_anniversary && getDaysUntil(m.person_anniversary.replace(/^\d{4}/, new Date().getFullYear())) === 0)
+      .map(m => ({ label: `${m.title}'s Anniversary`, emoji: '💍' })),
+    ...upcomingCalendar.filter(e => e.daysUntil === 0)
+      .map(e => ({ label: e.summary || e.title, emoji: '📆' })),
+  ];
+
   const sections = [
     {
       id: 'reminders',
@@ -231,6 +244,28 @@ export default function Home() {
           <button onClick={handleSync} disabled={syncing} className="w-10 h-10 rounded-xl bg-white/20 border border-white/30 flex items-center justify-center">
             <RefreshCw className={`w-4 h-4 text-white ${syncing ? 'animate-spin' : ''}`} />
           </button>
+        </div>
+      </div>
+
+      {/* Today's Summary */}
+      <div className="px-4 pt-4 flex-shrink-0">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-3">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-base">✨</span>
+            <h2 className="text-sm font-bold text-gray-900">Today's Summary</h2>
+          </div>
+          {todayItems.length === 0 ? (
+            <p className="text-xs text-gray-400">Nothing special today — enjoy the calm! 🌿</p>
+          ) : (
+            <div className="space-y-1.5">
+              {todayItems.map((item, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <span className="text-sm">{item.emoji}</span>
+                  <span className="text-xs text-gray-700 font-medium">{item.label}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
