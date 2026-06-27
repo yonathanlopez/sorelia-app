@@ -14,6 +14,9 @@
     "body_preview": {
       "type": "string"
     },
+    "body_full": {
+      "type": "string"
+    },
     "memories_extracted": {
       "type": "number"
     },

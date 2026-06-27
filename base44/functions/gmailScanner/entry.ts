@@ -164,6 +164,7 @@ Only extract memories that are genuinely personally meaningful. Max 30 memories.
         sender: e.sender,
         date: e.date,
         body_preview: e.body.slice(0, 300),
+        body_full: e.body,
         memories_extracted: 0,
         category_label: cls.category_label || 'Unknown',
         category_reasoning: cls.category_reasoning || '',

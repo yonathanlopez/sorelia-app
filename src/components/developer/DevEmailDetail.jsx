@@ -142,15 +142,15 @@ export default function DevEmailDetail({ email, memories, onClose }) {
             )}
           </div>
 
-          {/* Body preview */}
-          {email.body_preview && (
+          {/* Body full */}
+          {(email.body_full || email.body_preview) && (
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <FileText className="w-4 h-4 text-gray-400" />
-                <p className="text-xs font-semibold text-gray-700">Email Content Preview</p>
+                <p className="text-xs font-semibold text-gray-700">Email Content</p>
               </div>
-              <div className="bg-gray-50 rounded-2xl p-4 text-xs text-gray-600 leading-relaxed font-mono">
-                {email.body_preview}
+              <div className="bg-gray-50 rounded-2xl p-4 text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
+                {email.body_full || email.body_preview}
               </div>
             </div>
           )}
