@@ -106,13 +106,9 @@ export default function Home() {
   const upcomingEvents = memories
     .flatMap(m => {
       const events = [];
-      // Bills, anniversaries, and other recurring important dates
-      if (m.type === 'important_date' && m.date && ['bills', 'anniversary', 'birthday'].includes(m.date_type)) {
+      // Bills, birthdays, and anniversaries only
+      if (m.type === 'important_date' && m.date && ['bills', 'birthday', 'anniversary'].includes(m.date_type)) {
         events.push({ id: m.id, title: m.title, date: m.date, type: 'important_date', description: m.description, date_type: m.date_type });
-      }
-      // Custom recurring dates (no date_type = treat as recurring if it has a date)
-      if (m.type === 'important_date' && m.date && !m.date_type) {
-        events.push({ id: m.id, title: m.title, date: m.date, type: 'important_date', description: m.description });
       }
       // Birthdays from people
       if (m.type === 'person' && m.person_birthday) {
