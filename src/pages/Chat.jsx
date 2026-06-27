@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Send, Loader2, Brain } from 'lucide-react';
+import { Send, Loader2, Brain, Sparkles } from 'lucide-react';
 import ChatBubble from '@/components/sorelia/ChatBubble';
 import BottomNav from '@/components/BottomNav';
 
@@ -8,6 +8,7 @@ export default function Chat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
+  const [buildingProfile, setBuildingProfile] = useState(false);
   const [conversationId, setConversationId] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -153,6 +154,40 @@ Only extract clear, specific facts — not vague statements.`;
     }
   }
 
+  async function handleBuildProfile() {
+    if (buildingProfile || sending) return;
+    setBuildingProfile(true);
+
+    const thinkingMsg = { role: 'assistant', content: '🔍 Reading your emails to build your profile...', timestamp: new Date().toISOString() };
+    const newMessages = [...messages, thinkingMsg];
+    setMessages(newMessages);
+
+    try {
+      const res = await base44.functions.invoke('buildEmailProfile', {});
+      const profile = res.data?.profile;
+      const profileMsg = {
+        role: 'assistant',
+        content: profile
+          ? `✨ **Here's what your inbox says about you:**\n\n${profile}`
+          : "I couldn't find enough emails to build a profile yet. Try connecting Gmail first.",
+        timestamp: new Date().toISOString(),
+      };
+      const finalMessages = [...messages, profileMsg];
+      setMessages(finalMessages);
+      if (conversationId) {
+        await base44.entities.Conversation.update(conversationId, { messages: finalMessages });
+      } else {
+        const convo = await base44.entities.Conversation.create({ messages: finalMessages });
+        setConversationId(convo.id);
+      }
+    } catch {
+      const errMsg = { role: 'assistant', content: "Connect Gmail first so I can read your emails and build your profile.", timestamp: new Date().toISOString() };
+      setMessages([...messages, errMsg]);
+    } finally {
+      setBuildingProfile(false);
+    }
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
     sendMessage();
@@ -165,10 +200,18 @@ Only extract clear, specific facts — not vague statements.`;
         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
           <Brain className="w-5 h-5 text-white" />
         </div>
-        <div>
+        <div className="flex-1">
           <h1 className="font-semibold text-gray-900">Sorelia</h1>
           <p className="text-xs text-gray-500">Your memory assistant</p>
         </div>
+        <button
+          onClick={handleBuildProfile}
+          disabled={buildingProfile || sending}
+          className="flex items-center gap-1.5 text-xs font-medium bg-violet-50 text-violet-600 px-3 py-2 rounded-full disabled:opacity-40 hover:bg-violet-100 transition-colors"
+        >
+          {buildingProfile ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+          My Profile
+        </button>
       </div>
 
       {/* Messages */}
