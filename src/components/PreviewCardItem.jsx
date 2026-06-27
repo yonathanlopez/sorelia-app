@@ -42,17 +42,20 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil }
   }
 
   if (type === 'reminder') {
-    const timeStr = item.date
+    const hasTime = item.date && item.date.includes('T');
+    const timeStr = hasTime
       ? new Date(item.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
       : null;
     return (
-      <div className="flex items-center gap-2.5 px-2 py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
-        <Bell className="w-4 h-4 text-violet-300 flex-shrink-0" />
-        <div className="flex-1 min-w-0">
-          <p className="text-xs font-medium text-gray-800 truncate">{item.title}</p>
-          {timeStr && <span className="text-[10px] text-gray-400">{timeStr}</span>}
+      <div className="flex items-stretch gap-3 px-1 py-1.5">
+        <div className="w-0.5 rounded-full bg-amber-200 flex-shrink-0 my-1" />
+        <div className="flex-1 min-w-0 flex flex-col justify-center">
+          <p className="text-base font-semibold text-gray-900 truncate">{item.title}</p>
+          {timeStr && (
+            <span className="text-sm font-medium text-amber-500 bg-amber-50 px-2 py-0.5 rounded-full mt-0.5 w-fit">{timeStr}</span>
+          )}
         </div>
-        <div className="flex-shrink-0">
+        <div className="flex items-center flex-shrink-0 pt-0.5">
           <DaysBadge days={item.daysUntil ?? (item.date ? getDaysUntil(item.date) : null)} />
         </div>
       </div>
