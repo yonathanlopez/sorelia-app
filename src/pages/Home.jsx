@@ -168,11 +168,12 @@ export default function Home() {
             <h1 className="text-white text-3xl font-bold mt-0.5">{firstName}</h1>
           </div>
           {streak > 0 && (
-            <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-3 flex items-center gap-2 border border-white/30">
+            <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-3 flex items-center gap-3 border border-white/30">
               <Flame className="w-5 h-5 text-orange-300" />
-              <div className="text-right">
-                <p className="text-white font-bold text-lg">{streak}</p>
-                <p className="text-white/80 text-[10px] font-semibold">day streak</p>
+              <div className="text-right flex-1">
+                <p className="text-white font-bold text-lg leading-tight">{streak}</p>
+                <p className="text-white/80 text-[9px] font-semibold">day streak</p>
+                <p className="text-white/70 text-[8px] mt-0.5">{memories.length} memories</p>
               </div>
             </div>
           )}
