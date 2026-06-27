@@ -248,14 +248,22 @@ export default function Home() {
     );
   };
 
+  async function handleReminderDone(reminderId) {
+    await base44.entities.Memory.update(reminderId, { status: 'completed' });
+    const mems = await base44.entities.Memory.list('-created_date', 200);
+    setMemories(mems);
+  }
+
   const todayItems = [
     ...memories.filter(m => m.type === 'important_date' && m.date && getDaysUntil(m.date) === 0)
       .map(m => ({ title: m.title, source: 'recurring' })),
     ...reminders.filter(m => getDaysUntil(m.date) === 0)
       .map(m => ({ 
-        title: m.title, 
+        title: m.title,
+        id: m.id,
         source: 'reminders',
-        time: m.date && m.date.includes('T') ? new Date(m.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
+        time: m.date && m.date.includes('T') ? new Date(m.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null,
+        onDone: () => handleReminderDone(m.id)
       })),
     ...memories.filter(m => m.type === 'person' && m.person_birthday && getDaysUntil(m.person_birthday.replace(/^\d{4}/, new Date().getFullYear())) === 0)
       .map(m => ({ title: `${m.title}'s Birthday`, source: 'recurring' })),
