@@ -6,7 +6,7 @@ function DaysBadge({ days }) {
   if (days === 0) return <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full whitespace-nowrap">Today</span>;
   if (days === 1) return <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full whitespace-nowrap">Tomorrow</span>;
   if (days < 0) return <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full whitespace-nowrap">Passed</span>;
-  return <span className="text-xs text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{days}d</span>;
+  return <span className="text-xs bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap text-[hsl(var(--sidebar-ring))]">{days}d</span>;
 }
 
 export default function PreviewCardItem({ item, type = 'default', getDaysUntil, isCompleted = false }) {
@@ -26,7 +26,7 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
     } else if (daysUntil === 1) {
       dateDisplay = <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
     } else {
-      dateDisplay = <div className="w-9 text-center"><p className="text-xs font-semibold text-gray-400 capitalize">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p><p className="font-bold text-violet-600 leading-tight text-sm">{d.getDate()}</p></div>;
+      dateDisplay = <div className="w-9 text-center"><p className="text-xs font-semibold text-gray-400 capitalize">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p><p className="font-bold leading-tight text-sm text-[hsl(var(--sidebar-ring))]">{d.getDate()}</p></div>;
     }
 
     return (
@@ -54,7 +54,7 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
     } else if (daysUntil === 1) {
       dateDisplay = <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
     } else if (daysUntil !== null && daysUntil > 1) {
-      dateDisplay = <span className="text-xs text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{daysUntil}d</span>;
+      dateDisplay = <span className="text-xs bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap text-[hsl(var(--sidebar-ring))]">{daysUntil}d</span>;
     }
 
     return (
