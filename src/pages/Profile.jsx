@@ -35,14 +35,8 @@ export default function Profile() {
   }, []);
 
   async function handleClearAll() {
-    const [mems, convos] = await Promise.all([
-      base44.entities.Memory.list('-created_date', 500),
-      base44.entities.Conversation.list('-created_date', 500),
-    ]);
-    await Promise.all([
-      ...mems.map(m => base44.entities.Memory.delete(m.id)),
-      ...convos.map(c => base44.entities.Conversation.delete(c.id)),
-    ]);
+    await base44.entities.Memory.deleteMany({});
+    await base44.entities.Conversation.deleteMany({});
     setMemoryCount(0);
     setShowClearDialog(false);
     toast({ title: '🗑️ Everything has been reset' });
