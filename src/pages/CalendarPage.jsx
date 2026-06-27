@@ -8,6 +8,12 @@ import SoreliaFAB from '@/components/SoreliaFAB';
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
+const CALENDAR_COLORS = [
+  '#7C3AED','#06B6D4','#10B981','#F59E0B','#EF4444',
+  '#EC4899','#8B5CF6','#14B8A6','#F97316','#6366F1',
+  '#84CC16','#0EA5E9',
+];
+
 const typeColors = {
   important_date: 'bg-violet-500',
   goal: 'bg-emerald-500',
@@ -49,6 +55,8 @@ export default function CalendarPage() {
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [selectedDay, setSelectedDay] = useState(today.getDate());
+  const [selectedCalendars, setSelectedCalendars] = useState(new Set(['all']));
+  const [showCalendarPicker, setShowCalendarPicker] = useState(false);
 
   useEffect(() => { loadEvents(); }, []);
 
@@ -153,9 +161,39 @@ export default function CalendarPage() {
     setSelectedDay(null);
   }
 
+  // Derive unique calendar names from events
+  const calendarNames = ['all', ...Array.from(new Set(events.map(e => e.calendarName).filter(Boolean)))];
+  const calendarColorMap = {};
+  calendarNames.filter(c => c !== 'all').forEach((name, i) => {
+    calendarColorMap[name] = CALENDAR_COLORS[i % CALENDAR_COLORS.length];
+  });
+
+  // Filter events by selected calendars
+  const filteredEvents = selectedCalendars.has('all')
+    ? events
+    : events.filter(e => !e.calendarName || selectedCalendars.has(e.calendarName));
+
+  function toggleCalendar(name) {
+    if (name === 'all') {
+      setSelectedCalendars(new Set(['all']));
+      return;
+    }
+    setSelectedCalendars(prev => {
+      const next = new Set(prev);
+      next.delete('all');
+      if (next.has(name)) {
+        next.delete(name);
+        if (next.size === 0) next.add('all');
+      } else {
+        next.add(name);
+      }
+      return next;
+    });
+  }
+
   // Map events to days in current month/year
   const eventsByDay = {};
-  for (const ev of events) {
+  for (const ev of filteredEvents) {
     const d = parseEventDate(ev.date);
     if (!d) continue;
     
@@ -195,14 +233,65 @@ export default function CalendarPage() {
       <div className="bg-white px-5 pt-12 pb-4 border-b border-gray-100">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-bold text-gray-900">Calendar</h1>
-          <button
-            onClick={syncCalendar}
-            disabled={syncing}
-            className="flex items-center gap-1.5 text-xs font-medium bg-violet-50 text-violet-600 px-3 py-2 rounded-full disabled:opacity-40"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} />
-            {syncing ? 'Syncing…' : 'Sync'}
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Calendar filter button */}
+            <div className="relative">
+              <button
+                onClick={() => setShowCalendarPicker(p => !p)}
+                className="flex items-center gap-1.5 text-xs font-medium bg-gray-100 text-gray-700 px-3 py-2 rounded-full"
+              >
+                <span className="flex gap-0.5">
+                  {selectedCalendars.has('all')
+                    ? <span className="w-2.5 h-2.5 rounded-full bg-violet-500 inline-block" />
+                    : Array.from(selectedCalendars).slice(0, 3).map(name => (
+                        <span key={name} className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: calendarColorMap[name] || '#7C3AED' }} />
+                      ))
+                  }
+                </span>
+                {selectedCalendars.has('all') ? 'All' : `${selectedCalendars.size}`}
+              </button>
+
+              {/* Dropdown */}
+              {showCalendarPicker && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowCalendarPicker(false)} />
+                  <div className="absolute right-0 top-10 z-50 bg-white rounded-2xl shadow-xl border border-gray-100 min-w-[220px] py-2 overflow-hidden">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-4 py-2">Calendars</p>
+                    {/* All option */}
+                    <button
+                      onClick={() => { toggleCalendar('all'); setShowCalendarPicker(false); }}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${selectedCalendars.has('all') ? 'bg-violet-50' : 'hover:bg-gray-50'}`}
+                    >
+                      <span className="w-3 h-3 rounded-full bg-violet-500 flex-shrink-0" />
+                      <span className={`font-medium ${selectedCalendars.has('all') ? 'text-violet-700' : 'text-gray-700'}`}>All calendars</span>
+                      {selectedCalendars.has('all') && <span className="ml-auto text-violet-500 text-xs">✓</span>}
+                    </button>
+                    {/* Individual calendars */}
+                    {calendarNames.filter(c => c !== 'all').map(name => (
+                      <button
+                        key={name}
+                        onClick={() => toggleCalendar(name)}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${selectedCalendars.has(name) ? 'bg-violet-50' : 'hover:bg-gray-50'}`}
+                      >
+                        <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: calendarColorMap[name] }} />
+                        <span className={`font-medium truncate text-left flex-1 ${selectedCalendars.has(name) ? 'text-violet-700' : 'text-gray-700'}`}>{name}</span>
+                        {selectedCalendars.has(name) && <span className="ml-auto text-violet-500 text-xs flex-shrink-0">✓</span>}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
+            <button
+              onClick={syncCalendar}
+              disabled={syncing}
+              className="flex items-center gap-1.5 text-xs font-medium bg-violet-50 text-violet-600 px-3 py-2 rounded-full disabled:opacity-40"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} />
+              {syncing ? 'Syncing…' : 'Sync'}
+            </button>
+          </div>
         </div>
 
         {/* Month nav */}
@@ -266,7 +355,7 @@ export default function CalendarPage() {
               <div className="text-center py-10 text-sm text-gray-400">No events on this day.</div>
             ) : (
               selectedEvents.map(ev => (
-                <EventCard key={ev.id} event={ev} />
+                <EventCard key={ev.id} event={ev} calendarColorMap={calendarColorMap} />
               ))
             )}
           </>
@@ -285,7 +374,7 @@ export default function CalendarPage() {
                 .map(([day, evs]) => (
                   <div key={day}>
                     <p className="text-xs text-gray-400 font-semibold mb-1.5">{MONTHS[currentMonth]} {day}</p>
-                    {evs.map(ev => <EventCard key={ev.id} event={ev} />)}
+                    {evs.map(ev => <EventCard key={ev.id} event={ev} calendarColorMap={calendarColorMap} />)}
                   </div>
                 ))
             )}
@@ -298,7 +387,8 @@ export default function CalendarPage() {
   );
 }
 
-function EventCard({ event }) {
+function EventCard({ event, calendarColorMap = {} }) {
+  const calColor = event.calendarName && calendarColorMap[event.calendarName];
   const dot = typeColors[event.type] || 'bg-violet-500';
   const d = parseEventDate(event.date);
   const timeStr = event.time
@@ -309,13 +399,19 @@ function EventCard({ event }) {
 
   return (
     <div className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-gray-100 flex items-start gap-3">
-      <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${dot}`} />
+      <div
+        className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${calColor ? '' : dot}`}
+        style={calColor ? { background: calColor } : {}}
+      />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-gray-900">{event.title}</p>
         {timeStr && (
           <p className="text-xs text-violet-500 flex items-center gap-1 mt-0.5">
             <Clock className="w-3 h-3" />{timeStr}
           </p>
+        )}
+        {event.calendarName && (
+          <p className="text-[10px] text-gray-400 mt-0.5">{event.calendarName}</p>
         )}
         {event.description && (
           <p className="text-xs text-gray-500 mt-1 leading-relaxed line-clamp-2">{event.description}</p>
