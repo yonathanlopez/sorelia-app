@@ -262,8 +262,8 @@ export default function Home() {
             {(() => {
               const goals = memories.filter(m => m.type === 'goal');
               const completed = goals.filter(m => m.status === 'completed').length;
-              const active = goals.length - completed;
-              const percentage = Math.round((completed / goals.length) * 100);
+              const active = goals.filter(m => m.status === 'active').length;
+              const percentage = goals.length > 0 ? Math.round((completed / goals.length) * 100) : 0;
               return (
                 <div className="space-y-3">
                   <div>
@@ -287,6 +287,41 @@ export default function Home() {
                       <p className="text-[10px] text-gray-600">Active</p>
                       <p className="text-lg font-bold text-blue-600">{active}</p>
                     </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
+        {/* Important dates stats */}
+        {categoryCounts.important_date > 0 && (
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-violet-600" />
+                <h2 className="text-sm font-semibold text-gray-900">Dates timeline</h2>
+              </div>
+              <Link to="/memories?type=important_date" className="text-xs text-violet-600 font-medium">View all</Link>
+            </div>
+            {(() => {
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+              const dates = memories.filter(m => m.type === 'important_date' && m.date);
+              const passed = dates.filter(d => {
+                const dateObj = new Date(d.date + 'T00:00:00');
+                return dateObj < today;
+              }).length;
+              const upcoming = dates.length - passed;
+              return (
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="bg-gray-100 rounded-lg p-3">
+                    <p className="text-[10px] text-gray-600">Passed</p>
+                    <p className="text-xl font-bold text-gray-700 mt-1">{passed}</p>
+                  </div>
+                  <div className="bg-violet-50 rounded-lg p-3">
+                    <p className="text-[10px] text-gray-600">Upcoming</p>
+                    <p className="text-xl font-bold text-violet-600 mt-1">{upcoming}</p>
                   </div>
                 </div>
               );
