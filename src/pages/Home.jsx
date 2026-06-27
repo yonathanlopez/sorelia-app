@@ -289,7 +289,7 @@ export default function Home() {
   const userName = user?.full_name?.split(' ')[0] || 'there';
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
 
 
       {/* Today's Summary */}
@@ -319,7 +319,7 @@ export default function Home() {
           <button
             key={s.id}
             onClick={() => setModal(s.id)}
-            className="w-full bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200 shadow-sm text-left hover:shadow-md transition-shadow"
+            className="w-full bg-white rounded-2xl border border-gray-100 shadow-sm text-left hover:shadow-md transition-shadow"
           >
             {/* Section header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
@@ -387,7 +387,7 @@ export default function Home() {
                         <div className="w-0.5 h-7 rounded-full bg-blue-100 flex-shrink-0" />
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-semibold text-gray-800 truncate">{item.title || item.summary}</p>
-                          {timeStr && <span className="text-[10px] text-gray-600 font-medium">{timeStr}</span>}
+                          {timeStr && <span className="text-[10px] text-blue-400 font-medium">{timeStr}</span>}
                         </div>
                         {dateDisplay}
                       </div>
