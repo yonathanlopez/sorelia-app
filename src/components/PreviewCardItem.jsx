@@ -24,9 +24,9 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
     const dateObj = new Date(dateStr + 'T00:00:00');
     const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     if (daysUntil === 0) {
-      dateDisplay = <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today ({formattedDate})</span>;
+      dateDisplay = <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Today</span>;
     } else if (daysUntil === 1) {
-      dateDisplay = <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow ({formattedDate})</span>;
+      dateDisplay = <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
     } else {
       dateDisplay = <div className="w-9 text-center"><p className="text-xs font-semibold text-gray-400 capitalize">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p><p className="font-bold leading-tight text-sm text-[hsl(var(--sidebar-ring))]">{d.getDate()}</p></div>;
     }
@@ -54,9 +54,9 @@ export default function PreviewCardItem({ item, type = 'default', getDaysUntil, 
     const dateObj = new Date(item.date.split('T')[0] + 'T00:00:00');
     const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     if (daysUntil === 0) {
-      dateDisplay = <span className="text-xs font-bold text-emerald-600 bg-emerald-50 rounded-full px-2">Today ({formattedDate})</span>;
+      dateDisplay = <span className="text-xs font-bold text-emerald-600 bg-emerald-50 rounded-full px-2">Today</span>;
     } else if (daysUntil === 1) {
-      dateDisplay = <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow ({formattedDate})</span>;
+      dateDisplay = <span className="text-xs font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
     } else if (daysUntil !== null && daysUntil > 1) {
       dateDisplay = <span className="text-xs bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap text-[hsl(var(--sidebar-ring))]">{daysUntil}d</span>;
     }
