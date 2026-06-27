@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Brain, Calendar, Target, Bell, User, Heart, Star, Trash2, Edit2, CheckCircle } from 'lucide-react';
+import { Brain, Calendar, Target, Bell, User, Heart, Star, Trash2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const typeConfig = {
@@ -12,8 +12,9 @@ const typeConfig = {
 };
 
 function SourceBadge({ source }) {
-  if (source === 'gmail') return <span className="text-[10px] bg-red-50 text-red-600 font-medium px-2 py-0.5 rounded-full">Gmail</span>;
   if (source === 'chat') return <span className="text-[10px] bg-violet-50 text-violet-600 font-medium px-2 py-0.5 rounded-full">Chat</span>;
+  if (source === 'google_calendar') return <span className="text-[10px] bg-sky-50 text-sky-600 font-medium px-2 py-0.5 rounded-full">Calendar</span>;
+  if (source === 'manual') return <span className="text-[10px] bg-gray-100 text-gray-500 font-medium px-2 py-0.5 rounded-full">Manual</span>;
   return <span className="text-[10px] bg-gray-100 text-gray-500 font-medium px-2 py-0.5 rounded-full">{source || 'unknown'}</span>;
 }
 
@@ -21,11 +22,11 @@ export default function DevMemoryLog({ memories, onRefresh }) {
   const [filter, setFilter] = useState('all');
   const [deleting, setDeleting] = useState(null);
 
-  const filters = ['all', 'gmail', 'chat', 'important_date', 'goal', 'life_event', 'reminder', 'preference', 'person'];
+  const filters = ['all', 'chat', 'google_calendar', 'manual', 'important_date', 'goal', 'person', 'reminder'];
 
   const filtered = memories.filter(m => {
     if (filter === 'all') return true;
-    if (filter === 'gmail' || filter === 'chat') return m.source === filter;
+    if (['chat', 'google_calendar', 'manual'].includes(filter)) return m.source === filter;
     return m.type === filter;
   });
 

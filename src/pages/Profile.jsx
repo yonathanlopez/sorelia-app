@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Brain, LogOut, User, Mail, Calendar, Trash2, RefreshCw } from 'lucide-react';
+import { Brain, LogOut, User, Calendar, Trash2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/components/ui/use-toast';
 import BottomNav from '@/components/BottomNav';
-import GmailScannerModal from '@/components/sorelia/GmailScannerModal';
 
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [memoryCount, setMemoryCount] = useState(0);
   const [showClearDialog, setShowClearDialog] = useState(false);
-  const [showGmailModal, setShowGmailModal] = useState(false);
-  const [gmailConnected, setGmailConnected] = useState(false);
   const [syncingCalendar, setSyncingCalendar] = useState(false);
   const { toast } = useToast();
 
@@ -26,10 +23,6 @@ export default function Profile() {
       setMemoryCount(mems.length);
     }
     load();
-    // Check Gmail silently
-    base44.functions.invoke('gmailScanner', {})
-      .then(() => setGmailConnected(true))
-      .catch(() => setGmailConnected(false));
   }, []);
 
   async function handleClearAll() {
@@ -82,49 +75,24 @@ export default function Profile() {
         {/* Connections */}
         <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
           <h3 className="text-sm font-semibold text-gray-900 mb-3">Connections</h3>
-          <div className="space-y-3">
-            {/* Gmail */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center">
-                  <Mail className="w-4 h-4 text-red-500" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Gmail</p>
-                  <p className="text-xs text-gray-400">{gmailConnected ? 'Connected' : 'Not connected'}</p>
-                </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-violet-50 flex items-center justify-center">
+                <Calendar className="w-4 h-4 text-violet-600" />
               </div>
-              <button
-                onClick={() => setShowGmailModal(true)}
-                className="flex items-center gap-1.5 text-xs font-medium bg-violet-50 text-violet-600 px-3 py-1.5 rounded-full"
-              >
-                <RefreshCw className="w-3 h-3" />
-                {gmailConnected ? 'Re-scan' : 'Connect'}
-              </button>
-            </div>
-
-            <div className="h-px bg-gray-100" />
-
-            {/* Google Calendar */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-violet-50 flex items-center justify-center">
-                  <Calendar className="w-4 h-4 text-violet-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Google Calendar</p>
-                  <p className="text-xs text-gray-400">Connected</p>
-                </div>
+              <div>
+                <p className="text-sm font-medium text-gray-900">Google Calendar</p>
+                <p className="text-xs text-gray-400">Connected</p>
               </div>
-              <button
-                onClick={syncCalendar}
-                disabled={syncingCalendar}
-                className="flex items-center gap-1.5 text-xs font-medium bg-violet-50 text-violet-600 px-3 py-1.5 rounded-full disabled:opacity-40"
-              >
-                <RefreshCw className={`w-3 h-3 ${syncingCalendar ? 'animate-spin' : ''}`} />
-                Sync
-              </button>
             </div>
+            <button
+              onClick={syncCalendar}
+              disabled={syncingCalendar}
+              className="flex items-center gap-1.5 text-xs font-medium bg-violet-50 text-violet-600 px-3 py-1.5 rounded-full disabled:opacity-40"
+            >
+              <RefreshCw className={`w-3 h-3 ${syncingCalendar ? 'animate-spin' : ''}`} />
+              Sync
+            </button>
           </div>
         </div>
 
@@ -176,17 +144,6 @@ export default function Profile() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {showGmailModal && (
-        <GmailScannerModal
-          onClose={() => setShowGmailModal(false)}
-          onComplete={() => {
-            setShowGmailModal(false);
-            setGmailConnected(true);
-            toast({ title: '✨ Memories created from Gmail!' });
-          }}
-        />
-      )}
 
       <BottomNav />
     </div>

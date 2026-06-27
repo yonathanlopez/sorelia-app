@@ -1,18 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
 import BottomNav from '@/components/BottomNav';
-import DevOverview from '@/components/developer/DevOverview';
-import DevEmailTable from '@/components/developer/DevEmailTable';
 import DevMemoryLog from '@/components/developer/DevMemoryLog';
 import DevSystemHealth from '@/components/developer/DevSystemHealth';
 import DevActivityFeed from '@/components/developer/DevActivityFeed';
-import DevControls from '@/components/developer/DevControls';
-import DevEmailDetail from '@/components/developer/DevEmailDetail';
 import { RefreshCw, Terminal } from 'lucide-react';
 
 const TABS = [
-  { key: 'overview', label: 'Overview' },
-  { key: 'emails', label: 'Emails' },
   { key: 'memories', label: 'Memories' },
   { key: 'health', label: 'Health' },
   { key: 'feed', label: 'Feed' },
@@ -21,21 +15,14 @@ const TABS = [
 export default function Developer() {
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(null);
-  const [activeTab, setActiveTab] = useState('overview');
-  const [emails, setEmails] = useState([]);
+  const [activeTab, setActiveTab] = useState('memories');
   const [memories, setMemories] = useState([]);
-  const [selectedEmail, setSelectedEmail] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [scanning, setScanning] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(null);
 
   const loadData = useCallback(async () => {
     setRefreshing(true);
-    const [emailList, memoryList] = await Promise.all([
-      base44.entities.ScannedEmail.list('-created_date', 100),
-      base44.entities.Memory.list('-created_date', 200),
-    ]);
-    setEmails(emailList);
+    const memoryList = await base44.entities.Memory.list('-created_date', 200);
     setMemories(memoryList);
     setLastRefresh(new Date());
     setRefreshing(false);
@@ -49,22 +36,9 @@ export default function Developer() {
     }
     init();
     loadData();
-    // Auto-refresh every 30s
     const interval = setInterval(loadData, 30000);
     return () => clearInterval(interval);
   }, [loadData]);
-
-  async function handleRunScan() {
-    setScanning(true);
-    try {
-      await base44.functions.invoke('gmailScanner', {});
-      await loadData();
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setScanning(false);
-    }
-  }
 
   if (isAdmin === false) {
     return (
@@ -125,35 +99,16 @@ export default function Developer() {
       </div>
 
       <div className="px-4 pt-5">
-        {activeTab === 'overview' && (
-          <>
-            <DevOverview emails={emails} memories={memories} scanning={scanning} />
-            <div className="mt-5">
-              <DevControls onRunScan={handleRunScan} scanning={scanning} onRefresh={loadData} onClearData={loadData} />
-            </div>
-          </>
-        )}
-        {activeTab === 'emails' && (
-          <DevEmailTable emails={emails} memories={memories} onSelect={setSelectedEmail} />
-        )}
         {activeTab === 'memories' && (
-          <DevMemoryLog memories={memories} emails={emails} onRefresh={loadData} />
+          <DevMemoryLog memories={memories} onRefresh={loadData} />
         )}
         {activeTab === 'health' && (
-          <DevSystemHealth emails={emails} memories={memories} lastRefresh={lastRefresh} />
+          <DevSystemHealth memories={memories} lastRefresh={lastRefresh} />
         )}
         {activeTab === 'feed' && (
-          <DevActivityFeed emails={emails} memories={memories} />
+          <DevActivityFeed memories={memories} />
         )}
       </div>
-
-      {selectedEmail && (
-        <DevEmailDetail
-          email={selectedEmail}
-          memories={memories.filter(m => m.source === 'gmail')}
-          onClose={() => setSelectedEmail(null)}
-        />
-      )}
 
       <BottomNav />
     </div>

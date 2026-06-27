@@ -115,24 +115,13 @@ export default function Chat() {
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);
 
-    const [allMemories, scannedEmails] = await Promise.all([
-      base44.entities.Memory.list('-created_date', 100),
-      base44.entities.ScannedEmail.list('-created_date', 30),
-    ]);
+    const allMemories = await base44.entities.Memory.list('-created_date', 100);
 
     let memoryContext = '';
     if (allMemories.length > 0) {
       memoryContext = '\n\nSaved memories:\n' +
         allMemories.map(m =>
           `- [${m.type}] ${m.title}${m.description ? ': ' + m.description : ''}${m.date ? ' (date: ' + m.date + ')' : ''}${m.person_birthday ? ' (birthday: ' + m.person_birthday + ')' : ''}${m.person_relationship ? ' (relationship: ' + m.person_relationship + ')' : ''}${m.status ? ' (status: ' + m.status + ')' : ''}`
-        ).join('\n');
-    }
-
-    let emailContext = '';
-    if (scannedEmails.length > 0) {
-      emailContext = '\n\nRecent email context:\n' +
-        scannedEmails.slice(0, 10).map(e =>
-          `- "${e.subject}"${e.date ? ' | ' + e.date : ''}`
         ).join('\n');
     }
 
@@ -165,7 +154,7 @@ Your tone:
 - When saving something new, say "I'll remember that" or "Got it, I've saved that"
 - Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
 
-${memoryContext}${emailContext}${calendarContext}
+${memoryContext}${calendarContext}
 
 Conversation:
 ${historyForAI}
