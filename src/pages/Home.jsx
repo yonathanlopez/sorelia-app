@@ -275,7 +275,7 @@ export default function Home() {
   const activeModal = sections.find(s => s.id === modal);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-100">
       {/* Header */}
       <div className="bg-gradient-to-br from-violet-600 via-violet-500 to-purple-600 px-5 pt-14 pb-5 flex-shrink-0">
         <div className="flex items-center justify-between">
