@@ -237,12 +237,12 @@ Only extract clear, specific facts — not vague statements.`;
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4">
         {messages.length === 0 && !sending && (
-          <div className="text-center py-16 px-6">
-            <div className="w-16 h-16 rounded-2xl bg-gray-900 flex items-center justify-center mx-auto mb-5">
-              <Brain className="w-7 h-7 text-white" />
+          <div className="text-center py-16">
+            <div className="w-16 h-16 rounded-full bg-violet-100 flex items-center justify-center mx-auto mb-4">
+              <Brain className="w-8 h-8 text-violet-600" />
             </div>
-            <h2 className="text-[18px] font-bold text-gray-900">Hi, I'm Sorelia</h2>
-            <p className="text-[14px] text-gray-400 mt-2 leading-relaxed max-w-xs mx-auto">
+            <h2 className="text-lg font-semibold text-gray-900">Hi! I'm Sorelia</h2>
+            <p className="text-sm text-gray-500 mt-2 max-w-xs mx-auto">
               Tell me about the people, dates, and things that matter to you. I'll remember everything.
             </p>
           </div>
@@ -267,14 +267,14 @@ Only extract clear, specific facts — not vague statements.`;
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Tell me something to remember…"
-            className="flex-1 bg-gray-100 rounded-2xl px-4 py-3 text-[14px] outline-none"
+            placeholder="Tell me something to remember..."
+            className="flex-1 bg-gray-100 rounded-full px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-violet-200 transition-all"
             disabled={sending}
           />
           <button
             type="submit"
             disabled={!input.trim() || sending}
-            className="w-11 h-11 rounded-full bg-gray-900 flex items-center justify-center text-white disabled:opacity-30 transition-opacity flex-shrink-0"
+            className="w-10 h-10 rounded-full bg-violet-600 flex items-center justify-center text-white disabled:opacity-40 hover:bg-violet-700 transition-colors flex-shrink-0"
           >
             <Send className="w-4 h-4" />
           </button>
