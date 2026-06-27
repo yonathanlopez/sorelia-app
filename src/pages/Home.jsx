@@ -8,7 +8,7 @@ import BottomNav from '@/components/BottomNav';
 import SoreliaFAB from '@/components/SoreliaFAB';
 
 const typeColors = {
-  important_date: 'bg-slate-100 text-slate-700',
+  important_date: 'bg-violet-100 text-violet-600',
   goal: 'bg-emerald-100 text-emerald-600',
   person: 'bg-blue-100 text-blue-600',
 };
@@ -26,7 +26,7 @@ function DaysBadge({ days }) {
   if (days === 0) return <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full whitespace-nowrap">Today</span>;
   if (days === 1) return <span className="text-[9px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full whitespace-nowrap">Tomorrow</span>;
   if (days < 0) return <span className="text-[9px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full whitespace-nowrap">Passed</span>;
-  return <span className="text-[9px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full whitespace-nowrap">{days}d</span>;
+  return <span className="text-[9px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{days}d</span>;
 }
 
 function SectionModal({ title, icon: Icon, color, items, renderItem, onClose }) {
@@ -157,11 +157,11 @@ export default function Home() {
       } else if (daysUntil === 1) {
         dateDisplay = <span className="text-[9px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
       } else if (daysUntil > 1) {
-        dateDisplay = <span className="text-[9px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full whitespace-nowrap">{daysUntil}d</span>;
+        dateDisplay = <span className="text-[9px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{daysUntil}d</span>;
       }
     }
     return (
-      <div key={m.id || i} className="bg-gray-50 rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+      <div key={m.id || i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
         <div className="flex-1 min-w-0">
           <p className="text-base font-semibold text-gray-900 truncate">{m.title}</p>
           {m.description && <p className="text-sm text-gray-400 truncate mt-0.5">{m.description}</p>}
@@ -187,17 +187,17 @@ export default function Home() {
     } else if (daysUntil === 1) {
       dateDisplay = <span className="text-[9px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
     } else {
-      dateDisplay = <div className="w-10 flex flex-col items-center"><span className="text-xs font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</span><span className="text-xl font-bold text-blue-600 leading-tight">{d.getDate()}</span></div>;
+      dateDisplay = <div className="w-10 flex flex-col items-center"><span className="text-xs font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</span><span className="text-xl font-bold text-violet-600 leading-tight">{d.getDate()}</span></div>;
     }
     
     return (
       <div key={i} className="flex items-stretch gap-3 px-1 py-1.5">
-        <div className="w-0.5 rounded-full bg-blue-200 flex-shrink-0 my-1" />
+        <div className="w-0.5 rounded-full bg-violet-200 flex-shrink-0 my-1" />
         <div className="flex-1 min-w-0 flex flex-col justify-center">
           <p className="text-base font-semibold text-gray-900 truncate">{ev.summary || ev.title}</p>
           <div className="flex items-center gap-2 mt-0.5">
             {timeStr && (
-              <span className="text-sm font-medium text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full">{timeStr}</span>
+              <span className="text-sm font-medium text-violet-500 bg-violet-50 px-2 py-0.5 rounded-full">{timeStr}</span>
             )}
             {ev.location && <span className="text-sm text-gray-400 truncate">📍 {ev.location}</span>}
           </div>
@@ -216,10 +216,10 @@ export default function Home() {
     } else if (ev.daysUntil === 1) {
       dateDisplay = <span className="text-[9px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
     } else {
-      dateDisplay = <span className="text-[9px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full whitespace-nowrap">{ev.daysUntil}d</span>;
+      dateDisplay = <span className="text-[9px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{ev.daysUntil}d</span>;
     }
     return (
-      <div key={ev.id || i} className="bg-gray-50 rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+      <div key={ev.id || i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
         <div className="flex-1 min-w-0">
           <p className="text-base font-semibold text-gray-900 truncate">{ev.title}</p>
         </div>
@@ -257,7 +257,7 @@ export default function Home() {
       id: 'calendar',
       title: 'Calendar',
       icon: Calendar,
-      iconColor: 'bg-blue-100 text-blue-600',
+      iconColor: 'bg-violet-100 text-violet-600',
       items: upcomingCalendar,
       preview: upcomingCalendar.slice(0, 4),
       renderItem: renderCalendarItem,
@@ -289,12 +289,29 @@ export default function Home() {
   const userName = user?.full_name?.split(' ')[0] || 'there';
 
   return (
-    <div className="min-h-screen bg-gray-50">
-
+    <div className="min-h-screen bg-gray-100">
+      {/* Header */}
+      <div className="px-5 pt-8 pb-4 flex-shrink-0">
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-gray-900 text-lg font-semibold">Good afternoon, Yonathan</p>
+          <div className="flex items-center gap-2">
+            {user?.picture && (
+              <Avatar className="w-10 h-10 border border-gray-200">
+                <AvatarImage src={user.picture} alt={userName} />
+                <AvatarFallback>{userName[0]?.toUpperCase()}</AvatarFallback>
+              </Avatar>
+            )}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 rounded-lg border border-orange-200">
+              <span className="text-lg">🔥</span>
+              <span className="text-sm font-bold text-orange-600">12</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Today's Summary */}
       <div className="px-4 pt-4">
-        <div className="bg-slate-50 rounded-2xl border border-slate-200 shadow-sm px-4 py-3">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-3">
           <div className="flex items-center gap-2 mb-2">
             <h2 className="text-sm font-bold text-gray-900">Today's Summary</h2>
             {todayItems.length > 0 && <span className="text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">{todayItems.length}</span>}
@@ -319,7 +336,7 @@ export default function Home() {
           <button
             key={s.id}
             onClick={() => setModal(s.id)}
-            className="w-full bg-gray-50 rounded-2xl border border-gray-100 shadow-sm text-left hover:shadow-md transition-shadow"
+            className="w-full bg-white rounded-2xl border border-gray-100 shadow-sm text-left hover:shadow-md transition-shadow"
           >
             {/* Section header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
@@ -345,7 +362,7 @@ export default function Home() {
                       };
                       navigate('/', { state: { prefill: `Sorelia, ${actions[s.id] || s.quickChips[0]}` } });
                     }}
-                    className="text-xs text-blue-600 font-medium mb-2 hover:text-blue-700 active:scale-95 transition-all"
+                    className="text-xs text-violet-500 font-medium mb-2 hover:text-violet-600 active:scale-95 transition-all"
                   >
                     {s.emptyText}
                   </button>
@@ -354,7 +371,7 @@ export default function Home() {
                       <button
                         key={chip}
                         onClick={() => navigate('/', { state: { prefill: `Sorelia, ${chip}` } })}
-                        className="text-[9px] bg-slate-100 text-gray-700 font-medium px-2.5 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-200 active:scale-95 transition-all"
+                        className="text-[9px] bg-white/40 text-gray-700 font-medium px-2.5 py-1.5 rounded-xl border border-white/30 backdrop-blur-sm hover:bg-white/60 active:scale-95 transition-all"
                       >
                         {chip}
                       </button>
@@ -379,15 +396,15 @@ export default function Home() {
                     } else if (daysUntil === 1) {
                       dateDisplay = <span className="text-[9px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">Tomorrow</span>;
                     } else {
-                      dateDisplay = <div className="w-9 text-center"><p className="text-[9px] font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p><p className="text-base font-bold text-blue-600 leading-tight">{d.getDate()}</p></div>;
+                      dateDisplay = <div className="w-9 text-center"><p className="text-[9px] font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p><p className="text-base font-bold text-violet-600 leading-tight">{d.getDate()}</p></div>;
                     }
 
                     return (
                       <div key={i} className="flex items-center gap-2.5 px-1 py-1.5">
-                        <div className="w-0.5 h-7 rounded-full bg-blue-100 flex-shrink-0" />
+                        <div className="w-0.5 h-7 rounded-full bg-violet-100 flex-shrink-0" />
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-semibold text-gray-800 truncate">{item.title || item.summary}</p>
-                          {timeStr && <span className="text-[10px] text-blue-400 font-medium">{timeStr}</span>}
+                          {timeStr && <span className="text-[10px] text-violet-400 font-medium">{timeStr}</span>}
                         </div>
                         {dateDisplay}
                       </div>
@@ -411,7 +428,7 @@ export default function Home() {
                         e.stopPropagation();
                         navigate('/', { state: { prefill: `Sorelia, ${chip}` } });
                       }}
-                      className="text-[9px] bg-slate-100 text-gray-700 font-medium px-2.5 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-200 active:scale-95 transition-all"
+                      className="text-[9px] bg-white/40 text-gray-700 font-medium px-2.5 py-1.5 rounded-xl border border-white/30 backdrop-blur-sm hover:bg-white/60 active:scale-95 transition-all"
                     >
                       {chip}
                     </button>
