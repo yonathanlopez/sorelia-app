@@ -146,6 +146,15 @@ export default function CalendarPage() {
     }
   }
 
+  // Sort events within each day by time (earliest first)
+  for (const day of Object.keys(eventsByDay)) {
+    eventsByDay[day].sort((a, b) => {
+      const timeA = a.time || a.date || '';
+      const timeB = b.time || b.date || '';
+      return timeA.localeCompare(timeB);
+    });
+  }
+
   const daysInMonth = getDaysInMonth(currentYear, currentMonth);
   const firstDay = getFirstDayOfMonth(currentYear, currentMonth);
   const cells = [];
