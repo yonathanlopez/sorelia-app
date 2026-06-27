@@ -22,10 +22,10 @@ function getDaysUntil(dateStr) {
 
 function DaysBadge({ days }) {
   if (days === null) return null;
-  if (days === 0) return <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full whitespace-nowrap">Today</span>;
-  if (days === 1) return <span className="text-[10px] font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full whitespace-nowrap">Tomorrow</span>;
-  if (days < 0) return <span className="text-[10px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full whitespace-nowrap">Passed</span>;
-  return <span className="text-[10px] text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{days}d</span>;
+  if (days === 0) return <span className="text-sm font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full whitespace-nowrap">Today</span>;
+  if (days === 1) return <span className="text-sm font-bold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full whitespace-nowrap">Tomorrow</span>;
+  if (days < 0) return <span className="text-sm text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full whitespace-nowrap">Passed</span>;
+  return <span className="text-sm text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full whitespace-nowrap">{days}d</span>;
 }
 
 function SectionModal({ title, icon: Icon, color, items, renderItem, onClose }) {
