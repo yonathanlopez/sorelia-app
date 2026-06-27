@@ -161,18 +161,32 @@ export default function Home() {
   );
 
   const renderCalendarItem = (ev, i) => {
-    const dateStr = (ev.start || ev.date).split('T')[0];
+    const rawDate = ev.start || ev.date || '';
+    const dateStr = rawDate.split('T')[0];
     const d = new Date(dateStr + 'T00:00:00');
+    const hasTime = rawDate.includes('T');
+    const timeStr = hasTime
+      ? new Date(rawDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+      : null;
+    const weekday = d.toLocaleDateString('en-US', { weekday: 'short' });
     return (
-      <div key={i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
-        <div className="w-12 text-center flex-shrink-0">
-          <p className="text-xl font-bold text-violet-600 leading-none">{d.getDate()}</p>
-          <p className="text-[10px] text-gray-400 font-medium uppercase mt-0.5">{d.toLocaleDateString('en-US', { month: 'short' })}</p>
+      <div key={i} className="flex items-stretch gap-3 px-1 py-1.5">
+        {/* Date column */}
+        <div className="w-10 flex flex-col items-center flex-shrink-0 pt-0.5">
+          <span className="text-[10px] font-semibold text-gray-400 uppercase">{weekday}</span>
+          <span className="text-lg font-bold text-violet-600 leading-tight">{d.getDate()}</span>
         </div>
-        <div className="w-px h-10 bg-gray-100 flex-shrink-0" />
-        <div className="flex-1 min-w-0">
+        {/* Accent line */}
+        <div className="w-0.5 rounded-full bg-violet-200 flex-shrink-0 my-1" />
+        {/* Content */}
+        <div className="flex-1 min-w-0 flex flex-col justify-center">
           <p className="text-sm font-semibold text-gray-900 truncate">{ev.summary || ev.title}</p>
-          {ev.location && <p className="text-xs text-gray-400 truncate mt-0.5">{ev.location}</p>}
+          <div className="flex items-center gap-2 mt-0.5">
+            {timeStr && (
+              <span className="text-[11px] font-medium text-violet-500 bg-violet-50 px-2 py-0.5 rounded-full">{timeStr}</span>
+            )}
+            {ev.location && <span className="text-[11px] text-gray-400 truncate">📍 {ev.location}</span>}
+          </div>
         </div>
         <DaysBadge days={ev.daysUntil} />
       </div>
@@ -324,17 +338,41 @@ export default function Home() {
               {s.preview.length === 0 ? (
                 <Link to="/" className="block text-xs text-violet-500 font-medium text-center py-3 hover:text-violet-700">{s.emptyText}</Link>
               ) : (
-                s.preview.map((item, i) => (
-                  <div key={i} className="flex items-center gap-2 px-1 py-1.5">
-                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${s.iconColor}`}>
-                      <s.icon className="w-3 h-3" />
-                    </div>
-                    <p className="text-xs font-medium text-gray-800 flex-1 truncate">
-                      {item.title || item.summary}
-                    </p>
-                    <DaysBadge days={item.daysUntil ?? (item.date ? getDaysUntil(item.date) : null)} />
-                  </div>
-                ))
+                s.id === 'calendar'
+                  ? s.preview.map((item, i) => {
+                      const rawDate = item.start || item.date || '';
+                      const dateStr = rawDate.split('T')[0];
+                      const d = new Date(dateStr + 'T00:00:00');
+                      const hasTime = rawDate.includes('T');
+                      const timeStr = hasTime
+                        ? new Date(rawDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+                        : null;
+                      return (
+                        <div key={i} className="flex items-center gap-2.5 px-1 py-1.5">
+                          <div className="w-9 text-center flex-shrink-0">
+                            <p className="text-[9px] font-semibold text-gray-400 uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</p>
+                            <p className="text-base font-bold text-violet-600 leading-tight">{d.getDate()}</p>
+                          </div>
+                          <div className="w-0.5 h-7 rounded-full bg-violet-100 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-semibold text-gray-800 truncate">{item.title || item.summary}</p>
+                            {timeStr && <span className="text-[10px] text-violet-400 font-medium">{timeStr}</span>}
+                          </div>
+                          <DaysBadge days={item.daysUntil ?? getDaysUntil(dateStr)} />
+                        </div>
+                      );
+                    })
+                  : s.preview.map((item, i) => (
+                      <div key={i} className="flex items-center gap-2 px-1 py-1.5">
+                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${s.iconColor}`}>
+                          <s.icon className="w-3 h-3" />
+                        </div>
+                        <p className="text-xs font-medium text-gray-800 flex-1 truncate">
+                          {item.title || item.summary}
+                        </p>
+                        <DaysBadge days={item.daysUntil ?? (item.date ? getDaysUntil(item.date) : null)} />
+                      </div>
+                    ))
               )}
               {s.items.length > 4 && (
                 <button onClick={() => setModal(s.id)} className="w-full text-center text-[10px] text-violet-400 font-medium py-1">
