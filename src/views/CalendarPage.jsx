@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import { ChevronLeft, ChevronRight, Calendar, Clock } from 'lucide-react';
-import Link from 'next/link';
-import { useMemories } from '@/hooks/useMemories';
+import { ChevronLeft, ChevronRight, Calendar, Clock, RefreshCw } from 'lucide-react';
+import { useMemories, MEMORIES_QUERY_KEY } from '@/hooks/useMemories';
+import { formatSyncSuccess, syncGoogleCalendarSafe } from '@/lib/calendar-sync';
+import { useQueryClient } from '@tanstack/react-query';
+import { useToast } from '@/components/ui/use-toast';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -54,13 +56,30 @@ export default function CalendarPage() {
   const [selectedDay, setSelectedDay] = useState(today.getDate());
   const [selectedCalendars, setSelectedCalendars] = useState(new Set(['all']));
   const [showCalendarPicker, setShowCalendarPicker] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { data: memories = [], isPending } = useMemories();
   const loading = isPending && memories.length === 0;
 
-  const events = useMemo(() => {
-    const calRes = null;
+  async function syncCalendar() {
+    setSyncing(true);
+    const outcome = await syncGoogleCalendarSafe();
+    if (outcome.ok) {
+      await queryClient.invalidateQueries({ queryKey: MEMORIES_QUERY_KEY });
+      toast({ title: formatSyncSuccess(outcome.result) });
+    } else {
+      toast({
+        title: 'Calendar sync failed',
+        description: outcome.message,
+        variant: 'destructive',
+      });
+    }
+    setSyncing(false);
+  }
 
+  const events = useMemo(() => {
     const people = memories.filter((m) => m.type === 'person' && m.person_birthday);
     const birthdayEvents = people.map((p) => ({
       id: `${p.id}-birthday`,
@@ -70,16 +89,6 @@ export default function CalendarPage() {
       date: p.person_birthday,
       original_id: p.id,
     }));
-
-    const gcalLive = (calRes?.data?.events || []).map((e) => ({
-      id: `gcal-${e.id || Math.random()}`,
-      type: 'gcal',
-      title: e.summary || e.title || 'Untitled',
-      description: e.description || e.location || null,
-      date: (e.start || e.date || '').split('T')[0],
-      time: (e.start || '').includes('T') ? e.start : null,
-    }));
-    const liveKeys = new Set(gcalLive.map((e) => e.date + '||' + e.title));
 
     const gcalSaved = memories
       .filter((m) => m.source === 'google_calendar' && m.date)
@@ -91,14 +100,13 @@ export default function CalendarPage() {
         date: m.date.split('T')[0],
         time: m.date.includes('T') ? m.date : null,
         calendarName: m.calendar_name || null,
-      }))
-      .filter((e) => !liveKeys.has(e.date + '||' + e.title));
+      }));
 
     const otherMemories = memories
       .filter((m) => m.source !== 'google_calendar' && m.type !== 'person' && m.date)
       .map((m) => ({ ...m, type: m.type }));
 
-    return [...otherMemories, ...birthdayEvents, ...gcalLive, ...gcalSaved];
+    return [...otherMemories, ...birthdayEvents, ...gcalSaved];
   }, [memories]);
 
   function prevMonth() {
@@ -186,6 +194,14 @@ export default function CalendarPage() {
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-bold text-gray-900">Calendar</h1>
           <div className="flex items-center gap-2">
+            <button
+              onClick={syncCalendar}
+              disabled={syncing}
+              className="flex items-center gap-1.5 text-xs font-medium bg-violet-50 text-violet-600 px-3 py-2 rounded-full disabled:opacity-40"
+            >
+              <RefreshCw className={`w-3 h-3 ${syncing ? 'animate-spin' : ''}`} />
+              Sync
+            </button>
             <div className="relative">
               <button
                 onClick={() => setShowCalendarPicker(p => !p)}
@@ -310,7 +326,13 @@ export default function CalendarPage() {
               <div className="text-center py-10">
                 <Calendar className="w-10 h-10 text-violet-200 mx-auto mb-3" />
                 <p className="text-sm text-gray-400 mb-2">No events this month.</p>
-                <Link href="/chat" className="text-sm text-violet-500 font-semibold">Ask Sorelia about your schedule →</Link>
+                <button
+                  onClick={syncCalendar}
+                  disabled={syncing}
+                  className="text-sm text-violet-500 font-semibold disabled:opacity-40"
+                >
+                  {syncing ? 'Syncing Google Calendar…' : 'Sync Google Calendar →'}
+                </button>
               </div>
             ) : (
               Object.entries(eventsByDay)

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
+import { syncGoogleCalendarSafe } from '@/lib/calendar-sync';
 import { useAuth } from '@/lib/AuthContext';
 import { RefreshCw, Terminal, Calendar, Clock, MapPin, Trash2 } from 'lucide-react';
 
@@ -16,12 +17,12 @@ export default function Developer() {
 
   const loadData = useCallback(async () => {
     setRefreshing(true);
-    const [memories, calRes] = await Promise.all([
+    const [memories, syncOutcome] = await Promise.all([
       base44.entities.Calendar.filter({ source: 'google_calendar' }),
-      base44.functions.invoke('calendarScanner', {}).catch(() => null),
+      syncGoogleCalendarSafe(),
     ]);
     setCalEvents(memories.sort((a, b) => (a.date || '').localeCompare(b.date || '')));
-    setLiveEvents(calRes?.data?.events || []);
+    setLiveEvents(syncOutcome.ok ? syncOutcome.result.events || [] : []);
     setLastRefresh(new Date());
     setRefreshing(false);
   }, []);

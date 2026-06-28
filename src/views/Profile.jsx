@@ -8,6 +8,12 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/lib/AuthContext';
 import { MEMORIES_QUERY_KEY, useMemories } from '@/hooks/useMemories';
+import {
+  formatSyncSuccess,
+  getConnectionStatusLabel,
+  isConnectionError,
+  syncGoogleCalendarSafe,
+} from '@/lib/calendar-sync';
 import { useQueryClient } from '@tanstack/react-query';
 
 export default function Profile() {
@@ -17,6 +23,9 @@ export default function Profile() {
   const memoryCount = memories.length;
   const [showClearDialog, setShowClearDialog] = useState(false);
   const [syncingCalendar, setSyncingCalendar] = useState(false);
+  const [calendarStatus, setCalendarStatus] = useState(() =>
+    memories.some((m) => m.source === 'google_calendar') ? 'connected' : 'unknown',
+  );
   const { toast } = useToast();
 
   async function handleClearAll() {
@@ -29,13 +38,21 @@ export default function Profile() {
 
   async function syncCalendar() {
     setSyncingCalendar(true);
-    try {
-      await base44.functions.invoke('calendarScanner', {});
-      queryClient.invalidateQueries({ queryKey: MEMORIES_QUERY_KEY });
-      toast({ title: '✨ Calendar synced!' });
-    } catch {
-      toast({ title: 'Calendar sync failed', variant: 'destructive' });
+    const outcome = await syncGoogleCalendarSafe();
+
+    if (outcome.ok) {
+      setCalendarStatus('connected');
+      await queryClient.invalidateQueries({ queryKey: MEMORIES_QUERY_KEY });
+      toast({ title: formatSyncSuccess(outcome.result) });
+    } else {
+      setCalendarStatus(isConnectionError(outcome.message) ? 'disconnected' : calendarStatus);
+      toast({
+        title: 'Calendar sync failed',
+        description: outcome.message,
+        variant: 'destructive',
+      });
     }
+
     setSyncingCalendar(false);
   }
 
@@ -77,7 +94,9 @@ export default function Profile() {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-900">Google Calendar</p>
-                <p className="text-xs text-gray-400">Connected</p>
+                <p className={`text-xs ${calendarStatus === 'disconnected' ? 'text-red-500' : 'text-gray-400'}`}>
+                  {getConnectionStatusLabel(calendarStatus)}
+                </p>
               </div>
             </div>
             <button
