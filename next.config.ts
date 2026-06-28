@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  experimental: {
+    optimizePackageImports: ['lucide-react'],
+  },
   async rewrites() {
     const baseUrl = process.env.NEXT_PUBLIC_BASE44_APP_BASE_URL;
     if (!baseUrl) {

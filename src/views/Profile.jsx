@@ -1,31 +1,28 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Brain, LogOut, User, Calendar, Trash2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/components/ui/use-toast';
+import { useAuth } from '@/lib/AuthContext';
+import { MEMORIES_QUERY_KEY, useMemories } from '@/hooks/useMemories';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function Profile() {
   const { user } = useAuth();
-  const [memoryCount, setMemoryCount] = useState(0);
+  const queryClient = useQueryClient();
+  const { data: memories = [] } = useMemories();
+  const memoryCount = memories.length;
   const [showClearDialog, setShowClearDialog] = useState(false);
   const [syncingCalendar, setSyncingCalendar] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    async function load() {
-      const mems = await base44.entities.Calendar.list('-created_date', 200);
-      setMemoryCount(mems.length);
-    }
-    load();
-  }, []);
-
   async function handleClearAll() {
     await base44.entities.Calendar.deleteMany({});
     await base44.entities.Conversation.deleteMany({});
-    setMemoryCount(0);
+    queryClient.setQueryData(MEMORIES_QUERY_KEY, []);
     setShowClearDialog(false);
     toast({ title: '🗑️ Everything has been reset' });
   }
@@ -34,6 +31,7 @@ export default function Profile() {
     setSyncingCalendar(true);
     try {
       await base44.functions.invoke('calendarScanner', {});
+      queryClient.invalidateQueries({ queryKey: MEMORIES_QUERY_KEY });
       toast({ title: '✨ Calendar synced!' });
     } catch {
       toast({ title: 'Calendar sync failed', variant: 'destructive' });

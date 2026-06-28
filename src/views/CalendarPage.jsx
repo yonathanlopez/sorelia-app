@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import React, { useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
+import { useMemories } from '@/hooks/useMemories';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -51,23 +51,18 @@ export default function CalendarPage() {
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [selectedDay, setSelectedDay] = useState(today.getDate());
   const [selectedCalendars, setSelectedCalendars] = useState(new Set(['all']));
   const [showCalendarPicker, setShowCalendarPicker] = useState(false);
 
-  useEffect(() => { loadEvents(); }, []);
+  const { data: memories = [], isPending } = useMemories();
+  const loading = isPending && memories.length === 0;
 
-  async function loadEvents() {
-    setLoading(true);
-    // Load saved memories instantly
-    const memories = await base44.entities.Calendar.list('-date', 500);
+  const events = useMemo(() => {
     const calRes = null;
-    
-    // Add people's birthdays as events
-    const people = memories.filter(m => m.type === 'person' && m.person_birthday);
-    const birthdayEvents = people.map(p => ({
+
+    const people = memories.filter((m) => m.type === 'person' && m.person_birthday);
+    const birthdayEvents = people.map((p) => ({
       id: `${p.id}-birthday`,
       type: 'person',
       title: `🎂 ${p.title}'s Birthday`,
@@ -76,8 +71,7 @@ export default function CalendarPage() {
       original_id: p.id,
     }));
 
-    // Live Google Calendar events from API
-    const gcalLive = (calRes?.data?.events || []).map(e => ({
+    const gcalLive = (calRes?.data?.events || []).map((e) => ({
       id: `gcal-${e.id || Math.random()}`,
       type: 'gcal',
       title: e.summary || e.title || 'Untitled',
@@ -85,12 +79,11 @@ export default function CalendarPage() {
       date: (e.start || e.date || '').split('T')[0],
       time: (e.start || '').includes('T') ? e.start : null,
     }));
-    const liveKeys = new Set(gcalLive.map(e => e.date + '||' + e.title));
+    const liveKeys = new Set(gcalLive.map((e) => e.date + '||' + e.title));
 
-    // Saved Google Calendar memories — use as fallback when live API doesn't return them
     const gcalSaved = memories
-      .filter(m => m.source === 'google_calendar' && m.date)
-      .map(m => ({
+      .filter((m) => m.source === 'google_calendar' && m.date)
+      .map((m) => ({
         id: m.id,
         type: 'gcal',
         title: m.title,
@@ -99,23 +92,14 @@ export default function CalendarPage() {
         time: m.date.includes('T') ? m.date : null,
         calendarName: m.calendar_name || null,
       }))
-      .filter(e => !liveKeys.has(e.date + '||' + e.title));
+      .filter((e) => !liveKeys.has(e.date + '||' + e.title));
 
-    // Non-gcal memories with dates (person memories handled separately via birthdayEvents)
     const otherMemories = memories
-      .filter(m => m.source !== 'google_calendar' && m.type !== 'person' && m.date)
-      .map(m => ({ ...m, type: m.type }));
+      .filter((m) => m.source !== 'google_calendar' && m.type !== 'person' && m.date)
+      .map((m) => ({ ...m, type: m.type }));
 
-    const allEvents = [
-      ...otherMemories,
-      ...birthdayEvents,
-      ...gcalLive,
-      ...gcalSaved,
-    ];
-    
-    setEvents(allEvents);
-    setLoading(false);
-  }
+    return [...otherMemories, ...birthdayEvents, ...gcalLive, ...gcalSaved];
+  }, [memories]);
 
   function prevMonth() {
     if (currentMonth === 0) { setCurrentMonth(11); setCurrentYear(y => y - 1); }

@@ -1,17 +1,12 @@
 import { Suspense } from 'react';
-import Chat from '@/views/Chat';
+import dynamic from 'next/dynamic';
+import PageLoading from '@/components/PageLoading';
 
-function ChatFallback() {
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-50">
-      <div className="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin" />
-    </div>
-  );
-}
+const Chat = dynamic(() => import('@/views/Chat'), { loading: () => <PageLoading /> });
 
 export default function ChatPage() {
   return (
-    <Suspense fallback={<ChatFallback />}>
+    <Suspense fallback={<PageLoading />}>
       <Chat />
     </Suspense>
   );

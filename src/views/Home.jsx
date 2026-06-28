@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
+import { MEMORIES_QUERY_KEY, useMemories } from '@/hooks/useMemories';
 import { Calendar, CheckCircle, Clock, Gift, Home as HomeIcon, Zap, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
@@ -21,13 +22,9 @@ export default function Home() {
   const { user } = useAuth();
   const [completedToday, setCompletedToday] = useState(new Set());
 
-  const { data: memories = [], isLoading: memoriesLoading } = useQuery({
-    queryKey: ['memories'],
-    queryFn: async () => base44.entities.Calendar.list('-created_date', 200),
-    staleTime: 1000 * 60 * 5,
-  });
+  const { data: memories = [], isPending: memoriesLoading } = useMemories();
 
-  const loading = memoriesLoading;
+  const loading = memoriesLoading && memories.length === 0;
 
   if (loading) {
     return (
@@ -72,20 +69,24 @@ export default function Home() {
 
   async function handleDone(id) {
     const isCurrentlyCompleted = completedToday.has(id);
-    if (isCurrentlyCompleted) {
-      setCompletedToday((prev) => {
-        const next = new Set(prev);
-        next.delete(id);
-        return next;
-      });
-    } else {
-      setCompletedToday((prev) => new Set([...prev, id]));
-    }
+    const newStatus = isCurrentlyCompleted ? 'active' : 'completed';
+
+    setCompletedToday((prev) => {
+      const next = new Set(prev);
+      if (isCurrentlyCompleted) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
+    queryClient.setQueryData(MEMORIES_QUERY_KEY, (old = []) =>
+      old.map((m) => (m.id === id ? { ...m, status: newStatus } : m)),
+    );
+
     try {
-      const newStatus = isCurrentlyCompleted ? 'active' : 'completed';
       await base44.entities.Calendar.update(id, { status: newStatus });
-      queryClient.invalidateQueries({ queryKey: ['memories'] });
-    } catch {}
+    } catch {
+      queryClient.invalidateQueries({ queryKey: MEMORIES_QUERY_KEY });
+    }
   }
 
   return (
