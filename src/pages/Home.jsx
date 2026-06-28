@@ -27,7 +27,7 @@ export default function Home() {
   const { data: memories = [], isLoading: memoriesLoading } = useQuery({
     queryKey: ['memories'],
     queryFn: async () => {
-      const mems = await base44.entities.Memory.list('-created_date', 200);
+      const mems = await base44.entities.Calendar.list('-created_date', 200);
       return mems;
     },
   });
