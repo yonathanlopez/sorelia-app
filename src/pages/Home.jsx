@@ -146,7 +146,7 @@ export default function Home() {
       <div className="px-4 py-4 grid grid-cols-4 gap-2">
         <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
           <div className="w-6 h-6 rounded-md bg-violet-100 text-violet-600 flex items-center justify-center mx-auto mb-1">
-            <Clock className="w-5 h-5" />
+            <Clock className="w-3 h-3" />
           </div>
           <p className="text-sm font-bold text-gray-900">{totalGoals}</p>
           <p className="text-xs text-gray-500">Tasks</p>
