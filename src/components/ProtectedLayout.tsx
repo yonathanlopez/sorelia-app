@@ -3,7 +3,6 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
-import { getStoredAccessToken } from '@/lib/app-params';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
 const DefaultFallback = () => (
@@ -20,23 +19,15 @@ export default function ProtectedLayout({
   fallback?: React.ReactNode;
 }) {
   const router = useRouter();
-  const { isAuthenticated, isLoadingAuth, authChecked, authError, checkAppState } = useAuth();
+  const { isAuthenticated, isLoadingAuth, authChecked, authError } = useAuth();
 
   useEffect(() => {
-    if (authChecked && !isLoadingAuth && !isAuthenticated && getStoredAccessToken()) {
-      void checkAppState();
-    }
-  }, [authChecked, isLoadingAuth, isAuthenticated, checkAppState]);
-
-  useEffect(() => {
-    if (authChecked && !isLoadingAuth && !isAuthenticated) {
-      if (authError?.type !== 'user_not_registered' && !getStoredAccessToken()) {
-        router.replace('/login');
-      }
+    if (authChecked && !isLoadingAuth && !isAuthenticated && authError?.type === 'auth_required') {
+      router.replace('/login');
     }
   }, [authChecked, isLoadingAuth, isAuthenticated, authError, router]);
 
-  if (isLoadingAuth || !authChecked) {
+  if (!authChecked || (isLoadingAuth && !isAuthenticated)) {
     return fallback;
   }
 

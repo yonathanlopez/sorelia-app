@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
-import BottomNav from '@/components/BottomNav';
 import { RefreshCw, Terminal, Calendar, Clock, MapPin, Trash2 } from 'lucide-react';
 
 export default function Developer() {
@@ -42,7 +41,6 @@ export default function Developer() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center pb-24">
         <div className="w-6 h-6 border-2 border-violet-200 border-t-violet-600 rounded-full animate-spin" />
-        <BottomNav />
       </div>
     );
   }
@@ -53,7 +51,6 @@ export default function Developer() {
         <Terminal className="w-12 h-12 text-gray-300 mb-4" />
         <h2 className="text-lg font-semibold text-gray-700">Admin Only</h2>
         <p className="text-sm text-gray-400 mt-1">This section is restricted to administrators.</p>
-        <BottomNav />
       </div>
     );
   }
@@ -156,8 +153,6 @@ export default function Developer() {
           )}
         </div>
       </div>
-
-      <BottomNav />
     </div>
   );
 }

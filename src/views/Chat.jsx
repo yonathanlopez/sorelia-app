@@ -6,7 +6,6 @@ import { Send, Loader2, Brain, Sparkles, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
-import BottomNav from '@/components/BottomNav';
 import ReactMarkdown from 'react-markdown';
 
 const SUGGESTIONS = [
@@ -284,7 +283,6 @@ Respond naturally to the user's latest message.`;
         </div>
       </div>
 
-      <BottomNav />
     </div>
   );
 }

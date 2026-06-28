@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { base44 } from '@/api/base44Client';
 import { getAppParams, getStoredAccessToken } from '@/lib/app-params';
@@ -36,10 +36,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authError, setAuthError] = useState<AuthError | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [appPublicSettings, setAppPublicSettings] = useState<Record<string, unknown> | null>(null);
+  const authInitialized = useRef(false);
 
-  const checkUserAuth = async (): Promise<boolean> => {
+  const checkUserAuth = useCallback(async (): Promise<boolean> => {
     try {
-      setIsLoadingAuth(true);
       setAuthError(null);
 
       const token = getStoredAccessToken();
@@ -65,11 +65,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoadingAuth(false);
     }
-  };
+  }, []);
 
-  const checkAppState = async () => {
+  const checkAppState = useCallback(async () => {
+    if (authInitialized.current) {
+      return;
+    }
+
     try {
-      setIsLoadingPublicSettings(true);
+      if (!authInitialized.current) {
+        setIsLoadingPublicSettings(true);
+        setIsLoadingAuth(true);
+      }
       setAuthError(null);
 
       const appParams = getAppParams();
@@ -95,7 +102,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setAuthError({ type: 'auth_required', message: 'Authentication required' });
         }
       } catch (appError) {
-        console.error('App state check failed:', appError);
         const error = appError as {
           status?: number;
           message?: string;
@@ -125,15 +131,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoadingAuth(false);
       setAuthChecked(true);
     } finally {
+      authInitialized.current = true;
       setIsLoadingPublicSettings(false);
     }
-  };
+  }, [checkUserAuth]);
 
   useEffect(() => {
     void checkAppState();
-  }, []);
+  }, [checkAppState]);
 
-  const logout = (shouldRedirect = true) => {
+  const logout = useCallback((shouldRedirect = true) => {
+    authInitialized.current = false;
     setUser(null);
     setIsAuthenticated(false);
     setAuthChecked(true);
@@ -144,31 +152,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } else {
       base44.auth.logout();
     }
-  };
+  }, []);
 
-  const navigateToLogin = () => {
+  const navigateToLogin = useCallback(() => {
     router.replace('/login');
-  };
+  }, [router]);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated,
-        isLoadingAuth,
-        isLoadingPublicSettings,
-        authError,
-        appPublicSettings,
-        authChecked,
-        logout,
-        navigateToLogin,
-        checkUserAuth,
-        checkAppState,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      isAuthenticated,
+      isLoadingAuth,
+      isLoadingPublicSettings,
+      authError,
+      appPublicSettings,
+      authChecked,
+      logout,
+      navigateToLogin,
+      checkUserAuth,
+      checkAppState,
+    }),
+    [
+      user,
+      isAuthenticated,
+      isLoadingAuth,
+      isLoadingPublicSettings,
+      authError,
+      appPublicSettings,
+      authChecked,
+      logout,
+      navigateToLogin,
+      checkUserAuth,
+      checkAppState,
+    ],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

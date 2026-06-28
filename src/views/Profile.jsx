@@ -6,8 +6,6 @@ import { Brain, LogOut, User, Calendar, Trash2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/components/ui/use-toast';
-import { useAuth } from '@/lib/AuthContext';
-import BottomNav from '@/components/BottomNav';
 
 export default function Profile() {
   const { user } = useAuth();
@@ -144,7 +142,6 @@ export default function Profile() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <BottomNav />
     </div>
   );
 }

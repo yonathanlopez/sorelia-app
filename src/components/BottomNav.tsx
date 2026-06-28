@@ -34,7 +34,7 @@ export default function BottomNav() {
       <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-100 z-50 pb-[env(safe-area-inset-bottom)]">
         <div className="flex items-center justify-around w-full h-16">
           {leftTabs.map(({ path, label, icon: Icon }) => (
-            <Link key={path} href={path} className={tabClass(path)}>
+            <Link key={path} href={path} prefetch className={tabClass(path)}>
               <Icon className={`w-5 h-5 ${iconClass(path)}`} />
               <span className={labelClass(path)}>{label}</span>
             </Link>
@@ -43,7 +43,7 @@ export default function BottomNav() {
           <div className="min-w-[56px]" />
 
           {rightTabs.map(({ path, label, icon: Icon }) => (
-            <Link key={path} href={path} className={tabClass(path)}>
+            <Link key={path} href={path} prefetch className={tabClass(path)}>
               <Icon className={`w-5 h-5 ${iconClass(path)}`} />
               <span className={labelClass(path)}>{label}</span>
             </Link>

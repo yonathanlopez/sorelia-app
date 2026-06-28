@@ -6,7 +6,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Calendar, CheckCircle, Clock, Gift, Home as HomeIcon, Zap, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
-import BottomNav from '@/components/BottomNav';
 
 function getDaysUntil(dateStr) {
   if (!dateStr) return null;
@@ -24,10 +23,8 @@ export default function Home() {
 
   const { data: memories = [], isLoading: memoriesLoading } = useQuery({
     queryKey: ['memories'],
-    queryFn: async () => {
-      const mems = await base44.entities.Calendar.list('-created_date', 200);
-      return mems;
-    },
+    queryFn: async () => base44.entities.Calendar.list('-created_date', 200),
+    staleTime: 1000 * 60 * 5,
   });
 
   const loading = memoriesLoading;
@@ -275,7 +272,5 @@ export default function Home() {
           </div>
         </div>
 
-      <BottomNav />
     </div>);
-
 }

@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { ChevronLeft, ChevronRight, Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
-import BottomNav from '@/components/BottomNav';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -343,7 +342,6 @@ export default function CalendarPage() {
         )}
       </div>
 
-      <BottomNav />
     </div>
   );
 }
