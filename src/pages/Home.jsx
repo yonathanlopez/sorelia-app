@@ -133,7 +133,7 @@ export default function Home() {
         <div className="flex items-start justify-between mb-2">
           <div>
             <h1 className="font-bold text-gray-900 text-2xl">Good evening,</h1>
-            <h1 className="font-bold text-gray-900 text-2xl mx-1">{userName} 🌙</h1>
+            <h1 className="font-bold text-gray-900 text-2xl">{userName} 🌙</h1>
             <p className="text-sm text-gray-500 mt-1">Here's what's ahead.</p>
           </div>
           <button className="w-8 h-8 flex items-center justify-center text-violet-500">
