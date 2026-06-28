@@ -127,7 +127,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-28">
+    <div className="min-h-screen bg-gray-50 pb-28 hide-scrollbar">
       {/* Header */}
       <div className="px-4 py-6 bg-white border-b border-gray-100">
         <div className="flex items-start justify-between mb-2">
