@@ -14,7 +14,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Navigate } from 'react-router-dom';
 import Home from '@/pages/Home.jsx';
 import Chat from '@/pages/Chat';
-import Memories from '@/pages/Memories';
+
 import Profile from '@/pages/Profile.jsx';
 import Developer from '@/pages/Developer';
 import Timeline from '@/pages/Timeline';
@@ -53,7 +53,7 @@ const AuthenticatedApp = () => {
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/" element={<Chat />} />
         <Route path="/overview" element={<Home />} />
-        <Route path="/memories" element={<Memories />} />
+
         <Route path="/profile" element={<Profile />} />
         <Route path="/developer" element={<Developer />} />
         <Route path="/timeline" element={<Timeline />} />

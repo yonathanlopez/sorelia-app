@@ -8,7 +8,6 @@ const leftTabs = [
   { path: '/calendar', label: 'Calendar', icon: Calendar },
 ];
 const rightTabs = [
-  { path: '/memories', label: 'Memories', icon: Home },
   { path: '/profile', label: 'Profile', icon: User },
 ];
 
