@@ -11,6 +11,7 @@ const PAGE_CONTEXT = {
   '/calendar': { label: 'Calendar', hint: 'Ask about your schedule, events or dates…' },
   '/memories': { label: 'Memories', hint: 'Ask about your people, goals or important dates…' },
   '/profile': { label: 'Profile', hint: 'Ask about your account or settings…' },
+  '/chat': { label: 'Chat', hint: "What's on your mind?" },
   '/': { label: 'Chat', hint: "What's on your mind?" }
 };
 
@@ -19,6 +20,7 @@ const QUICK_CHIPS = {
   '/calendar': ["What's next on my calendar?", "Any events this week?", "Add an event"],
   '/memories': ["Who have I saved?", "Show my active goals", "Add a person"],
   '/profile': ["How many memories do I have?", "What's connected?"],
+  '/chat': ["Remind me about…", "Save a birthday", "What do I have coming up?"],
   '/': ["Remind me about…", "Save a birthday", "What do I have coming up?"]
 };
 
@@ -84,7 +86,7 @@ ${memoryContext || 'No memories saved yet.'}`;
 
   function openFullChat() {
     const prefill = input || messages[messages.length - 1]?.content;
-    router.push(prefill ? `/?prefill=${encodeURIComponent(prefill)}` : '/');
+    router.push(prefill ? `/chat?prefill=${encodeURIComponent(prefill)}` : '/chat');
     setOpen(false);
   }
 

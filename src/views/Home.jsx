@@ -156,7 +156,7 @@ export default function Home() {
             <div className="px-4 py-6 text-center">
                 <p className="text-xs text-gray-400">No tasks for today</p>
                 <button
-                onClick={() => router.push('/')}
+                onClick={() => router.push('/chat')}
                 className="text-xs text-violet-600 font-medium mt-2 hover:underline">
                   Ask Sorelia to add a task
                 </button>
@@ -199,7 +199,7 @@ export default function Home() {
             <div className="text-center py-6">
                   <p className="text-sm text-gray-500">No upcoming events</p>
                   <button
-                onClick={() => router.push('/')}
+                onClick={() => router.push('/chat')}
                 className="text-xs text-violet-600 font-medium mt-2 hover:underline">
                     Ask Sorelia to add birthdays, anniversaries, or dates
                   </button>
@@ -252,7 +252,7 @@ export default function Home() {
             <div className="px-4 py-6 text-center">
                   <p className="text-sm text-gray-500">No important dates</p>
                   <button
-                onClick={() => router.push('/')}
+                onClick={() => router.push('/chat')}
                 className="text-xs text-violet-600 font-medium mt-2 hover:underline">
                     Ask Sorelia to save bills, anniversaries, or special dates
                   </button>

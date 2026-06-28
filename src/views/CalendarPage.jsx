@@ -310,7 +310,7 @@ export default function CalendarPage() {
               <div className="text-center py-10">
                 <Calendar className="w-10 h-10 text-violet-200 mx-auto mb-3" />
                 <p className="text-sm text-gray-400 mb-2">No events this month.</p>
-                <Link href="/" className="text-sm text-violet-500 font-semibold">Ask Sorelia about your schedule →</Link>
+                <Link href="/chat" className="text-sm text-violet-500 font-semibold">Ask Sorelia about your schedule →</Link>
               </div>
             ) : (
               Object.entries(eventsByDay)

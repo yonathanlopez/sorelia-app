@@ -2,9 +2,7 @@
 
 import React, { useState } from "react";
 import Link from 'next/link'
-import { useRouter } from 'next/navigation';
 import { base44, refreshBase44Client } from "@/api/base44Client";
-import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,8 +12,6 @@ import GoogleIcon from "@/components/GoogleIcon";
 import { getPostAuthRedirectUrl } from '@/lib/app-params';
 
 export default function Login() {
-  const router = useRouter();
-  const { checkUserAuth } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -28,13 +24,7 @@ export default function Login() {
     try {
       await base44.auth.loginViaEmailPassword(email, password);
       refreshBase44Client();
-      const ok = await checkUserAuth();
-      if (ok) {
-        router.replace('/');
-        router.refresh();
-      } else {
-        setError('Login succeeded but the session could not be loaded. Please try again.');
-      }
+      window.location.href = '/';
     } catch (err) {
       setError(err.message || "Invalid email or password");
     } finally {
