@@ -115,27 +115,37 @@ export default function Home() {
       </div>
 
       {/* Stats Bar */}
-      <div className="bg-white rounded-2xl shadow-sm flex items-center justify-around divide-x divide-gray-200 px-2 py-2 mx-2">
-        <div className="flex flex-col items-center gap-2 flex-1">
-          <div className="bg-violet-50 p-2.5 rounded-full text-violet-600">
-            <Clock className="w-5 h-5" />
+      <div className="px-4 pb-3">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="grid grid-cols-3 divide-x divide-gray-100">
+            <div className="flex flex-col items-center py-4 px-2">
+              <span className="text-2xl font-bold tabular-nums text-gray-900 leading-none">{totalGoals}</span>
+              <div className="flex items-center gap-1.5 mt-2">
+                <div className="w-5 h-5 rounded-md bg-violet-100 flex items-center justify-center">
+                  <Clock className="w-3 h-3 text-violet-600" />
+                </div>
+                <span className="text-xs font-medium text-gray-500">Tasks</span>
+              </div>
+            </div>
+            <div className="flex flex-col items-center py-4 px-2">
+              <span className="text-2xl font-bold tabular-nums text-gray-900 leading-none">{completedGoals}</span>
+              <div className="flex items-center gap-1.5 mt-2">
+                <div className="w-5 h-5 rounded-md bg-emerald-100 flex items-center justify-center">
+                  <CheckCircle className="w-3 h-3 text-emerald-600" />
+                </div>
+                <span className="text-xs font-medium text-gray-500">Completed</span>
+              </div>
+            </div>
+            <div className="flex flex-col items-center py-4 px-2">
+              <span className="text-2xl font-bold tabular-nums text-gray-900 leading-none">{upcomingCal.length}</span>
+              <div className="flex items-center gap-1.5 mt-2">
+                <div className="w-5 h-5 rounded-md bg-orange-100 flex items-center justify-center">
+                  <Calendar className="w-3 h-3 text-orange-600" />
+                </div>
+                <span className="text-xs font-medium text-gray-500">Day streak</span>
+              </div>
+            </div>
           </div>
-          <span className="text-xs font-medium text-gray-500">Tasks</span>
-          <span className="text-xl font-bold text-gray-900">{totalGoals}</span>
-        </div>
-        <div className="flex flex-col items-center gap-2 flex-1">
-          <div className="bg-emerald-50 p-2.5 rounded-full text-emerald-600">
-            <CheckCircle className="w-5 h-5" />
-          </div>
-          <span className="text-xs font-medium text-gray-500">Completed</span>
-          <span className="text-xl font-bold text-gray-900">{completedGoals}</span>
-        </div>
-        <div className="flex flex-col items-center gap-2 flex-1">
-          <div className="bg-orange-50 p-2.5 rounded-full text-orange-600">
-            <Calendar className="w-5 h-5" />
-          </div>
-          <span className="text-xs font-medium text-gray-500">Day streak</span>
-          <span className="text-xl font-bold text-gray-900">{upcomingCal.length}</span>
         </div>
       </div>
 
@@ -187,7 +197,7 @@ export default function Home() {
       </div>
 
       {/* Upcoming */}
-      <div className="py-2 px-2" onClick={() => navigate('/calendar')} role="button" className="cursor-pointer">
+      <div className="py-2 px-2 cursor-pointer" onClick={() => navigate('/calendar')} role="button">
           <div className="bg-white rounded-xl border border-gray-100 py-2 px-2 mx-2">
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
               <div className="flex items-center gap-2">
