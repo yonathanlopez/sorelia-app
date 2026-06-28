@@ -19,17 +19,13 @@ export default function ProtectedLayout({
   fallback?: React.ReactNode;
 }) {
   const router = useRouter();
-  const { isAuthenticated, isLoadingAuth, authChecked, authError, checkUserAuth } = useAuth();
+  const { isAuthenticated, isLoadingAuth, authChecked, authError } = useAuth();
 
   useEffect(() => {
-    if (!authChecked && !isLoadingAuth) {
-      void checkUserAuth();
-    }
-  }, [authChecked, isLoadingAuth, checkUserAuth]);
-
-  useEffect(() => {
-    if (authChecked && !isLoadingAuth && !isAuthenticated && authError?.type === 'auth_required') {
-      router.replace('/login');
+    if (authChecked && !isLoadingAuth && !isAuthenticated) {
+      if (authError?.type !== 'user_not_registered') {
+        router.replace('/login');
+      }
     }
   }, [authChecked, isLoadingAuth, isAuthenticated, authError, router]);
 
@@ -42,7 +38,7 @@ export default function ProtectedLayout({
   }
 
   if (!isAuthenticated) {
-    return null;
+    return fallback;
   }
 
   return <>{children}</>;

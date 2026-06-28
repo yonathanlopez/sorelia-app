@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { Send, Loader2, Brain, Sparkles, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { useAuth } from '@/lib/AuthContext';
 import BottomNav from '@/components/BottomNav';
 import ReactMarkdown from 'react-markdown';
 
@@ -72,22 +73,18 @@ function MessageBubble({ message }) {
 
 export default function Chat() {
   const searchParams = useSearchParams();
+  const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [conversationId, setConversationId] = useState(null);
-  const [user, setUser] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const initialQuestionHandled = useRef(false);
 
   useEffect(() => {
     async function load() {
-      const [me, convos] = await Promise.all([
-        base44.auth.me(),
-        base44.entities.Conversation.list('-updated_date', 1),
-      ]);
-      setUser(me);
+      const convos = await base44.entities.Conversation.list('-updated_date', 1);
       if (convos.length > 0) {
         setConversationId(convos[0].id);
         setMessages(convos[0].messages || []);
@@ -178,7 +175,7 @@ Respond naturally to the user's latest message.`;
 
 
 
-  const firstName = user?.full_name?.split(' ')[0] || '';
+  const firstName = user?.full_name?.split?.(' ')?.[0] || '';
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">

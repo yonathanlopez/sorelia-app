@@ -6,10 +6,11 @@ import { Brain, LogOut, User, Calendar, Trash2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/components/ui/use-toast';
+import { useAuth } from '@/lib/AuthContext';
 import BottomNav from '@/components/BottomNav';
 
 export default function Profile() {
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [memoryCount, setMemoryCount] = useState(0);
   const [showClearDialog, setShowClearDialog] = useState(false);
   const [syncingCalendar, setSyncingCalendar] = useState(false);
@@ -17,11 +18,7 @@ export default function Profile() {
 
   useEffect(() => {
     async function load() {
-      const [me, mems] = await Promise.all([
-        base44.auth.me(),
-        base44.entities.Calendar.list('-created_date', 200),
-      ]);
-      setUser(me);
+      const mems = await base44.entities.Calendar.list('-created_date', 200);
       setMemoryCount(mems.length);
     }
     load();

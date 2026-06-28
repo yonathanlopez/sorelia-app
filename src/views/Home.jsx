@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Calendar, CheckCircle, Clock, Gift, Home as HomeIcon, Zap, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/AuthContext';
 import BottomNav from '@/components/BottomNav';
 
 function getDaysUntil(dateStr) {
@@ -18,12 +19,8 @@ function getDaysUntil(dateStr) {
 export default function Home() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [completedToday, setCompletedToday] = useState(new Set());
-
-  useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
-  }, []);
 
   const { data: memories = [], isLoading: memoriesLoading } = useQuery({
     queryKey: ['memories'],
@@ -74,7 +71,7 @@ export default function Home() {
 
   const upcomingCal = upcomingEvents.filter((e) => e.daysUntil > 0).sort((a, b) => a.daysUntil - b.daysUntil).slice(0, 4);
 
-  const userName = user?.full_name?.split(' ')[0] || 'there';
+  const userName = String(user?.full_name ?? '').split(' ')[0] || 'there';
 
   async function handleDone(id) {
     const isCurrentlyCompleted = completedToday.has(id);

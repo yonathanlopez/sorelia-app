@@ -45,7 +45,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsAuthenticated(true);
       setAuthChecked(true);
     } catch (error) {
-      console.error('User auth check failed:', error);
       setIsAuthenticated(false);
       setAuthChecked(true);
 
@@ -80,6 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setIsLoadingAuth(false);
           setIsAuthenticated(false);
           setAuthChecked(true);
+          setAuthError({ type: 'auth_required', message: 'Authentication required' });
         }
       } catch (appError) {
         console.error('App state check failed:', appError);
