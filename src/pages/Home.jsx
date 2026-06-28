@@ -127,9 +127,9 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-28 hide-scrollbar">
+    <div className="min-h-screen pb-28 hide-scrollbar bg-gray-100">
       {/* Header */}
-      <div className="bg-white border-b border-gray-100 px-4 py-4">
+      <div className="bg-white border-b border-gray-100 px-4 py-4 text-gray-50">
         <div className="flex items-start justify-between mb-2">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Good evening,</h1>
