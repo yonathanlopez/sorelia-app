@@ -272,7 +272,12 @@ export default function Home() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-900">{event.title}</p>
-                      <p className="text-xs text-gray-500">{event.daysUntil === 1 ? 'Tomorrow' : `${event.daysUntil}d away`}</p>
+                      <p className="text-xs text-gray-500">
+                        {event.date && event.date.includes('T') 
+                          ? new Date(event.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+                          : (event.daysUntil === 1 ? 'Tomorrow' : `${event.daysUntil}d away`)
+                        }
+                      </p>
                     </div>
                     <div className="text-right">
                       <p className="text-xs font-medium text-violet-600">
