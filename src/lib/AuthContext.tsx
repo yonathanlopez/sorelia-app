@@ -47,7 +47,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         base44.auth.setToken(token, false);
       }
 
-      const currentUser = await base44.auth.me();
+      const currentUser = await Promise.race([
+        base44.auth.me(),
+        new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error('Auth check timed out')), 15000);
+        }),
+      ]);
+
       setUser(currentUser as Record<string, unknown>);
       setIsAuthenticated(true);
       setAuthChecked(true);
@@ -56,11 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
       setIsAuthenticated(false);
       setAuthChecked(true);
-
-      const status = (error as { status?: number }).status;
-      if (status === 401 || status === 403) {
-        setAuthError({ type: 'auth_required', message: 'Authentication required' });
-      }
+      setAuthError({ type: 'auth_required', message: 'Authentication required' });
       return false;
     } finally {
       setIsLoadingAuth(false);

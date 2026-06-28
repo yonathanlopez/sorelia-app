@@ -14,6 +14,7 @@ export function useMemories() {
   return useQuery({
     queryKey: MEMORIES_QUERY_KEY,
     queryFn: fetchMemories,
+    retry: 1,
   });
 }
 

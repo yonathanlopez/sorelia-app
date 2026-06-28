@@ -26,12 +26,20 @@ export default function Home() {
 
   const loading = memoriesLoading && memories.length === 0;
 
+  const userName = String(user?.full_name ?? '').split(' ')[0] || 'there';
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin" />
-      </div>);
-
+      <div className="min-h-screen pb-28 hide-scrollbar bg-gray-100">
+        <div className="border-b border-gray-100 px-4 py-4 bg-gray-100">
+          <div className="h-8 w-48 bg-gray-200 rounded animate-pulse mb-2" />
+          <div className="h-8 w-36 bg-gray-200 rounded animate-pulse" />
+        </div>
+        <div className="flex items-center justify-center py-20">
+          <div className="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin" />
+        </div>
+      </div>
+    );
   }
 
   const today = new Date();
@@ -64,8 +72,6 @@ export default function Home() {
   const importantEvents = upcomingEvents.slice(0, 5);
 
   const upcomingCal = upcomingEvents.filter((e) => e.daysUntil > 0).sort((a, b) => a.daysUntil - b.daysUntil).slice(0, 4);
-
-  const userName = String(user?.full_name ?? '').split(' ')[0] || 'there';
 
   async function handleDone(id) {
     const isCurrentlyCompleted = completedToday.has(id);

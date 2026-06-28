@@ -22,12 +22,12 @@ export default function ProtectedLayout({
   const { isAuthenticated, isLoadingAuth, authChecked, authError } = useAuth();
 
   useEffect(() => {
-    if (authChecked && !isLoadingAuth && !isAuthenticated && authError?.type === 'auth_required') {
+    if (authChecked && !isLoadingAuth && !isAuthenticated) {
       router.replace('/login');
     }
-  }, [authChecked, isLoadingAuth, isAuthenticated, authError, router]);
+  }, [authChecked, isLoadingAuth, isAuthenticated, router]);
 
-  if (!authChecked || (isLoadingAuth && !isAuthenticated)) {
+  if (!authChecked || isLoadingAuth) {
     return fallback;
   }
 
