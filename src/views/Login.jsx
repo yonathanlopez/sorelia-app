@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
+import { getPostAuthRedirectUrl } from '@/lib/app-params';
 
 export default function Login() {
   const router = useRouter();
@@ -38,7 +39,7 @@ export default function Login() {
   };
 
   const handleGoogle = () => {
-    base44.auth.loginWithProvider("google", "/");
+    base44.auth.loginWithProvider('google', getPostAuthRedirectUrl('/'));
   };
 
   return (

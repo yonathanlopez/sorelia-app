@@ -1,5 +1,9 @@
 const isBrowser = typeof window !== 'undefined';
 
+const ENV_APP_ID = process.env.NEXT_PUBLIC_BASE44_APP_ID ?? '6a3f193173edbc16833522f4';
+const ENV_APP_BASE_URL = process.env.NEXT_PUBLIC_BASE44_APP_BASE_URL ?? 'https://sorelia.base44.app';
+const ENV_FUNCTIONS_VERSION = process.env.NEXT_PUBLIC_BASE44_FUNCTIONS_VERSION;
+
 const toSnakeCase = (str: string) => str.replace(/([A-Z])/g, '_$1').toLowerCase();
 
 const getAppParamValue = (
@@ -26,14 +30,14 @@ const getAppParamValue = (
     return searchParam;
   }
 
-  if (defaultValue) {
-    storage.setItem(storageKey, defaultValue);
-    return defaultValue;
-  }
-
   const storedValue = storage.getItem(storageKey);
   if (storedValue) {
     return storedValue;
+  }
+
+  if (defaultValue) {
+    storage.setItem(storageKey, defaultValue);
+    return defaultValue;
   }
 
   return null;
@@ -57,16 +61,21 @@ export function getAppParams() {
     getAppParamValue('access_token', { removeFromUrl: true }) || getStoredAccessToken();
 
   return {
-    appId: getAppParamValue('app_id', { defaultValue: process.env.NEXT_PUBLIC_BASE44_APP_ID }) ?? '',
+    appId: getAppParamValue('app_id', { defaultValue: ENV_APP_ID }) || ENV_APP_ID,
     token,
     fromUrl: getAppParamValue('from_url', { defaultValue: isBrowser ? window.location.href : '' }),
-    functionsVersion: getAppParamValue('functions_version', {
-      defaultValue: process.env.NEXT_PUBLIC_BASE44_FUNCTIONS_VERSION,
-    }),
-    appBaseUrl: getAppParamValue('app_base_url', {
-      defaultValue: process.env.NEXT_PUBLIC_BASE44_APP_BASE_URL,
-    }) ?? '',
+    functionsVersion:
+      getAppParamValue('functions_version', { defaultValue: ENV_FUNCTIONS_VERSION }) ||
+      ENV_FUNCTIONS_VERSION ||
+      null,
+    appBaseUrl:
+      getAppParamValue('app_base_url', { defaultValue: ENV_APP_BASE_URL }) || ENV_APP_BASE_URL,
   };
 }
 
 export const appParams = getAppParams();
+
+export function getPostAuthRedirectUrl(path = '/'): string {
+  if (!isBrowser) return path;
+  return new URL(path, window.location.origin).toString();
+}
