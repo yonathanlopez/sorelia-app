@@ -155,7 +155,7 @@ export default function Home() {
           <div className="bg-emerald-50 p-2.5 rounded-full text-emerald-600">
             <CheckCircle className="w-5 h-5" />
           </div>
-          <span className="text-xs font-medium text-gray-400">Completed</span>
+          <span className="text-xs font-medium text-gray-500">Completed</span>
           <span className="text-xl font-bold text-gray-900">{completedGoals}</span>
         </div>
         <div className="flex flex-col items-center gap-2 flex-1">
