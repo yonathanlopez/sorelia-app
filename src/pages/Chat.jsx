@@ -117,7 +117,7 @@ export default function Chat() {
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);
 
-    const allMemories = await base44.entities.Memory.list('-created_date', 100);
+    const allMemories = await base44.entities.Calendar.list('-created_date', 100);
 
     let memoryContext = '';
     if (allMemories.length > 0) {
@@ -219,7 +219,7 @@ If nothing worth saving, return { "memories": [] }.`;
       });
       if (result?.memories?.length > 0) {
         for (const mem of result.memories) {
-          await base44.entities.Memory.create({
+          await base44.entities.Calendar.create({
             type: mem.type,
             title: mem.title,
             description: mem.description || '',

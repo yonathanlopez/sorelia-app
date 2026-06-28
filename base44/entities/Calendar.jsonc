@@ -1,0 +1,64 @@
+{
+  "name": "Calendar",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "person",
+        "goal",
+        "important_date"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string"
+    },
+    "people": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "source": {
+      "type": "string"
+    },
+    "person_birthday": {
+      "type": "string"
+    },
+    "person_relationship": {
+      "type": "string"
+    },
+    "person_anniversary": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "completed"
+      ]
+    },
+    "date_type": {
+      "type": "string",
+      "enum": [
+        "birthday",
+        "anniversary",
+        "bills",
+        "custom"
+      ]
+    },
+    "calendar_name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "type",
+    "title"
+  ]
+}

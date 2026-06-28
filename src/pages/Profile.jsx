@@ -18,7 +18,7 @@ export default function Profile() {
     async function load() {
       const [me, mems] = await Promise.all([
         base44.auth.me(),
-        base44.entities.Memory.list('-created_date', 200),
+        base44.entities.Calendar.list('-created_date', 200),
       ]);
       setUser(me);
       setMemoryCount(mems.length);
@@ -27,7 +27,7 @@ export default function Profile() {
   }, []);
 
   async function handleClearAll() {
-    await base44.entities.Memory.deleteMany({});
+    await base44.entities.Calendar.deleteMany({});
     await base44.entities.Conversation.deleteMany({});
     setMemoryCount(0);
     setShowClearDialog(false);

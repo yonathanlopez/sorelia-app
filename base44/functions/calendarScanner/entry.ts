@@ -57,7 +57,7 @@ Deno.serve(async (req) => {
     });
 
     // Step 4: Save new events as memories
-    const existingMemories = await base44.asServiceRole.entities.Memory.filter({ source: 'google_calendar' });
+    const existingMemories = await base44.asServiceRole.entities.Calendar.filter({ source: 'google_calendar' });
     const existingKeys = new Set(existingMemories.map(m => `${m.title}||${m.date}`));
 
     let memoriesCreated = 0;
@@ -76,7 +76,7 @@ Deno.serve(async (req) => {
 
       const key = `${title}||${startDate}`;
       if (!existingKeys.has(key)) {
-        await base44.asServiceRole.entities.Memory.create({
+        await base44.asServiceRole.entities.Calendar.create({
           type: memType,
           title,
           description: [description, location ? `📍 ${location}` : '', calName ? `📅 ${calName}` : ''].filter(Boolean).join('\n').slice(0, 500),

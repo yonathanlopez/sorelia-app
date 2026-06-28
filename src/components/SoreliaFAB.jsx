@@ -53,7 +53,7 @@ export default function SoreliaFAB() {
     setLoading(true);
 
     try {
-      const memories = await base44.entities.Memory.list('-created_date', 50);
+      const memories = await base44.entities.Calendar.list('-created_date', 50);
       const memoryContext = memories.slice(0, 20).map((m) =>
       `[${m.type}] ${m.title}${m.description ? ': ' + m.description : ''}${m.date ? ' (date: ' + m.date + ')' : ''}`
       ).join('\n');

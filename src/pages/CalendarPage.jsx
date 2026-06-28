@@ -62,7 +62,7 @@ export default function CalendarPage() {
   async function loadEvents() {
     setLoading(true);
     // Load saved memories instantly
-    const memories = await base44.entities.Memory.list('-date', 500);
+    const memories = await base44.entities.Calendar.list('-date', 500);
     const calRes = null;
     
     // Add people's birthdays as events
