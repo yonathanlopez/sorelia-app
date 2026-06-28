@@ -143,7 +143,7 @@ export default function Home() {
       </div>
 
       {/* Stats Bar */}
-      <div className="px-4 py-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 py-2 px-2">
         <div className="bg-white rounded-xl text-center border-2 border-violet-200 px-3 py-4 shadow-sm hover:shadow-md transition-shadow">
           <div className="w-8 h-8 rounded-lg bg-violet-100 text-violet-600 flex items-center justify-center mx-auto mb-2">
             <Clock className="w-4 h-4" />
