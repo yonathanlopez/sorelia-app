@@ -143,34 +143,33 @@ export default function Home() {
       </div>
 
       {/* Stats Bar */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 py-2 px-2">
-        <div className="bg-white rounded-xl text-center border-2 border-violet-200 px-3 py-4 shadow-sm hover:shadow-md transition-shadow">
-          <div className="w-8 h-8 rounded-lg bg-violet-100 text-violet-600 flex items-center justify-center mx-auto mb-2">
+      <div className="grid grid-cols-3 gap-3 px-4 py-2">
+        <div className="bg-white rounded-xl border-2 border-violet-200 px-3 py-3 shadow-sm hover:shadow-md transition-shadow flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-violet-100 text-violet-600 flex items-center justify-center flex-shrink-0">
             <Clock className="w-4 h-4" />
           </div>
-          <p className="text-lg font-bold text-gray-900">{totalGoals}</p>
-          <p className="text-xs text-gray-500 mt-1">Tasks</p>
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-gray-900">{totalGoals}</p>
+            <p className="text-xs text-gray-500">Tasks</p>
+          </div>
         </div>
-        <div className="bg-white rounded-xl text-center border-2 border-emerald-200 px-3 py-4 shadow-sm hover:shadow-md transition-shadow">
-          <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-2">
+        <div className="bg-white rounded-xl border-2 border-emerald-200 px-3 py-3 shadow-sm hover:shadow-md transition-shadow flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0">
             <CheckCircle className="w-4 h-4" />
           </div>
-          <p className="text-lg font-bold text-gray-900">{completedGoals}</p>
-          <p className="text-xs text-gray-500 mt-1">Completed</p>
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-gray-900">{completedGoals}</p>
+            <p className="text-xs text-gray-500">Completed</p>
+          </div>
         </div>
-        <div className="bg-white rounded-xl text-center border-2 border-orange-200 px-3 py-4 shadow-sm hover:shadow-md transition-shadow">
-          <div className="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center mx-auto mb-2">
+        <div className="bg-white rounded-xl border-2 border-orange-200 px-3 py-3 shadow-sm hover:shadow-md transition-shadow flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center flex-shrink-0">
             <Calendar className="w-4 h-4" />
           </div>
-          <p className="text-lg font-bold text-gray-900">{upcomingCal.length}</p>
-          <p className="text-xs text-gray-500 mt-1">Days Streak</p>
-        </div>
-        <div className="bg-white rounded-xl text-center border-2 border-rose-200 px-3 py-4 shadow-sm hover:shadow-md transition-shadow hidden sm:block">
-          <div className="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-2">
-            <Zap className="w-4 h-4" />
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-gray-900">{upcomingCal.length}</p>
+            <p className="text-xs text-gray-500">Days Streak</p>
           </div>
-          <p className="text-lg font-bold text-gray-900">{importantEvents.length}</p>
-          <p className="text-xs text-gray-500 mt-1">Important</p>
         </div>
       </div>
 
