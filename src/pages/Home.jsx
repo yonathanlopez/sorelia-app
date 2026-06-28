@@ -129,7 +129,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 pb-28 hide-scrollbar">
       {/* Header */}
-      <div className="px-4 py-6 bg-white border-b border-gray-100">
+      <div className="bg-white border-b border-gray-100 px-4 py-5">
         <div className="flex items-start justify-between mb-2">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Good evening,</h1>
@@ -143,7 +143,7 @@ export default function Home() {
       </div>
 
       {/* Stats Bar */}
-      <div className="bg-white rounded-2xl shadow-sm flex items-center justify-around divide-x divide-gray-200 px-2 py-2">
+      <div className="bg-white rounded-2xl shadow-sm flex items-center justify-around divide-x divide-gray-200 px-2 py-2 mx-2">
         <div className="flex flex-col items-center gap-2 flex-1">
           <div className="bg-violet-50 p-2.5 rounded-full text-violet-600">
             <Clock className="w-5 h-5" />
