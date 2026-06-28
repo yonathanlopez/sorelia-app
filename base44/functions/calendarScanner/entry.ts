@@ -21,8 +21,10 @@ Deno.serve(async (req) => {
     const calListData = await calListRes.json();
     const calendars = calListData.items || [];
 
-    const timeMin = new Date().toISOString();
-    const timeMax = new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const timeMin = today.toISOString();
+    const timeMax = new Date(today.getTime() + 180 * 24 * 60 * 60 * 1000).toISOString();
 
     // Step 2: Fetch events from all calendars, skipping ones that fail
     // Small delay helper to avoid hitting Google's rate limit

@@ -187,7 +187,7 @@ export default function Home() {
                 <Clock className="w-3 h-3" />
               </div>
               <h2 className="font-semibold text-gray-900">Today</h2>
-              <p className="text-xs text-gray-400">May 27</p>
+              <p className="text-xs text-gray-400">{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
             </div>
             
 
