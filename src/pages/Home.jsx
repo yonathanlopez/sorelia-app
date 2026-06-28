@@ -176,7 +176,7 @@ export default function Home() {
 
       {/* Today */}
       <div className="px-4 py-4">
-        <div className="bg-white rounded-xl border p-2 border-gray-100">
+        <div className="bg-white rounded-xl border border-gray-100 py-2 px-1">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-lg bg-violet-100 text-violet-600 flex items-center justify-center">
