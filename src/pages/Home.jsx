@@ -85,14 +85,24 @@ export default function Home() {
   });
 
   // Today's tasks
-  const todayTasks = reminders.
-  filter((m) => getDaysUntil(m.date?.split('T')[0]) === 0).
-  map((m) => ({
-    title: m.title,
-    id: m.id,
-    time: m.date && m.date.includes('T') ? new Date(m.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
-  })).
-  sort((a, b) => {
+  const todayCalendarEvents = calendarEvents
+    .filter((e) => getDaysUntil(e.start?.split('T')[0]) === 0)
+    .map((e) => ({
+      title: e.title || e.summary,
+      id: `cal-${e.id}`,
+      time: e.start && e.start.includes('T') ? new Date(e.start).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
+    }));
+
+  const todayTasks = [
+    ...reminders
+      .filter((m) => getDaysUntil(m.date?.split('T')[0]) === 0)
+      .map((m) => ({
+        title: m.title,
+        id: m.id,
+        time: m.date && m.date.includes('T') ? new Date(m.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
+      })),
+    ...todayCalendarEvents
+  ].sort((a, b) => {
     const timeA = a.time ? new Date(`2000-01-01 ${a.time}`).getTime() : Infinity;
     const timeB = b.time ? new Date(`2000-01-01 ${b.time}`).getTime() : Infinity;
     return timeA - timeB;
