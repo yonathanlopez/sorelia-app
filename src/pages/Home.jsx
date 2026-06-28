@@ -143,27 +143,27 @@ export default function Home() {
       </div>
 
       {/* Stats Bar */}
-      <div className="grid grid-cols-3 gap-3 px-4 py-3">
-        <div className="bg-white rounded-xl border border-violet-200 px-3 py-3 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center justify-center gap-2">
-          <div className="w-10 h-10 rounded-lg bg-violet-100 text-violet-600 flex items-center justify-center">
+      <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center justify-around divide-x divide-gray-200 mx-4 my-3">
+        <div className="flex flex-col items-center gap-2 flex-1">
+          <div className="bg-violet-50 p-2.5 rounded-full text-violet-600">
             <Clock className="w-5 h-5" />
           </div>
-          <p className="text-lg font-bold text-gray-900 text-center">{totalGoals}</p>
-          <p className="text-xs text-gray-500 text-center whitespace-nowrap">Tasks</p>
+          <span className="text-xs font-medium text-gray-500">Tasks</span>
+          <span className="text-xl font-bold text-gray-900">{totalGoals}</span>
         </div>
-        <div className="bg-white rounded-xl border border-emerald-200 px-3 py-3 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center justify-center gap-2">
-          <div className="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-2 flex-1">
+          <div className="bg-emerald-50 p-2.5 rounded-full text-emerald-600">
             <CheckCircle className="w-5 h-5" />
           </div>
-          <p className="text-lg font-bold text-gray-900 text-center">{completedGoals}</p>
-          <p className="text-xs text-gray-500 text-center whitespace-nowrap">Completed</p>
+          <span className="text-xs font-medium text-gray-500">Completed</span>
+          <span className="text-xl font-bold text-gray-900">{completedGoals}</span>
         </div>
-        <div className="bg-white rounded-xl border border-orange-200 px-3 py-3 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center justify-center gap-2">
-          <div className="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-2 flex-1">
+          <div className="bg-orange-50 p-2.5 rounded-full text-orange-600">
             <Calendar className="w-5 h-5" />
           </div>
-          <p className="text-lg font-bold text-gray-900 text-center">{upcomingCal.length}</p>
-          <p className="text-xs text-gray-500 text-center whitespace-nowrap">Days Streak</p>
+          <span className="text-xs font-medium text-gray-500">Day streak</span>
+          <span className="text-xl font-bold text-gray-900">{upcomingCal.length}</span>
         </div>
       </div>
 
