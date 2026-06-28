@@ -32,19 +32,7 @@ export default function Home() {
     },
   });
 
-  const { data: calendarEvents = [], isLoading: calendarLoading } = useQuery({
-    queryKey: ['calendarEvents'],
-    queryFn: async () => {
-      try {
-        const res = await base44.functions.invoke('calendarScanner', {});
-        return res?.data?.events || [];
-      } catch {
-        return [];
-      }
-    },
-  });
-
-  const loading = memoriesLoading || calendarLoading;
+  const loading = memoriesLoading;
 
   if (loading) {
     return (
@@ -81,33 +69,13 @@ export default function Home() {
   filter((ev) => ev.daysUntil >= 0 && ev.daysUntil <= 90).
   sort((a, b) => a.daysUntil - b.daysUntil);
 
-  const reminders = memories.
-  filter((m) => m.type === 'goal' && m.status === 'active').
-  map((m, i) => {
-    const times = ['09:00', '14:30', '18:00', '11:00'];
-    return m.date && m.date.length === 10 ?
-    { ...m, date: m.date + 'T' + times[i % times.length] + ':00' } :
-    m;
-  });
-
-  // Today's tasks
-  const todayCalendarEvents = calendarEvents.
-  filter((e) => getDaysUntil(e.start?.split('T')[0]) === 0).
-  map((e) => ({
-    title: e.title || e.summary,
-    id: `cal-${e.id}`,
-    time: e.start && e.start.includes('T') ? new Date(e.start).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
-  }));
-
-  const todayTasks = [
-  ...reminders.
+  const todayTasks = memories.
   filter((m) => getDaysUntil(m.date?.split('T')[0]) === 0).
   map((m) => ({
     title: m.title,
     id: m.id,
     time: m.date && m.date.includes('T') ? new Date(m.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
-  })),
-  ...todayCalendarEvents].
+  })).
   sort((a, b) => {
     const timeA = a.time ? new Date(`2000-01-01 ${a.time}`).getTime() : Infinity;
     const timeB = b.time ? new Date(`2000-01-01 ${b.time}`).getTime() : Infinity;
@@ -116,20 +84,7 @@ export default function Home() {
 
   const importantEvents = upcomingEvents.slice(0, 5);
 
-  const combinedUpcoming = [
-  ...upcomingEvents.filter((e) => e.daysUntil > 0).map((e) => ({ ...e, sortDate: new Date(e.date).getTime() })),
-  ...calendarEvents.
-  filter((e) => getDaysUntil(e.start?.split('T')[0]) > 0).
-  map((e) => ({
-    id: `cal-${e.id}`,
-    title: e.summary || e.title,
-    date: e.start,
-    sortDate: new Date(e.start).getTime(),
-    daysUntil: getDaysUntil(e.start?.split('T')[0])
-  }))];
-
-
-  const upcomingCal = combinedUpcoming.sort((a, b) => a.sortDate - b.sortDate).slice(0, 4);
+  const upcomingCal = upcomingEvents.filter((e) => e.daysUntil > 0).sort((a, b) => a.daysUntil - b.daysUntil).slice(0, 4);
 
   const userName = user?.full_name?.split(' ')[0] || 'there';
 
