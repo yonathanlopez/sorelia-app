@@ -211,7 +211,7 @@ export default function Home() {
 
       {/* Upcoming */}
       {upcomingCal.length > 0 &&
-      <div className="px-2 py-2">
+      <div className="py-2 px-2 mx-1">
           <div className="bg-white rounded-xl border border-gray-100">
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
               <div className="flex items-center gap-2">
