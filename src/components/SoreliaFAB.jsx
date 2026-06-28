@@ -9,7 +9,7 @@ const PAGE_CONTEXT = {
   '/calendar': { label: 'Calendar', hint: 'Ask about your schedule, events or dates…' },
   '/memories': { label: 'Memories', hint: 'Ask about your people, goals or important dates…' },
   '/profile': { label: 'Profile', hint: 'Ask about your account or settings…' },
-  '/': { label: 'Chat', hint: "What's on your mind?" },
+  '/': { label: 'Chat', hint: "What's on your mind?" }
 };
 
 const QUICK_CHIPS = {
@@ -17,7 +17,7 @@ const QUICK_CHIPS = {
   '/calendar': ["What's next on my calendar?", "Any events this week?", "Add an event"],
   '/memories': ["Who have I saved?", "Show my active goals", "Add a person"],
   '/profile': ["How many memories do I have?", "What's connected?"],
-  '/': ["Remind me about…", "Save a birthday", "What do I have coming up?"],
+  '/': ["Remind me about…", "Save a birthday", "What do I have coming up?"]
 };
 
 export default function SoreliaFAB() {
@@ -49,13 +49,13 @@ export default function SoreliaFAB() {
     const userMsg = text || input.trim();
     if (!userMsg) return;
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+    setMessages((prev) => [...prev, { role: 'user', content: userMsg }]);
     setLoading(true);
 
     try {
       const memories = await base44.entities.Memory.list('-created_date', 50);
-      const memoryContext = memories.slice(0, 20).map(m =>
-        `[${m.type}] ${m.title}${m.description ? ': ' + m.description : ''}${m.date ? ' (date: ' + m.date + ')' : ''}`
+      const memoryContext = memories.slice(0, 20).map((m) =>
+      `[${m.type}] ${m.title}${m.description ? ': ' + m.description : ''}${m.date ? ' (date: ' + m.date + ')' : ''}`
       ).join('\n');
 
       const systemPrompt = `You are Sorelia, a warm and intelligent personal memory assistant. 
@@ -67,15 +67,15 @@ User's saved memories:
 ${memoryContext || 'No memories saved yet.'}`;
 
       const res = await base44.integrations.Core.InvokeLLM({
-        prompt: `${systemPrompt}\n\nUser: ${userMsg}`,
+        prompt: `${systemPrompt}\n\nUser: ${userMsg}`
       });
 
       const reply = typeof res === 'string' ? res : res?.response || "I'm here to help!";
-      setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
+      setMessages((prev) => [...prev, { role: 'assistant', content: reply }]);
 
       // If user wants to save something, offer to go to full chat
     } catch (e) {
-      setMessages(prev => [...prev, { role: 'assistant', content: "Sorry, I couldn't process that right now. Try the full chat for more help!" }]);
+      setMessages((prev) => [...prev, { role: 'assistant', content: "Sorry, I couldn't process that right now. Try the full chat for more help!" }]);
     }
     setLoading(false);
   }
@@ -88,20 +88,20 @@ ${memoryContext || 'No memories saved yet.'}`;
   return (
     <>
       {/* Backdrop */}
-      {open && (
-        <div
-          className="fixed inset-0 z-[55] bg-black/20 backdrop-blur-[1px]"
-          onClick={() => setOpen(false)}
-        />
-      )}
+      {open &&
+      <div
+        className="fixed inset-0 z-[55] bg-black/20 backdrop-blur-[1px]"
+        onClick={() => setOpen(false)} />
+
+      }
 
       {/* Slide-up drawer */}
       <div
         className={`fixed left-0 right-0 z-[60] bg-white rounded-t-3xl shadow-2xl border-t border-gray-100 transition-all duration-300 ease-out ${
-          open ? 'bottom-0' : '-bottom-full'
-        }`}
-        style={{ maxHeight: '70vh' }}
-      >
+        open ? 'bottom-0' : '-bottom-full'}`
+        }
+        style={{ maxHeight: '70vh' }}>
+        
         {/* Handle & header */}
         <div className="flex flex-col">
           <div className="flex justify-center pt-2 pb-1">
@@ -121,8 +121,8 @@ ${memoryContext || 'No memories saved yet.'}`;
             <div className="flex items-center gap-2">
               <button
                 onClick={openFullChat}
-                className="text-[11px] text-violet-500 font-semibold bg-violet-50 px-2.5 py-1 rounded-full"
-              >
+                className="text-[11px] text-violet-500 font-semibold bg-violet-50 px-2.5 py-1 rounded-full">
+                
                 Full chat
               </button>
               <button onClick={() => setOpen(false)} className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center">
@@ -134,47 +134,47 @@ ${memoryContext || 'No memories saved yet.'}`;
 
         {/* Messages */}
         <div className="overflow-y-auto px-4 py-3 space-y-3" style={{ maxHeight: '38vh' }}>
-          {messages.length === 0 && (
-            <div className="py-2">
+          {messages.length === 0 &&
+          <div className="py-2">
               <p className="text-xs text-gray-400 text-center mb-3">{ctx.hint}</p>
               <div className="flex flex-wrap gap-2 justify-center">
-                {chips.map(chip => (
-                  <button
-                    key={chip}
-                    onClick={() => sendMessage(chip)}
-                    className="text-xs bg-violet-50 text-violet-600 font-medium px-3 py-1.5 rounded-full border border-violet-100 active:scale-95 transition-transform"
-                  >
+                {chips.map((chip) =>
+              <button
+                key={chip}
+                onClick={() => sendMessage(chip)}
+                className="text-xs bg-violet-50 text-violet-600 font-medium px-3 py-1.5 rounded-full border border-violet-100 active:scale-95 transition-transform">
+                
                     {chip}
                   </button>
-                ))}
+              )}
+              </div>
+            </div>
+          }
+
+          {messages.map((m, i) =>
+          <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              {m.role === 'assistant' &&
+            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center mr-2 flex-shrink-0 mt-0.5">
+                  <Brain className="w-3 h-3 text-white" />
+                </div>
+            }
+              <div
+              className={`max-w-[78%] px-3 py-2 rounded-2xl text-sm leading-relaxed ${
+              m.role === 'user' ?
+              'bg-violet-600 text-white rounded-br-md' :
+              'bg-gray-100 text-gray-800 rounded-bl-md'}`
+              }>
+              
+                {m.role === 'assistant' ?
+              <ReactMarkdown className="text-sm prose prose-sm max-w-none">{m.content}</ReactMarkdown> :
+              m.content
+              }
               </div>
             </div>
           )}
 
-          {messages.map((m, i) => (
-            <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              {m.role === 'assistant' && (
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center mr-2 flex-shrink-0 mt-0.5">
-                  <Brain className="w-3 h-3 text-white" />
-                </div>
-              )}
-              <div
-                className={`max-w-[78%] px-3 py-2 rounded-2xl text-sm leading-relaxed ${
-                  m.role === 'user'
-                    ? 'bg-violet-600 text-white rounded-br-md'
-                    : 'bg-gray-100 text-gray-800 rounded-bl-md'
-                }`}
-              >
-                {m.role === 'assistant'
-                  ? <ReactMarkdown className="text-sm prose prose-sm max-w-none">{m.content}</ReactMarkdown>
-                  : m.content
-                }
-              </div>
-            </div>
-          ))}
-
-          {loading && (
-            <div className="flex justify-start">
+          {loading &&
+          <div className="flex justify-start">
               <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center mr-2 flex-shrink-0">
                 <Brain className="w-3 h-3 text-white" />
               </div>
@@ -184,7 +184,7 @@ ${memoryContext || 'No memories saved yet.'}`;
                 <span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             </div>
-          )}
+          }
           <div ref={messagesEndRef} />
         </div>
 
@@ -193,16 +193,16 @@ ${memoryContext || 'No memories saved yet.'}`;
           <input
             ref={inputRef}
             value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMessage()}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
             placeholder={ctx.hint}
-            className="flex-1 bg-gray-100 rounded-full px-4 py-2.5 text-sm outline-none text-gray-800 placeholder:text-gray-400"
-          />
+            className="flex-1 bg-gray-100 rounded-full px-4 py-2.5 text-sm outline-none text-gray-800 placeholder:text-gray-400" />
+          
           <button
             onClick={() => sendMessage()}
             disabled={!input.trim() || loading}
-            className="w-10 h-10 rounded-full bg-violet-600 flex items-center justify-center disabled:opacity-40 active:scale-95 transition-transform flex-shrink-0"
-          >
+            className="w-10 h-10 rounded-full bg-violet-600 flex items-center justify-center disabled:opacity-40 active:scale-95 transition-transform flex-shrink-0">
+            
             <Send className="w-4 h-4 text-white" />
           </button>
         </div>
@@ -212,16 +212,16 @@ ${memoryContext || 'No memories saved yet.'}`;
 
       {/* FAB button */}
       <button
-        onClick={() => setOpen(o => !o)}
-        className="fixed bottom-[18px] left-1/2 -translate-x-1/2 z-[60] w-14 h-14 rounded-full bg-gradient-to-br from-violet-600 to-purple-600 shadow-xl flex items-center justify-center active:scale-95 transition-transform border-4 border-white"
-        title="Chat with Sorelia"
-      >
-        {open
-          ? <ChevronDown className="w-6 h-6 text-white" />
-          : <Brain className="w-6 h-6 text-white" />
+        onClick={() => setOpen((o) => !o)}
+        className="fixed bottom-[18px] left-1/2 -translate-x-1/2 z-[60] w-14 h-14 rounded-full bg-gradient-to-br from-violet-600 to-purple-600 shadow-xl flex items-center justify-center active:scale-95 transition-transform border-4 border-white text-base"
+        title="Chat with Sorelia">
+        
+        {open ?
+        <ChevronDown className="w-6 h-6 text-white" /> :
+        <Brain className="w-6 h-6 text-white" />
         }
         {!open && <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white" />}
       </button>
-    </>
-  );
+    </>);
+
 }
