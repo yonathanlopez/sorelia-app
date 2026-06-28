@@ -85,44 +85,44 @@ export default function Home() {
   });
 
   // Today's tasks
-  const todayCalendarEvents = calendarEvents
-    .filter((e) => getDaysUntil(e.start?.split('T')[0]) === 0)
-    .map((e) => ({
-      title: e.title || e.summary,
-      id: `cal-${e.id}`,
-      time: e.start && e.start.includes('T') ? new Date(e.start).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
-    }));
+  const todayCalendarEvents = calendarEvents.
+  filter((e) => getDaysUntil(e.start?.split('T')[0]) === 0).
+  map((e) => ({
+    title: e.title || e.summary,
+    id: `cal-${e.id}`,
+    time: e.start && e.start.includes('T') ? new Date(e.start).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
+  }));
 
   const todayTasks = [
-    ...reminders
-      .filter((m) => getDaysUntil(m.date?.split('T')[0]) === 0)
-      .map((m) => ({
-        title: m.title,
-        id: m.id,
-        time: m.date && m.date.includes('T') ? new Date(m.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
-      })),
-    ...todayCalendarEvents
-  ].sort((a, b) => {
+  ...reminders.
+  filter((m) => getDaysUntil(m.date?.split('T')[0]) === 0).
+  map((m) => ({
+    title: m.title,
+    id: m.id,
+    time: m.date && m.date.includes('T') ? new Date(m.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
+  })),
+  ...todayCalendarEvents].
+  sort((a, b) => {
     const timeA = a.time ? new Date(`2000-01-01 ${a.time}`).getTime() : Infinity;
     const timeB = b.time ? new Date(`2000-01-01 ${b.time}`).getTime() : Infinity;
     return timeA - timeB;
   });
 
   const importantEvents = upcomingEvents.slice(0, 5);
-  
+
   const combinedUpcoming = [
-    ...upcomingEvents.filter((e) => e.daysUntil > 0).map((e) => ({ ...e, sortDate: new Date(e.date).getTime() })),
-    ...calendarEvents
-      .filter((e) => getDaysUntil(e.start?.split('T')[0]) > 0)
-      .map((e) => ({
-        id: `cal-${e.id}`,
-        title: e.summary || e.title,
-        date: e.start,
-        sortDate: new Date(e.start).getTime(),
-        daysUntil: getDaysUntil(e.start?.split('T')[0])
-      }))
-  ];
-  
+  ...upcomingEvents.filter((e) => e.daysUntil > 0).map((e) => ({ ...e, sortDate: new Date(e.date).getTime() })),
+  ...calendarEvents.
+  filter((e) => getDaysUntil(e.start?.split('T')[0]) > 0).
+  map((e) => ({
+    id: `cal-${e.id}`,
+    title: e.summary || e.title,
+    date: e.start,
+    sortDate: new Date(e.start).getTime(),
+    daysUntil: getDaysUntil(e.start?.split('T')[0])
+  }))];
+
+
   const upcomingCal = combinedUpcoming.sort((a, b) => a.sortDate - b.sortDate).slice(0, 4);
 
   const userName = user?.full_name?.split(' ')[0] || 'there';
@@ -211,9 +211,9 @@ export default function Home() {
             {todayTasks.length === 0 ?
             <div className="px-4 py-6 text-center">
                 <p className="text-xs text-gray-400">No tasks for today</p>
-                <button 
-                  onClick={() => navigate('/')}
-                  className="text-xs text-violet-600 font-medium mt-2 hover:underline">
+                <button
+                onClick={() => navigate('/')}
+                className="text-xs text-violet-600 font-medium mt-2 hover:underline">
                   Ask Sorelia to add a task
                 </button>
               </div> :
@@ -241,7 +241,7 @@ export default function Home() {
 
       {/* Upcoming */}
       <div className="py-2 px-2" onClick={() => navigate('/calendar')} role="button" className="cursor-pointer">
-          <div className="bg-white rounded-xl border border-gray-100">
+          <div className="bg-white rounded-xl border border-gray-100 py-2 px-3">
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
@@ -251,23 +251,23 @@ export default function Home() {
               </div>
             </div>
             <div className="px-4 py-3">
-              {upcomingCal.length === 0 ? (
-                <div className="text-center py-6">
+              {upcomingCal.length === 0 ?
+            <div className="text-center py-6">
                   <p className="text-sm text-gray-500">No upcoming events</p>
-                  <button 
-                    onClick={() => navigate('/')}
-                    className="text-xs text-violet-600 font-medium mt-2 hover:underline">
+                  <button
+                onClick={() => navigate('/')}
+                className="text-xs text-violet-600 font-medium mt-2 hover:underline">
                     Ask Sorelia to add birthdays, anniversaries, or dates
                   </button>
-                </div>
-              ) : (
-                <div className="space-y-3">
+                </div> :
+
+            <div className="space-y-3">
                   {upcomingCal.map((event, idx) =>
-                  <div key={event.id} className="flex items-center gap-3">
+              <div key={event.id} className="flex items-center gap-3">
                     <div className="flex flex-col items-center gap-2">
                       <div className={`w-4 h-4 rounded-full border-2 ${
-                      idx === 0 ? 'border-violet-600 bg-violet-600' : 'border-gray-300'}`
-                      } />
+                  idx === 0 ? 'border-violet-600 bg-violet-600' : 'border-gray-300'}`
+                  } />
                       {idx < upcomingCal.length - 1 && <div className="w-0.5 h-6 bg-gray-200" />}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -280,9 +280,9 @@ export default function Home() {
                       </p>
                     </div>
                   </div>
-                  )}
-                </div>
               )}
+                </div>
+            }
             </div>
           </div>
         </div>
@@ -299,21 +299,21 @@ export default function Home() {
               </div>
             </div>
             <div>
-              {importantEvents.length === 0 ? (
-                <div className="px-4 py-6 text-center">
+              {importantEvents.length === 0 ?
+            <div className="px-4 py-6 text-center">
                   <p className="text-sm text-gray-500">No important dates</p>
-                  <button 
-                    onClick={() => navigate('/')}
-                    className="text-xs text-violet-600 font-medium mt-2 hover:underline">
+                  <button
+                onClick={() => navigate('/')}
+                className="text-xs text-violet-600 font-medium mt-2 hover:underline">
                     Ask Sorelia to save bills, anniversaries, or special dates
                   </button>
-                </div>
-              ) : (
-                <div className="divide-y divide-gray-50">
+                </div> :
+
+            <div className="divide-y divide-gray-50">
                   {importantEvents.map((event) => {
-                  const Icon = getTimeIcon(event.date_type);
-                  return (
-                    <div key={event.id} className="flex items-center gap-3 px-4 py-3">
+                const Icon = getTimeIcon(event.date_type);
+                return (
+                  <div key={event.id} className="flex items-center gap-3 px-4 py-3">
                       <div className="w-5 h-5 text-violet-600 flex-shrink-0">
                         <Gift className="w-5 h-5" />
                       </div>
@@ -325,9 +325,9 @@ export default function Home() {
                         {event.daysUntil === 0 ? 'Today' : new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </p>
                     </div>);
-                  })}
+              })}
                 </div>
-              )}
+            }
             </div>
           </div>
         </div>
