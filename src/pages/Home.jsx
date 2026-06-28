@@ -93,7 +93,7 @@ export default function Home() {
     }
     try {
       const newStatus = isCurrentlyCompleted ? 'active' : 'completed';
-      await base44.entities.Memory.update(id, { status: newStatus });
+      await base44.entities.Calendar.update(id, { status: newStatus });
       queryClient.invalidateQueries({ queryKey: ['memories'] });
     } catch {}
   }
