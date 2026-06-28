@@ -11,10 +11,8 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['lucide-react'],
   },
   async rewrites() {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE44_APP_BASE_URL;
-    if (!baseUrl) {
-      return [];
-    }
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BASE44_APP_BASE_URL ?? 'https://sorelia.base44.app';
 
     return [
       {

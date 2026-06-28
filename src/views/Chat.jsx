@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Send, Loader2, Brain, Sparkles, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -70,7 +70,7 @@ function MessageBubble({ message }) {
   );
 }
 
-export default function Chat() {
+function ChatContent() {
   const searchParams = useSearchParams();
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
@@ -100,7 +100,7 @@ export default function Chat() {
       setInput(prefill);
       setTimeout(() => inputRef.current?.focus(), 100);
     }
-  }, [conversationId, searchParams.get('prefill')]);
+  }, [conversationId, searchParams]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -172,13 +172,10 @@ Respond naturally to the user's latest message.`;
     setSending(false);
   }
 
-
-
   const firstName = user?.full_name?.split?.(' ')?.[0] || '';
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
       <div className="bg-gradient-to-r from-violet-600 via-violet-500 to-purple-600 px-5 pt-14 pb-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -204,11 +201,9 @@ Respond naturally to the user's latest message.`;
         </div>
       </div>
 
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-5 pb-36">
         {messages.length === 0 && !sending && (
           <div className="pt-4">
-            {/* Personal greeting */}
             <div className="text-center mb-8">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-violet-200">
                 <Sparkles className="w-8 h-8 text-white" />
@@ -221,7 +216,6 @@ Respond naturally to the user's latest message.`;
               </p>
             </div>
 
-            {/* Suggestion chips */}
             <div>
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-1 mb-3">Try asking</p>
               <div className="grid grid-cols-2 gap-2">
@@ -249,7 +243,6 @@ Respond naturally to the user's latest message.`;
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input bar */}
       <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-100 px-4 py-3 pb-[calc(1rem+env(safe-area-inset-bottom)+4rem)]">
         <div className="flex items-end gap-2 max-w-lg mx-auto">
           <div className="flex-1 bg-gray-100 rounded-2xl px-4 py-3 flex items-end gap-2 min-h-[46px]">
@@ -282,7 +275,18 @@ Respond naturally to the user's latest message.`;
           </button>
         </div>
       </div>
-
     </div>
+  );
+}
+
+export default function Chat() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin" />
+      </div>
+    }>
+      <ChatContent />
+    </Suspense>
   );
 }

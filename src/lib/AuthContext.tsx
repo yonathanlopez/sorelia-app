@@ -27,6 +27,29 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => {
+      setTimeout(() => reject(new Error(`${label} timed out`)), ms);
+    }),
+  ]);
+}
+
+function markUnauthenticated(
+  setUser: (user: Record<string, unknown> | null) => void,
+  setIsAuthenticated: (value: boolean) => void,
+  setAuthChecked: (value: boolean) => void,
+  setAuthError: (error: AuthError) => void,
+  setIsLoadingAuth: (value: boolean) => void,
+) {
+  setUser(null);
+  setIsAuthenticated(false);
+  setAuthChecked(true);
+  setIsLoadingAuth(false);
+  setAuthError({ type: 'auth_required', message: 'Authentication required' });
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [user, setUser] = useState<Record<string, unknown> | null>(null);
@@ -47,25 +70,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         base44.auth.setToken(token, false);
       }
 
-      const currentUser = await Promise.race([
-        base44.auth.me(),
-        new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error('Auth check timed out')), 15000);
-        }),
-      ]);
+      const currentUser = await withTimeout(base44.auth.me(), 10000, 'Auth check');
 
       setUser(currentUser as Record<string, unknown>);
       setIsAuthenticated(true);
       setAuthChecked(true);
-      return true;
-    } catch (error) {
-      setUser(null);
-      setIsAuthenticated(false);
-      setAuthChecked(true);
-      setAuthError({ type: 'auth_required', message: 'Authentication required' });
-      return false;
-    } finally {
       setIsLoadingAuth(false);
+      return true;
+    } catch {
+      markUnauthenticated(setUser, setIsAuthenticated, setAuthChecked, setAuthError, setIsLoadingAuth);
+      return false;
     }
   }, []);
 
@@ -73,68 +87,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (authInitialized.current) {
       return;
     }
+    authInitialized.current = true;
+
+    setIsLoadingPublicSettings(true);
+    setIsLoadingAuth(true);
+    setAuthError(null);
 
     try {
-      if (!authInitialized.current) {
-        setIsLoadingPublicSettings(true);
-        setIsLoadingAuth(true);
-      }
-      setAuthError(null);
+      await withTimeout(
+        (async () => {
+          const appParams = getAppParams();
+          const token = appParams.token || getStoredAccessToken();
 
-      const appParams = getAppParams();
-      const token = appParams.token || getStoredAccessToken();
+          try {
+            const appClient = createAxiosClient({
+              baseURL: `/api/apps/public`,
+              headers: { 'X-App-Id': appParams.appId ?? '' },
+              token: token ?? undefined,
+              interceptResponses: true,
+            });
 
-      const appClient = createAxiosClient({
-        baseURL: `/api/apps/public`,
-        headers: { 'X-App-Id': appParams.appId ?? '' },
-        token: token ?? undefined,
-        interceptResponses: true,
-      });
-
-      try {
-        const publicSettings = await appClient.get(`/prod/public-settings/by-id/${appParams.appId}`);
-        setAppPublicSettings(publicSettings as unknown as Record<string, unknown>);
-
-        if (token) {
-          refreshBase44Client();
-          await checkUserAuth();
-        } else {
-          setIsLoadingAuth(false);
-          setIsAuthenticated(false);
-          setAuthChecked(true);
-          setAuthError({ type: 'auth_required', message: 'Authentication required' });
-        }
-      } catch (appError) {
-        const error = appError as {
-          status?: number;
-          message?: string;
-          data?: { extra_data?: { reason?: string } };
-        };
-
-        if (error.status === 403 && error.data?.extra_data?.reason) {
-          const reason = error.data.extra_data.reason;
-          if (reason === 'auth_required') {
-            setAuthError({ type: 'auth_required', message: 'Authentication required' });
-          } else if (reason === 'user_not_registered') {
-            setAuthError({ type: 'user_not_registered', message: 'User not registered for this app' });
-          } else {
-            setAuthError({ type: reason, message: error.message ?? 'Authentication error' });
+            const publicSettings = await withTimeout(
+              appClient.get(`/prod/public-settings/by-id/${appParams.appId}`),
+              8000,
+              'Public settings',
+            );
+            setAppPublicSettings(publicSettings as unknown as Record<string, unknown>);
+          } catch {
+            // Public settings are optional; auth can still proceed.
           }
-        } else {
-          setAuthError({ type: 'unknown', message: error.message ?? 'Failed to load app' });
-        }
-        setIsLoadingAuth(false);
-        setAuthChecked(true);
-      }
-    } catch (error) {
-      setAuthError({
-        type: 'unknown',
-        message: error instanceof Error ? error.message : 'An unexpected error occurred',
-      });
-      setIsLoadingAuth(false);
-      setAuthChecked(true);
+
+          if (token) {
+            refreshBase44Client();
+            await checkUserAuth();
+            return;
+          }
+
+          markUnauthenticated(setUser, setIsAuthenticated, setAuthChecked, setAuthError, setIsLoadingAuth);
+        })(),
+        12000,
+        'App startup',
+      );
+    } catch {
+      markUnauthenticated(setUser, setIsAuthenticated, setAuthChecked, setAuthError, setIsLoadingAuth);
     } finally {
-      authInitialized.current = true;
       setIsLoadingPublicSettings(false);
     }
   }, [checkUserAuth]);
@@ -148,6 +144,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     setIsAuthenticated(false);
     setAuthChecked(true);
+    setIsLoadingAuth(false);
     setAuthError({ type: 'auth_required', message: 'Authentication required' });
 
     if (shouldRedirect) {
