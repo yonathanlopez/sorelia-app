@@ -39,15 +39,26 @@ const getAppParamValue = (
   return null;
 };
 
-const getAppParams = () => {
+export function getStoredAccessToken(): string | null {
+  if (!isBrowser) return null;
+  return (
+    window.localStorage.getItem('base44_access_token') ||
+    window.localStorage.getItem('token')
+  );
+}
+
+export function getAppParams() {
   if (isBrowser && getAppParamValue('clear_access_token') === 'true') {
     window.localStorage.removeItem('base44_access_token');
     window.localStorage.removeItem('token');
   }
 
+  const token =
+    getAppParamValue('access_token', { removeFromUrl: true }) || getStoredAccessToken();
+
   return {
     appId: getAppParamValue('app_id', { defaultValue: process.env.NEXT_PUBLIC_BASE44_APP_ID }) ?? '',
-    token: getAppParamValue('access_token', { removeFromUrl: true }),
+    token,
     fromUrl: getAppParamValue('from_url', { defaultValue: isBrowser ? window.location.href : '' }),
     functionsVersion: getAppParamValue('functions_version', {
       defaultValue: process.env.NEXT_PUBLIC_BASE44_FUNCTIONS_VERSION,
@@ -56,6 +67,6 @@ const getAppParams = () => {
       defaultValue: process.env.NEXT_PUBLIC_BASE44_APP_BASE_URL,
     }) ?? '',
   };
-};
+}
 
 export const appParams = getAppParams();

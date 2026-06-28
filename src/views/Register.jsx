@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +16,7 @@ import { toast } from "@/components/ui/use-toast";
 
 export default function Register() {
   const router = useRouter();
+  const { checkUserAuth } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -49,7 +51,10 @@ export default function Register() {
       if (result?.access_token) {
         base44.auth.setToken(result.access_token);
       }
-      router.replace('/');
+      const ok = await checkUserAuth();
+      if (ok) {
+        router.replace('/');
+      }
     } catch (err) {
       setError(err.message || "Invalid verification code");
     } finally {

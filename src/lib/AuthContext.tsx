@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { base44 } from '@/api/base44Client';
-import { appParams } from '@/lib/app-params';
+import { getAppParams, getStoredAccessToken } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 
 interface AuthError {
@@ -21,7 +21,7 @@ interface AuthContextValue {
   appPublicSettings: Record<string, unknown> | null;
   logout: (shouldRedirect?: boolean) => void;
   navigateToLogin: () => void;
-  checkUserAuth: () => Promise<void>;
+  checkUserAuth: () => Promise<boolean>;
   checkAppState: () => Promise<void>;
 }
 
@@ -37,14 +37,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authChecked, setAuthChecked] = useState(false);
   const [appPublicSettings, setAppPublicSettings] = useState<Record<string, unknown> | null>(null);
 
-  const checkUserAuth = async () => {
+  const checkUserAuth = async (): Promise<boolean> => {
     try {
       setIsLoadingAuth(true);
+      setAuthError(null);
+
+      const token = getStoredAccessToken();
+      if (token) {
+        base44.auth.setToken(token, false);
+      }
+
       const currentUser = await base44.auth.me();
       setUser(currentUser as Record<string, unknown>);
       setIsAuthenticated(true);
       setAuthChecked(true);
+      return true;
     } catch (error) {
+      setUser(null);
       setIsAuthenticated(false);
       setAuthChecked(true);
 
@@ -52,6 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (status === 401 || status === 403) {
         setAuthError({ type: 'auth_required', message: 'Authentication required' });
       }
+      return false;
     } finally {
       setIsLoadingAuth(false);
     }
@@ -62,10 +72,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoadingPublicSettings(true);
       setAuthError(null);
 
+      const appParams = getAppParams();
+      const token = appParams.token || getStoredAccessToken();
+
       const appClient = createAxiosClient({
         baseURL: `/api/apps/public`,
         headers: { 'X-App-Id': appParams.appId ?? '' },
-        token: appParams.token ?? undefined,
+        token: token ?? undefined,
         interceptResponses: true,
       });
 
@@ -73,7 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const publicSettings = await appClient.get(`/prod/public-settings/by-id/${appParams.appId}`);
         setAppPublicSettings(publicSettings as unknown as Record<string, unknown>);
 
-        if (appParams.token) {
+        if (token) {
           await checkUserAuth();
         } else {
           setIsLoadingAuth(false);
@@ -102,6 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setAuthError({ type: 'unknown', message: error.message ?? 'Failed to load app' });
         }
         setIsLoadingAuth(false);
+        setAuthChecked(true);
       }
     } catch (error) {
       setAuthError({
@@ -109,6 +123,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         message: error instanceof Error ? error.message : 'An unexpected error occurred',
       });
       setIsLoadingAuth(false);
+      setAuthChecked(true);
     } finally {
       setIsLoadingPublicSettings(false);
     }
@@ -121,6 +136,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = (shouldRedirect = true) => {
     setUser(null);
     setIsAuthenticated(false);
+    setAuthChecked(true);
+    setAuthError({ type: 'auth_required', message: 'Authentication required' });
 
     if (shouldRedirect) {
       base44.auth.logout(typeof window !== 'undefined' ? window.location.href : '/');
