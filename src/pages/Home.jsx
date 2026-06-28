@@ -241,7 +241,7 @@ export default function Home() {
 
       {/* Upcoming */}
       <div className="py-2 px-2" onClick={() => navigate('/calendar')} role="button" className="cursor-pointer">
-          <div className="bg-white rounded-xl border border-gray-100 py-2 px-3">
+          <div className="bg-white rounded-xl border border-gray-100 py-2 px-2 mx-2">
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
