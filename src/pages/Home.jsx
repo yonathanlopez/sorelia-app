@@ -137,7 +137,7 @@ export default function Home() {
             <p className="text-sm text-gray-500 mt-1">Here's what's ahead.</p>
           </div>
           <button className="w-8 h-8 flex items-center justify-center text-violet-500">
-            <Sparkles className="w-5 h-5 hidden" />
+            
           </button>
         </div>
       </div>
@@ -178,9 +178,9 @@ export default function Home() {
               <h2 className="font-semibold text-gray-900">Today</h2>
               <p className="text-xs text-gray-400">May 27</p>
             </div>
-            <button className="text-xs text-violet-600 font-medium flex items-center gap-1 hidden">
-              View all <ChevronRight className="w-3 h-3" />
-            </button>
+            
+
+            
           </div>
           <div className="divide-y divide-gray-50">
             {todayTasks.length === 0 ?
@@ -220,9 +220,9 @@ export default function Home() {
                 </div>
                 <h2 className="font-semibold text-gray-900">Upcoming</h2>
               </div>
-              <button className="text-xs text-violet-600 font-medium flex items-center gap-1 hidden">
-                View all <ChevronRight className="w-3 h-3" />
-              </button>
+              
+
+            
             </div>
             <div className="px-4 py-3 space-y-3">
               {upcomingCal.map((event, idx) =>
@@ -260,9 +260,9 @@ export default function Home() {
                 </div>
                 <h2 className="font-semibold text-gray-900">Important</h2>
               </div>
-              <button className="text-xs text-violet-600 font-medium flex items-center gap-1 hidden">
-                View all <ChevronRight className="w-3 h-3" />
-              </button>
+              
+
+            
             </div>
             <div className="divide-y divide-gray-50">
               {importantEvents.map((event) => {
