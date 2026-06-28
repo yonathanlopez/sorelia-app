@@ -155,33 +155,11 @@ Only extract memories that are genuinely personally meaningful. Max 30 memories.
       },
     });
 
-    // Save scanned email logs with full categorization details
-    const classifications = result?.email_classifications || [];
-    for (let i = 0; i < emails.length; i++) {
-      const e = emails[i];
-      const cls = classifications.find(c => c.email_index === i + 1) || {};
-      await base44.asServiceRole.entities.ScannedEmail.create({
-        subject: e.subject,
-        sender: e.sender,
-        date: e.date,
-        body_preview: e.body.slice(0, 300),
-        body_full: e.body,
-        memories_extracted: 0,
-        category_label: cls.category_label || 'Unknown',
-        category_reasoning: cls.category_reasoning || '',
-        memory_types_found: cls.memory_types_found || [],
-        was_skipped: cls.was_skipped || false,
-        skip_reason: cls.skip_reason || '',
-        confidence_score: cls.confidence_score || 0,
-        extracted_entities: cls.extracted_entities || '',
-      });
-    }
-
     // Save memories
     let memoriesCreated = 0;
     if (result?.memories?.length > 0) {
       for (const mem of result.memories) {
-        await base44.asServiceRole.entities.Memory.create({
+        await base44.asServiceRole.entities.Calendar.create({
           type: mem.type,
           title: mem.title,
           description: mem.description || '',

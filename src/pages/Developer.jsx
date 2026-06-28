@@ -16,7 +16,7 @@ export default function Developer() {
   const loadData = useCallback(async () => {
     setRefreshing(true);
     const [memories, calRes] = await Promise.all([
-      base44.entities.Memory.filter({ source: 'google_calendar' }),
+      base44.entities.Calendar.filter({ source: 'google_calendar' }),
       base44.functions.invoke('calendarScanner', {}).catch(() => null),
     ]);
     setCalEvents(memories.sort((a, b) => (a.date || '').localeCompare(b.date || '')));
@@ -37,7 +37,7 @@ export default function Developer() {
 
   async function handleDelete(id) {
     setDeleting(id);
-    await base44.entities.Memory.delete(id);
+    await base44.entities.Calendar.delete(id);
     setCalEvents(prev => prev.filter(e => e.id !== id));
     setDeleting(null);
   }
