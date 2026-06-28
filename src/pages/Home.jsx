@@ -14,6 +14,7 @@ function getDaysUntil(dateStr) {
 }
 
 export default function Home() {
+  const navigate = useNavigate();
   const [memories, setMemories] = useState([]);
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -184,8 +185,13 @@ export default function Home() {
           </div>
           <div className="divide-y divide-gray-50">
             {todayTasks.length === 0 ?
-            <div className="px-4 py-6 text-center text-xs text-gray-400">
-                No tasks for today
+            <div className="px-4 py-6 text-center">
+                <p className="text-xs text-gray-400">No tasks for today</p>
+                <button 
+                  onClick={() => navigate('/')}
+                  className="text-xs text-violet-600 font-medium mt-2 hover:underline">
+                  Ask Sorelia to add a task
+                </button>
               </div> :
 
             todayTasks.map((task) =>
@@ -224,7 +230,11 @@ export default function Home() {
               {upcomingCal.length === 0 ? (
                 <div className="text-center py-6">
                   <p className="text-sm text-gray-500">No upcoming events</p>
-                  <p className="text-xs text-gray-400 mt-1">Ask Sorelia to add birthdays, anniversaries, or dates</p>
+                  <button 
+                    onClick={() => navigate('/')}
+                    className="text-xs text-violet-600 font-medium mt-2 hover:underline">
+                    Ask Sorelia to add birthdays, anniversaries, or dates
+                  </button>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -268,7 +278,11 @@ export default function Home() {
               {importantEvents.length === 0 ? (
                 <div className="px-4 py-6 text-center">
                   <p className="text-sm text-gray-500">No important dates</p>
-                  <p className="text-xs text-gray-400 mt-1">Ask Sorelia to save bills, anniversaries, or special dates</p>
+                  <button 
+                    onClick={() => navigate('/')}
+                    className="text-xs text-violet-600 font-medium mt-2 hover:underline">
+                    Ask Sorelia to save bills, anniversaries, or special dates
+                  </button>
                 </div>
               ) : (
                 <div className="divide-y divide-gray-50">
