@@ -1,5 +1,5 @@
 {
-  "name": "untitled",
+  "name": "sorelia-app",
   "site": {
     "installCommand": "npm install",
     "buildCommand": "npm run build",
