@@ -151,7 +151,7 @@ export default function Home() {
           <p className="text-sm font-bold text-gray-900">{totalGoals}</p>
           <p className="text-xs text-gray-500">Tasks</p>
         </div>
-        <div className="bg-white rounded-lg text-center border border-gray-100 px-2 py-2 mx-3">
+        <div className="bg-white rounded-lg text-center border border-gray-100 px-2 py-2">
           <div className="w-6 h-6 rounded-md bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-1">
             <CheckCircle className="w-3 h-3" />
           </div>
