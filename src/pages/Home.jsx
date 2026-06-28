@@ -129,11 +129,11 @@ export default function Home() {
   return (
     <div className="min-h-screen pb-28 hide-scrollbar bg-gray-100">
       {/* Header */}
-      <div className="bg-white border-b border-gray-100 px-4 py-4 text-gray-50">
+      <div className="border-b border-gray-100 px-4 py-4 bg-gray-100">
         <div className="flex items-start justify-between mb-2">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Good evening,</h1>
-            <h1 className="text-2xl font-bold text-gray-900">{userName} 🌙</h1>
+            <h1 className="font-bold text-gray-900 text-xl">Good evening,</h1>
+            <h1 className="font-bold text-gray-900 text-lg">{userName} 🌙</h1>
             <p className="text-sm text-gray-500 mt-1">Here's what's ahead.</p>
           </div>
           <button className="w-8 h-8 flex items-center justify-center text-violet-500">
