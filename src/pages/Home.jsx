@@ -163,7 +163,7 @@ export default function Home() {
             <Calendar className="w-3 h-3" />
           </div>
           <p className="text-sm font-bold text-gray-900">{upcomingCal.length}</p>
-          <p className="text-xs text-gray-500">D</p>
+          <p className="text-xs text-gray-500">Days Streak</p>
         </div>
         <div className="bg-white rounded-lg p-3 text-center border border-gray-100 hidden">
           <div className="w-6 h-6 rounded-md bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-1">
