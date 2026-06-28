@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Brain, LogOut, User, Calendar, Trash2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -23,10 +23,14 @@ export default function Profile() {
   const memoryCount = memories.length;
   const [showClearDialog, setShowClearDialog] = useState(false);
   const [syncingCalendar, setSyncingCalendar] = useState(false);
-  const [calendarStatus, setCalendarStatus] = useState(() =>
-    memories.some((m) => m.source === 'google_calendar') ? 'connected' : 'unknown',
-  );
+  const [calendarStatus, setCalendarStatus] = useState('unknown');
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (memories.some((m) => m.source === 'google_calendar')) {
+      setCalendarStatus('connected');
+    }
+  }, [memories]);
 
   async function handleClearAll() {
     await base44.entities.Calendar.deleteMany({});

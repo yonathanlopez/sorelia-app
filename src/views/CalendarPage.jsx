@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar, Clock, RefreshCw } from 'lucide-react';
 import { useMemories, MEMORIES_QUERY_KEY } from '@/hooks/useMemories';
 import { formatSyncSuccess, syncGoogleCalendarSafe } from '@/lib/calendar-sync';
+import { hasTimeComponent, toDateString } from '@/lib/date-utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -97,8 +98,8 @@ export default function CalendarPage() {
         type: 'gcal',
         title: m.title,
         description: m.description || null,
-        date: m.date.split('T')[0],
-        time: m.date.includes('T') ? m.date : null,
+        date: toDateString(m.date),
+        time: hasTimeComponent(m.date) ? String(m.date) : null,
         calendarName: m.calendar_name || null,
       }));
 

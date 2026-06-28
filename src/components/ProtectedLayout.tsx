@@ -1,26 +1,13 @@
 'use client';
 
 import { useEffect } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-
-function LoadingScreen({ message = 'Loading Sorelia...' }: { message?: string }) {
-  return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center gap-4 bg-gray-50 px-6"
-      style={{ backgroundColor: '#f9fafb', color: '#111827' }}
-    >
-      <div className="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin" />
-      <p className="text-sm text-gray-600">{message}</p>
-      <Link href="/login" className="text-sm font-medium text-violet-600 hover:underline">
-        Go to login
-      </Link>
-    </div>
-  );
-}
+import LoadingScreen from '@/components/LoadingScreen';
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const { isAuthenticated, isLoadingAuth, authChecked, authError } = useAuth();
 
   useEffect(() => {
@@ -28,8 +15,8 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
       return;
     }
 
-    window.location.replace('/login');
-  }, [authChecked, isLoadingAuth, isAuthenticated]);
+    router.replace('/login');
+  }, [authChecked, isLoadingAuth, isAuthenticated, router]);
 
   if (!authChecked || isLoadingAuth) {
     return <LoadingScreen />;
