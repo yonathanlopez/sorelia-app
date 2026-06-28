@@ -109,7 +109,21 @@ export default function Home() {
   });
 
   const importantEvents = upcomingEvents.slice(0, 5);
-  const upcomingCal = upcomingEvents.filter((e) => e.daysUntil > 0).slice(0, 6);
+  
+  const combinedUpcoming = [
+    ...upcomingEvents.filter((e) => e.daysUntil > 0).map((e) => ({ ...e, sortDate: new Date(e.date).getTime() })),
+    ...calendarEvents
+      .filter((e) => getDaysUntil(e.start?.split('T')[0]) > 0)
+      .map((e) => ({
+        id: `cal-${e.id}`,
+        title: e.summary || e.title,
+        date: e.start,
+        sortDate: new Date(e.start).getTime(),
+        daysUntil: getDaysUntil(e.start?.split('T')[0])
+      }))
+  ];
+  
+  const upcomingCal = combinedUpcoming.sort((a, b) => a.sortDate - b.sortDate).slice(0, 4);
 
   const userName = user?.full_name?.split(' ')[0] || 'there';
 
@@ -226,7 +240,7 @@ export default function Home() {
       </div>
 
       {/* Upcoming */}
-      <div className="py-2 px-2">
+      <div className="py-2 px-2" onClick={() => navigate('/calendar')} role="button" className="cursor-pointer">
           <div className="bg-white rounded-xl border border-gray-100">
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
               <div className="flex items-center gap-2">
