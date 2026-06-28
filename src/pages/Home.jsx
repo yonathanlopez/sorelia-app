@@ -143,34 +143,34 @@ export default function Home() {
       </div>
 
       {/* Stats Bar */}
-      <div className="grid grid-cols-4 gap-3 px-4 py-4">
-        <div className="bg-white rounded-lg text-center border border-gray-100 px-2 py-2">
-          <div className="w-6 h-6 rounded-md bg-violet-100 text-violet-600 flex items-center justify-center mx-auto mb-1">
-            <Clock className="w-3 h-3" />
+      <div className="px-4 py-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="bg-white rounded-xl text-center border-2 border-violet-200 px-3 py-4 shadow-sm hover:shadow-md transition-shadow">
+          <div className="w-8 h-8 rounded-lg bg-violet-100 text-violet-600 flex items-center justify-center mx-auto mb-2">
+            <Clock className="w-4 h-4" />
           </div>
-          <p className="text-sm font-bold text-gray-900">{totalGoals}</p>
-          <p className="text-xs text-gray-500">Tasks</p>
+          <p className="text-lg font-bold text-gray-900">{totalGoals}</p>
+          <p className="text-xs text-gray-500 mt-1">Tasks</p>
         </div>
-        <div className="bg-white rounded-lg text-center border border-gray-100 px-2 py-2">
-          <div className="w-6 h-6 rounded-md bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-1">
-            <CheckCircle className="w-3 h-3" />
+        <div className="bg-white rounded-xl text-center border-2 border-emerald-200 px-3 py-4 shadow-sm hover:shadow-md transition-shadow">
+          <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-2">
+            <CheckCircle className="w-4 h-4" />
           </div>
-          <p className="text-sm font-bold text-gray-900">{completedGoals}</p>
-          <p className="text-xs text-gray-500">Completed</p>
+          <p className="text-lg font-bold text-gray-900">{completedGoals}</p>
+          <p className="text-xs text-gray-500 mt-1">Completed</p>
         </div>
-        <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
-          <div className="w-6 h-6 rounded-md bg-orange-100 text-orange-600 flex items-center justify-center mx-auto mb-1">
-            <Calendar className="w-3 h-3" />
+        <div className="bg-white rounded-xl text-center border-2 border-orange-200 px-3 py-4 shadow-sm hover:shadow-md transition-shadow">
+          <div className="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center mx-auto mb-2">
+            <Calendar className="w-4 h-4" />
           </div>
-          <p className="text-sm font-bold text-gray-900">{upcomingCal.length}</p>
-          <p className="text-xs text-gray-500">Days Streak</p>
+          <p className="text-lg font-bold text-gray-900">{upcomingCal.length}</p>
+          <p className="text-xs text-gray-500 mt-1">Days Streak</p>
         </div>
-        <div className="bg-white rounded-lg p-3 text-center border border-gray-100 hidden">
-          <div className="w-6 h-6 rounded-md bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-1">
-            <Zap className="w-3 h-3" />
+        <div className="bg-white rounded-xl text-center border-2 border-rose-200 px-3 py-4 shadow-sm hover:shadow-md transition-shadow hidden sm:block">
+          <div className="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-2">
+            <Zap className="w-4 h-4" />
           </div>
-          <p className="text-sm font-bold text-gray-900">{importantEvents.length}</p>
-          <p className="text-xs text-gray-500">Important</p>
+          <p className="text-lg font-bold text-gray-900">{importantEvents.length}</p>
+          <p className="text-xs text-gray-500 mt-1">Important</p>
         </div>
       </div>
 
