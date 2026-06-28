@@ -49,25 +49,12 @@ export default function Home() {
   const totalGoals = memories.filter((m) => m.type === 'goal').length;
   const completedGoals = memories.filter((m) => m.type === 'goal' && m.status === 'completed').length;
 
-  const upcomingEvents = memories.
-  flatMap((m) => {
-    const events = [];
-    if (m.type === 'important_date' && m.date && ['bills', 'birthday', 'anniversary'].includes(m.date_type)) {
-      events.push({ id: m.id, title: m.title, date: m.date, type: 'important_date', description: m.description, date_type: m.date_type });
-    }
-    if (m.type === 'person' && m.person_birthday) {
-      const bdayThisYear = m.person_birthday.replace(/^\d{4}/, new Date().getFullYear());
-      events.push({ id: `${m.id}-bday`, title: `${m.title}'s Birthday`, date: bdayThisYear, type: 'person' });
-    }
-    if (m.type === 'person' && m.person_anniversary) {
-      const annivThisYear = m.person_anniversary.replace(/^\d{4}/, new Date().getFullYear());
-      events.push({ id: `${m.id}-anniv`, title: `${m.title}'s Anniversary`, date: annivThisYear, type: 'person' });
-    }
-    return events;
-  }).
-  map((ev) => ({ ...ev, daysUntil: getDaysUntil(ev.date) })).
-  filter((ev) => ev.daysUntil >= 0 && ev.daysUntil <= 90).
-  sort((a, b) => a.daysUntil - b.daysUntil);
+  const upcomingEvents = memories
+  .filter((m) => m.date)
+  .map((m) => ({ id: m.id, title: m.title, date: m.date, type: m.type, description: m.description, date_type: m.date_type }))
+  .map((ev) => ({ ...ev, daysUntil: getDaysUntil(ev.date) }))
+  .filter((ev) => ev.daysUntil >= 0 && ev.daysUntil <= 90)
+  .sort((a, b) => a.daysUntil - b.daysUntil);
 
   const todayTasks = memories.
   filter((m) => getDaysUntil(m.date?.split('T')[0]) === 0).
