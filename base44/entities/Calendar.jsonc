@@ -2,8 +2,16 @@
   "name": "Calendar",
   "type": "object",
   "properties": {
-    "google_event_id": {
-      "type": "string"
+    "type": {
+      "type": "string",
+      "enum": [
+        "person",
+        "goal",
+        "important_date",
+        "reminder",
+        "preference",
+        "life_event"
+      ]
     },
     "title": {
       "type": "string"
@@ -11,10 +19,16 @@
     "description": {
       "type": "string"
     },
+    "date": {
+      "type": "string"
+    },
     "start_time": {
       "type": "string"
     },
     "end_time": {
+      "type": "string"
+    },
+    "google_event_id": {
       "type": "string"
     },
     "all_day": {
@@ -25,10 +39,34 @@
     },
     "calendar_name": {
       "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "people": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "completed"
+      ]
+    },
+    "date_type": {
+      "type": "string"
+    },
+    "person_birthday": {
+      "type": "string"
+    },
+    "person_relationship": {
+      "type": "string"
     }
   },
   "required": [
-    "title",
-    "start_time"
+    "title"
   ]
 }
