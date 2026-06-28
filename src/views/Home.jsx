@@ -1,10 +1,11 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Calendar, CheckCircle, Clock, Gift, Home as HomeIcon, Shield, Zap, ChevronRight, Sparkles, Check } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Calendar, CheckCircle, Clock, Gift, Home as HomeIcon, Zap, Check } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import BottomNav from '@/components/BottomNav';
-import SoreliaFAB from '@/components/SoreliaFAB';
 
 function getDaysUntil(dateStr) {
   if (!dateStr) return null;
@@ -15,7 +16,7 @@ function getDaysUntil(dateStr) {
 }
 
 export default function Home() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
   const [completedToday, setCompletedToday] = useState(new Set());
@@ -74,11 +75,6 @@ export default function Home() {
   const upcomingCal = upcomingEvents.filter((e) => e.daysUntil > 0).sort((a, b) => a.daysUntil - b.daysUntil).slice(0, 4);
 
   const userName = user?.full_name?.split(' ')[0] || 'there';
-
-  const getTimeIcon = (dateType) => {
-    const icons = { birthday: Gift, bills: HomeIcon, anniversary: Zap };
-    return icons[dateType] || Gift;
-  };
 
   async function handleDone(id) {
     const isCurrentlyCompleted = completedToday.has(id);
@@ -159,7 +155,7 @@ export default function Home() {
             <div className="px-4 py-6 text-center">
                 <p className="text-xs text-gray-400">No tasks for today</p>
                 <button
-                onClick={() => navigate('/')}
+                onClick={() => router.push('/')}
                 className="text-xs text-violet-600 font-medium mt-2 hover:underline">
                   Ask Sorelia to add a task
                 </button>
@@ -187,7 +183,7 @@ export default function Home() {
       </div>
 
       {/* Upcoming */}
-      <div className="py-2 px-2" onClick={() => navigate('/calendar')} role="button" className="cursor-pointer">
+      <div className="py-2 px-2 cursor-pointer" onClick={() => router.push('/calendar')} role="button">
           <div className="bg-white rounded-xl border border-gray-100 py-2 px-2 mx-2">
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
               <div className="flex items-center gap-2">
@@ -202,7 +198,7 @@ export default function Home() {
             <div className="text-center py-6">
                   <p className="text-sm text-gray-500">No upcoming events</p>
                   <button
-                onClick={() => navigate('/')}
+                onClick={() => router.push('/')}
                 className="text-xs text-violet-600 font-medium mt-2 hover:underline">
                     Ask Sorelia to add birthdays, anniversaries, or dates
                   </button>
@@ -255,16 +251,14 @@ export default function Home() {
             <div className="px-4 py-6 text-center">
                   <p className="text-sm text-gray-500">No important dates</p>
                   <button
-                onClick={() => navigate('/')}
+                onClick={() => router.push('/')}
                 className="text-xs text-violet-600 font-medium mt-2 hover:underline">
                     Ask Sorelia to save bills, anniversaries, or special dates
                   </button>
                 </div> :
 
             <div className="divide-y divide-gray-50">
-                  {importantEvents.map((event) => {
-                const Icon = getTimeIcon(event.date_type);
-                return (
+                  {importantEvents.map((event) => (
                   <div key={event.id} className="flex items-center gap-3 px-4 py-3">
                       <div className="w-5 h-5 text-violet-600 flex-shrink-0">
                         <Gift className="w-5 h-5" />
@@ -276,8 +270,8 @@ export default function Home() {
                       <p className={`text-xs font-medium ${event.daysUntil === 0 ? 'text-emerald-600' : 'text-gray-400'}`}>
                         {event.daysUntil === 0 ? 'Today' : new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </p>
-                    </div>);
-              })}
+                    </div>
+                  ))}
                 </div>
             }
             </div>

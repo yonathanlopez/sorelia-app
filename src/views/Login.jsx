@@ -1,5 +1,8 @@
+'use client';
+
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import Link from 'next/link'
+import { useRouter } from 'next/navigation';
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +12,7 @@ import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 
 export default function Login() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,7 +24,7 @@ export default function Login() {
     setLoading(true);
     try {
       await base44.auth.loginViaEmailPassword(email, password);
-      window.location.href = "/";
+      router.replace('/');
     } catch (err) {
       setError(err.message || "Invalid email or password");
     } finally {
@@ -40,7 +44,7 @@ export default function Login() {
       footer={
         <>
           Don't have an account?{" "}
-          <Link to="/register" className="text-primary font-medium hover:underline">
+          <Link href="/register" className="text-primary font-medium hover:underline">
             Create one
           </Link>
         </>
@@ -91,7 +95,7 @@ export default function Login() {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label htmlFor="password">Password</Label>
-            <Link to="/forgot-password" className="text-xs text-primary hover:underline">
+            <Link href="/forgot-password" className="text-xs text-primary hover:underline">
               Forgot password?
             </Link>
           </div>

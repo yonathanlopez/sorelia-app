@@ -1,5 +1,8 @@
+'use client';
+
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import Link from 'next/link'
+import { useRouter } from 'next/navigation';
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +14,7 @@ import GoogleIcon from "@/components/GoogleIcon";
 import { toast } from "@/components/ui/use-toast";
 
 export default function Register() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -45,7 +49,7 @@ export default function Register() {
       if (result?.access_token) {
         base44.auth.setToken(result.access_token);
       }
-      window.location.href = "/";
+      router.replace('/');
     } catch (err) {
       setError(err.message || "Invalid verification code");
     } finally {
@@ -132,7 +136,7 @@ export default function Register() {
       footer={
         <>
           Already have an account?{" "}
-          <Link to="/login" className="text-primary font-medium hover:underline">
+          <Link href="/login" className="text-primary font-medium hover:underline">
             Log in
           </Link>
         </>

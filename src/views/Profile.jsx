@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Brain, LogOut, User, Calendar, Trash2, RefreshCw } from 'lucide-react';
@@ -5,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/components/ui/use-toast';
 import BottomNav from '@/components/BottomNav';
-import SoreliaFAB from '@/components/SoreliaFAB';
 
 export default function Profile() {
   const [user, setUser] = useState(null);

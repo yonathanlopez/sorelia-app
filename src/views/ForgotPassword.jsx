@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import Link from 'next/link';
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +33,7 @@ export default function ForgotPassword() {
       title="Reset password"
       subtitle="We'll send you a link to reset it"
       footer={
-        <Link to="/login" className="text-primary font-medium hover:underline">
+        <Link href="/login" className="text-primary font-medium hover:underline">
           <ArrowLeft className="w-3 h-3 inline mr-1" />Back to log in
         </Link>
       }

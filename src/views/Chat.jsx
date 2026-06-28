@@ -1,7 +1,10 @@
+'use client';
+
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Send, Loader2, Brain, Sparkles, ChevronLeft } from 'lucide-react';
-import { useLocation, Link } from 'react-router-dom';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import BottomNav from '@/components/BottomNav';
 import ReactMarkdown from 'react-markdown';
 
@@ -68,7 +71,7 @@ function MessageBubble({ message }) {
 }
 
 export default function Chat() {
-  const location = useLocation();
+  const searchParams = useSearchParams();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
@@ -95,13 +98,13 @@ export default function Chat() {
 
   useEffect(() => {
     if (initialQuestionHandled.current) return;
-    const prefill = location.state?.prefill;
+    const prefill = searchParams.get('prefill');
     if (prefill && conversationId !== undefined) {
       initialQuestionHandled.current = true;
       setInput(prefill);
       setTimeout(() => inputRef.current?.focus(), 100);
     }
-  }, [conversationId, location.state?.prefill]);
+  }, [conversationId, searchParams.get('prefill')]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -183,7 +186,7 @@ Respond naturally to the user's latest message.`;
       <div className="bg-gradient-to-r from-violet-600 via-violet-500 to-purple-600 px-5 pt-14 pb-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/overview" className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 hover:bg-white/30 transition-colors">
+            <Link href="/overview" className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 hover:bg-white/30 transition-colors">
               <ChevronLeft className="w-5 h-5 text-white" />
             </Link>
             <div className="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">

@@ -1,6 +1,8 @@
+'use client';
+
 import React, { useState, useRef, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Brain, X, Send, ChevronDown, Sparkles } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Brain, X, Send, ChevronDown } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import ReactMarkdown from 'react-markdown';
 
@@ -25,13 +27,13 @@ export default function SoreliaFAB() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
+  const router = useRouter();
   const inputRef = useRef(null);
   const messagesEndRef = useRef(null);
 
-  const ctx = PAGE_CONTEXT[location.pathname] || PAGE_CONTEXT['/'];
-  const chips = QUICK_CHIPS[location.pathname] || QUICK_CHIPS['/'];
+  const ctx = PAGE_CONTEXT[pathname] || PAGE_CONTEXT['/'];
+  const chips = QUICK_CHIPS[pathname] || QUICK_CHIPS['/'];
 
   useEffect(() => {
     if (open) {
@@ -43,7 +45,7 @@ export default function SoreliaFAB() {
   useEffect(() => {
     setOpen(false);
     setMessages([]);
-  }, [location.pathname]);
+  }, [pathname]);
 
   async function sendMessage(text) {
     const userMsg = text || input.trim();
@@ -81,7 +83,8 @@ ${memoryContext || 'No memories saved yet.'}`;
   }
 
   function openFullChat() {
-    navigate('/', { state: { prefill: input || messages[messages.length - 1]?.content } });
+    const prefill = input || messages[messages.length - 1]?.content;
+    router.push(prefill ? `/?prefill=${encodeURIComponent(prefill)}` : '/');
     setOpen(false);
   }
 

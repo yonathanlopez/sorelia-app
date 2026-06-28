@@ -1,9 +1,10 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { ChevronLeft, ChevronRight, Calendar, Clock } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import BottomNav from '@/components/BottomNav';
-import SoreliaFAB from '@/components/SoreliaFAB';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -326,7 +327,7 @@ export default function CalendarPage() {
               <div className="text-center py-10">
                 <Calendar className="w-10 h-10 text-violet-200 mx-auto mb-3" />
                 <p className="text-sm text-gray-400 mb-2">No events this month.</p>
-                <Link to="/" className="text-sm text-violet-500 font-semibold">Ask Sorelia about your schedule →</Link>
+                <Link href="/" className="text-sm text-violet-500 font-semibold">Ask Sorelia about your schedule →</Link>
               </div>
             ) : (
               Object.entries(eventsByDay)

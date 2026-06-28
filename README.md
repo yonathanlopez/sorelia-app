@@ -4,6 +4,12 @@ Use this repository to run and edit the app locally, then publish changes back t
 
 Any change pushed to the repo will also be reflected in the Base44 Builder.
 
+## Stack
+
+- **Frontend:** Next.js + TypeScript (App Router)
+- **UI:** Tailwind CSS + shadcn/ui
+- **Backend:** Base44
+
 ## Prerequisites
 
 1. Clone the repository using the project's Git URL.
@@ -43,20 +49,20 @@ If you only want to work on the frontend against the hosted Base44 backend, run:
 npm run dev
 ```
 
-Open the local URL printed by Vite.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Use The Hosted Backend
+## Environment Variables
 
-For frontend-only development, create or update `.env.local` in the project root:
+Create or update `.env.local` in the project root:
 
 ```bash
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=https://your-app.base44.app
+NEXT_PUBLIC_BASE44_APP_ID=your_app_id
+NEXT_PUBLIC_BASE44_APP_BASE_URL=https://your-app.base44.app
 ```
 
-`VITE_BASE44_APP_ID` identifies the Base44 app.
+`NEXT_PUBLIC_BASE44_APP_ID` identifies the Base44 app.
 
-`VITE_BASE44_APP_BASE_URL` tells the Base44 Vite plugin where to send local `/api` requests. Point it at your deployed Base44 app URL when you want the local frontend to use the hosted backend.
+`NEXT_PUBLIC_BASE44_APP_BASE_URL` is used by Next.js rewrites to proxy local `/api` requests to your hosted Base44 backend.
 
 When you use `base44 dev`, the command injects the local Base44 values for you, so `.env.local` is mainly needed for frontend-only workflows.
 
