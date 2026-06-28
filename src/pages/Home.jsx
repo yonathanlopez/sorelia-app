@@ -210,7 +210,6 @@ export default function Home() {
       </div>
 
       {/* Upcoming */}
-      {upcomingCal.length > 0 &&
       <div className="py-2 px-2">
           <div className="bg-white rounded-xl border border-gray-100">
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
@@ -220,37 +219,41 @@ export default function Home() {
                 </div>
                 <h2 className="font-semibold text-gray-900">Upcoming</h2>
               </div>
-              
-
-            
             </div>
-            <div className="px-4 py-3 space-y-3">
-              {upcomingCal.map((event, idx) =>
-            <div key={event.id} className="flex items-center gap-3">
-                  <div className="flex flex-col items-center gap-2">
-                    <div className={`w-4 h-4 rounded-full border-2 ${
-                idx === 0 ? 'border-violet-600 bg-violet-600' : 'border-gray-300'}`
-                } />
-                    {idx < upcomingCal.length - 1 && <div className="w-0.5 h-6 bg-gray-200" />}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900">{event.title}</p>
-                    <p className="text-xs text-gray-500">{event.daysUntil === 1 ? 'Tomorrow' : `${event.daysUntil}d away`}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs font-medium text-violet-600">
-                      {event.daysUntil === 0 ? 'Today' : event.daysUntil === 1 ? 'Tomorrow' : `${new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`}
-                    </p>
-                  </div>
+            <div className="px-4 py-3">
+              {upcomingCal.length === 0 ? (
+                <div className="text-center py-6">
+                  <p className="text-sm text-gray-500">No upcoming events</p>
+                  <p className="text-xs text-gray-400 mt-1">Ask Sorelia to add birthdays, anniversaries, or dates</p>
                 </div>
-            )}
+              ) : (
+                <div className="space-y-3">
+                  {upcomingCal.map((event, idx) =>
+                  <div key={event.id} className="flex items-center gap-3">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className={`w-4 h-4 rounded-full border-2 ${
+                      idx === 0 ? 'border-violet-600 bg-violet-600' : 'border-gray-300'}`
+                      } />
+                      {idx < upcomingCal.length - 1 && <div className="w-0.5 h-6 bg-gray-200" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900">{event.title}</p>
+                      <p className="text-xs text-gray-500">{event.daysUntil === 1 ? 'Tomorrow' : `${event.daysUntil}d away`}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs font-medium text-violet-600">
+                        {event.daysUntil === 0 ? 'Today' : event.daysUntil === 1 ? 'Tomorrow' : `${new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`}
+                      </p>
+                    </div>
+                  </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
-      }
 
       {/* Important */}
-      {importantEvents.length > 0 &&
       <div className="py-2 px-2">
           <div className="bg-white rounded-xl border border-gray-100">
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
@@ -260,32 +263,36 @@ export default function Home() {
                 </div>
                 <h2 className="font-semibold text-gray-900">Important</h2>
               </div>
-              
-
-            
             </div>
-            <div className="divide-y divide-gray-50">
-              {importantEvents.map((event) => {
-              const Icon = getTimeIcon(event.date_type);
-              return (
-                <div key={event.id} className="flex items-center gap-3 px-4 py-3">
-                    <div className="w-5 h-5 text-violet-600 flex-shrink-0">
-                      <Gift className="w-5 h-5" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900">{event.title}</p>
-                      <p className="text-xs text-gray-500">{event.daysUntil === 0 ? 'Today' : `${event.daysUntil}d away`}</p>
-                    </div>
-                    <p className={`text-xs font-medium ${event.daysUntil === 0 ? 'text-emerald-600' : 'text-gray-400'}`}>
-                      {event.daysUntil === 0 ? 'Today' : new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                    </p>
-                  </div>);
-
-            })}
+            <div>
+              {importantEvents.length === 0 ? (
+                <div className="px-4 py-6 text-center">
+                  <p className="text-sm text-gray-500">No important dates</p>
+                  <p className="text-xs text-gray-400 mt-1">Ask Sorelia to save bills, anniversaries, or special dates</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-gray-50">
+                  {importantEvents.map((event) => {
+                  const Icon = getTimeIcon(event.date_type);
+                  return (
+                    <div key={event.id} className="flex items-center gap-3 px-4 py-3">
+                      <div className="w-5 h-5 text-violet-600 flex-shrink-0">
+                        <Gift className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900">{event.title}</p>
+                        <p className="text-xs text-gray-500">{event.daysUntil === 0 ? 'Today' : `${event.daysUntil}d away`}</p>
+                      </div>
+                      <p className={`text-xs font-medium ${event.daysUntil === 0 ? 'text-emerald-600' : 'text-gray-400'}`}>
+                        {event.daysUntil === 0 ? 'Today' : new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      </p>
+                    </div>);
+                  })}
+                </div>
+              )}
             </div>
           </div>
         </div>
-      }
 
       <BottomNav />
     </div>);
