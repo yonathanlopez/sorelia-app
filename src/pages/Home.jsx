@@ -143,7 +143,7 @@ export default function Home() {
       </div>
 
       {/* Stats Bar */}
-      <div className="px-4 py-4 grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-4 gap-2 px-2 py-2">
         <div className="bg-white rounded-lg text-center border border-gray-100 px-2 py-2">
           <div className="w-6 h-6 rounded-md bg-violet-100 text-violet-600 flex items-center justify-center mx-auto mb-1">
             <Clock className="w-3 h-3" />
@@ -151,7 +151,7 @@ export default function Home() {
           <p className="text-sm font-bold text-gray-900">{totalGoals}</p>
           <p className="text-xs text-gray-500">Tasks</p>
         </div>
-        <div className="bg-white rounded-lg text-center border border-gray-100 px-2 py-2 mt-3">
+        <div className="bg-white rounded-lg text-center border border-gray-100 px-2 py-2">
           <div className="w-6 h-6 rounded-md bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-1">
             <CheckCircle className="w-3 h-3" />
           </div>
@@ -163,9 +163,9 @@ export default function Home() {
             <Calendar className="w-3 h-3" />
           </div>
           <p className="text-sm font-bold text-gray-900">{upcomingCal.length}</p>
-          <p className="text-xs text-gray-500">Upcoming</p>
+          <p className="text-xs text-gray-500">D</p>
         </div>
-        <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+        <div className="bg-white rounded-lg p-3 text-center border border-gray-100 hidden">
           <div className="w-6 h-6 rounded-md bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-1">
             <Zap className="w-3 h-3" />
           </div>
