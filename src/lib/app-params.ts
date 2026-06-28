@@ -75,7 +75,7 @@ export function getAppParams() {
 
 export const appParams = getAppParams();
 
-export function getPostAuthRedirectUrl(path = '/'): string {
+export function getPostAuthRedirectUrl(path = '/auth/callback'): string {
   if (!isBrowser) return path;
   return new URL(path, window.location.origin).toString();
 }

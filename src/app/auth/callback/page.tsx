@@ -2,12 +2,11 @@
 
 import { useEffect } from 'react';
 import { completeOAuthCallback } from '@/lib/auth-callback';
-import { getStoredAccessToken } from '@/lib/app-params';
 
-export default function RootRedirectPage() {
+export default function AuthCallbackPage() {
   useEffect(() => {
-    completeOAuthCallback();
-    window.location.replace(getStoredAccessToken() ? '/overview' : '/login');
+    const ok = completeOAuthCallback();
+    window.location.replace(ok ? '/overview' : '/login?error=auth_failed');
   }, []);
 
   return (
@@ -16,10 +15,7 @@ export default function RootRedirectPage() {
       style={{ backgroundColor: '#f9fafb', color: '#111827' }}
     >
       <div className="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin" />
-      <p className="text-sm text-gray-600">Loading Sorelia...</p>
-      <a href="/login" className="text-sm font-medium text-violet-600 hover:underline">
-        Go to login
-      </a>
+      <p className="text-sm text-gray-600">Finishing sign in...</p>
     </div>
   );
 }

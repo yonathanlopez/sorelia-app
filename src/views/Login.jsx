@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation';
 import { base44, refreshBase44Client } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,12 +11,25 @@ import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 import { getPostAuthRedirectUrl } from '@/lib/app-params';
+import { completeOAuthCallback } from '@/lib/auth-callback';
 
-export default function Login() {
+function LoginContent() {
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get('error') === 'auth_failed') {
+      setError('Google sign in did not complete. Please try again.');
+      return;
+    }
+
+    if (completeOAuthCallback()) {
+      window.location.replace('/overview');
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +38,7 @@ export default function Login() {
     try {
       await base44.auth.loginViaEmailPassword(email, password);
       refreshBase44Client();
-      window.location.href = '/';
+      window.location.href = '/overview';
     } catch (err) {
       setError(err.message || "Invalid email or password");
     } finally {
@@ -33,7 +47,12 @@ export default function Login() {
   };
 
   const handleGoogle = () => {
-    base44.auth.loginWithProvider('google', getPostAuthRedirectUrl('/'));
+    try {
+      setError("");
+      base44.auth.loginWithProvider('google', getPostAuthRedirectUrl());
+    } catch (err) {
+      setError(err.message || 'Could not start Google sign in');
+    }
   };
 
   return (
@@ -54,6 +73,7 @@ export default function Login() {
         variant="outline"
         className="w-full h-12 text-sm font-medium mb-6"
         onClick={handleGoogle}
+        type="button"
       >
         <GoogleIcon className="w-5 h-5 mr-2" />
         Continue with Google
@@ -125,5 +145,17 @@ export default function Login() {
         </Button>
       </form>
     </AuthLayout>
+  );
+}
+
+export default function Login() {
+  return (
+    <React.Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin" />
+      </div>
+    }>
+      <LoginContent />
+    </React.Suspense>
   );
 }

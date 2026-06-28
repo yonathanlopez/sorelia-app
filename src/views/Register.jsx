@@ -73,7 +73,11 @@ export default function Register() {
   };
 
   const handleGoogle = () => {
-    base44.auth.loginWithProvider('google', getPostAuthRedirectUrl('/'));
+    try {
+      base44.auth.loginWithProvider('google', getPostAuthRedirectUrl());
+    } catch (err) {
+      setError(err.message || 'Could not start Google sign in');
+    }
   };
 
   if (showOtp) {
