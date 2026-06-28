@@ -2,7 +2,7 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { base44 } from '@/api/base44Client';
+import { base44, refreshBase44Client } from '@/api/base44Client';
 import { getAppParams, getStoredAccessToken } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 
@@ -96,6 +96,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setAppPublicSettings(publicSettings as unknown as Record<string, unknown>);
 
         if (token) {
+          refreshBase44Client();
           await checkUserAuth();
         } else {
           setIsLoadingAuth(false);

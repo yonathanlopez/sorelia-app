@@ -8,7 +8,7 @@ export default function ProtectedAppLayout({ children }: { children: React.React
   return (
     <ProtectedLayout>
       <MemoriesPrefetcher />
-      {children}
+      <div className="min-h-screen bg-gray-50">{children}</div>
       <BottomNav />
     </ProtectedLayout>
   );

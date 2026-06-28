@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
-import { base44 } from "@/api/base44Client";
+import { base44, refreshBase44Client } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,9 +27,13 @@ export default function Login() {
     setLoading(true);
     try {
       await base44.auth.loginViaEmailPassword(email, password);
+      refreshBase44Client();
       const ok = await checkUserAuth();
       if (ok) {
         router.replace('/');
+        router.refresh();
+      } else {
+        setError('Login succeeded but the session could not be loaded. Please try again.');
       }
     } catch (err) {
       setError(err.message || "Invalid email or password");

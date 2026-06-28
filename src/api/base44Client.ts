@@ -25,7 +25,7 @@ function buildClient(): Base44Client {
   });
 }
 
-let client = typeof window !== 'undefined' ? buildClient() : (null as unknown as Base44Client);
+let client: Base44Client | null = null;
 
 function getClient(): Base44Client {
   if (!client) {
