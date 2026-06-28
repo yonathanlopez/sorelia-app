@@ -143,7 +143,7 @@ export default function Home() {
       </div>
 
       {/* Stats Bar */}
-      <div className="bg-white rounded-2xl shadow-sm flex items-center justify-around divide-x divide-gray-200 px-2 py-2 mx-1">
+      <div className="bg-white rounded-2xl shadow-sm flex items-center justify-around divide-x divide-gray-200 px-2 py-2">
         <div className="flex flex-col items-center gap-2 flex-1">
           <div className="bg-violet-50 p-2.5 rounded-full text-violet-600">
             <Clock className="w-5 h-5" />
