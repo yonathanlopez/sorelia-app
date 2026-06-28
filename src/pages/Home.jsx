@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Calendar, CheckCircle, Clock, Gift, Home as HomeIcon, Shield, Zap, ChevronRight, Sparkles, Check } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import BottomNav from '@/components/BottomNav';
@@ -15,30 +16,35 @@ function getDaysUntil(dateStr) {
 
 export default function Home() {
   const navigate = useNavigate();
-  const [memories, setMemories] = useState([]);
-  const [calendarEvents, setCalendarEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
   const [completedToday, setCompletedToday] = useState(new Set());
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
-    load();
   }, []);
 
-  async function load() {
-    const mems = await base44.entities.Memory.list('-created_date', 200);
-    setMemories(mems);
-    setLoading(false);
-    fetchCalendar();
-  }
+  const { data: memories = [], isLoading: memoriesLoading } = useQuery({
+    queryKey: ['memories'],
+    queryFn: async () => {
+      const mems = await base44.entities.Memory.list('-created_date', 200);
+      return mems;
+    },
+  });
 
-  async function fetchCalendar() {
-    try {
-      const res = await base44.functions.invoke('calendarScanner', {});
-      if (res?.data?.events) setCalendarEvents(res.data.events);
-    } catch {}
-  }
+  const { data: calendarEvents = [], isLoading: calendarLoading } = useQuery({
+    queryKey: ['calendarEvents'],
+    queryFn: async () => {
+      try {
+        const res = await base44.functions.invoke('calendarScanner', {});
+        return res?.data?.events || [];
+      } catch {
+        return [];
+      }
+    },
+  });
+
+  const loading = memoriesLoading || calendarLoading;
 
   if (loading) {
     return (
@@ -146,8 +152,7 @@ export default function Home() {
     try {
       const newStatus = isCurrentlyCompleted ? 'active' : 'completed';
       await base44.entities.Memory.update(id, { status: newStatus });
-      const mems = await base44.entities.Memory.list('-created_date', 200);
-      setMemories(mems);
+      queryClient.invalidateQueries({ queryKey: ['memories'] });
     } catch {}
   }
 
