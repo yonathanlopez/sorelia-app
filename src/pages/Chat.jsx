@@ -127,15 +127,6 @@ export default function Chat() {
         ).join('\n');
     }
 
-    let calendarContext = '';
-    try {
-      const calRes = await base44.functions.invoke('calendarScanner', { preview: true });
-      if (calRes?.data?.events?.length > 0) {
-        calendarContext = `\n\nUpcoming calendar events:\n` +
-          calRes.data.events.slice(0, 8).map(e => `- ${e.summary || e.title} on ${e.start || e.date}`).join('\n');
-      }
-    } catch { }
-
     const historyForAI = newMessages.slice(-20).map(m => `${m.role === 'user' ? 'User' : 'Sorelia'}: ${m.content}`).join('\n');
     const firstName = user?.full_name?.split(' ')[0] || 'there';
 
@@ -156,7 +147,7 @@ Your tone:
 - When saving something new, say "I'll remember that" or "Got it, I've saved that"
 - Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
 
-${memoryContext}${calendarContext}
+${memoryContext}
 
 Conversation:
 ${historyForAI}
@@ -165,10 +156,7 @@ Respond naturally to the user's latest message.`;
 
     let reply = "I'm not able to respond right now — the AI integration credits for this workspace are exhausted. Please upgrade your plan or wait for the monthly reset on July 23rd.";
     try {
-      [reply] = await Promise.all([
-        base44.integrations.Core.InvokeLLM({ prompt: replyPrompt, model: 'gpt_5_5' }),
-        extractMemories(msg),
-      ]);
+      reply = await base44.integrations.Core.InvokeLLM({ prompt: replyPrompt, model: 'gpt_5_5' });
     } catch (e) { }
 
     const assistantMsg = { role: 'assistant', content: reply, timestamp: new Date().toISOString() };
@@ -185,52 +173,7 @@ Respond naturally to the user's latest message.`;
     setSending(false);
   }
 
-  async function extractMemories(userMessage) {
-    const extractPrompt = `Extract any memorable personal facts from this message. Only extract clear, specific facts worth remembering long-term.
 
-Message: "${userMessage}"
-
-Return JSON: { "memories": [{ "type": "person"|"goal"|"important_date", "title": "...", "description": "...", "date": "...", "people": [] }] }
-If nothing worth saving, return { "memories": [] }.`;
-
-    try {
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt: extractPrompt,
-        model: 'gpt_5_mini',
-        response_json_schema: {
-          type: 'object',
-          properties: {
-            memories: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  type: { type: 'string' },
-                  title: { type: 'string' },
-                  description: { type: 'string' },
-                  date: { type: 'string' },
-                  people: { type: 'array', items: { type: 'string' } },
-                },
-                required: ['type', 'title'],
-              },
-            },
-          },
-        },
-      });
-      if (result?.memories?.length > 0) {
-        for (const mem of result.memories) {
-          await base44.entities.Calendar.create({
-            type: mem.type,
-            title: mem.title,
-            description: mem.description || '',
-            date: mem.date || '',
-            people: mem.people || [],
-            source: 'chat',
-          });
-        }
-      }
-    } catch { }
-  }
 
   const firstName = user?.full_name?.split(' ')[0] || '';
 
